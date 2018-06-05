@@ -1,6 +1,7 @@
 'use strict'
 
-const { models: { User, Group } } = require('data')
+const { mongoose, models: { User, Group } } = require('data')
+const { Types: { ObjectId } } = mongoose
 
 const logic = {
 
@@ -191,29 +192,24 @@ const logic = {
     },
     /**
      * 
+     * @param {string} userId The userID that creates the group
      * @param {string} name Group name
-     * @param {Array} user The userID that creates the group
      * 
      * @returns {Promise<string>} group ID
      */
-    createGroup(name, user) {
+    createGroup(userId, name) {
         return Promise.resolve()
             .then(() => {
-                if (typeof name !== 'string') throw Error('name is not a string')
+                if (typeof userId !== 'string') throw Error('user id is not a string')
 
-                if (!(name = name.trim()).length) throw Error('name is empty or blank')
+                if (!(userId = userId.trim()).length) throw Error('user id is empty or blank')
 
-                if (typeof user !== 'string') throw Error('user is not a string')
+                if (typeof name !== 'string') throw Error('group name is not a string')
 
-                if (!(user = user.trim()).length) throw Error('user is empty or blank')
+                if (!(name = name.trim()).length) throw Error('group name is empty or blank')
 
-                return Group.create({ name, user })
-                    .then(group => {
-                        console.log(user)
-                        group.users.push(user)
-                        group.save()
-                        return group.id
-                    })
+                return Group.create({ name, users: [ObjectId(userId)] })
+                    .then(res => res._doc._id.toString())
             })
     },
 

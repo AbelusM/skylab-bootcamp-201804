@@ -8,14 +8,17 @@ const { expect } = require('chai')
 const { env: { DB_URL } } = process
 
 describe('models (settle-wise)', () => {
-    const jackData = { name: 'Jack', surname: 'Johnson', email: 'jj@mail.com', password: '123' }
-    const annaData = { name: 'Anna', surname: 'Kennedy', email: 'ak@mail.com', password: '456' }
-    const groupData = { name: 'California' }
-    const spendData = { fraction: 100 }
+    let jackData, annaData, groupData, spendData
 
     before(() => mongoose.connect(DB_URL))
 
-    beforeEach(() => Promise.all([User.remove(), Group.deleteMany()]))
+    beforeEach(() => {
+        jackData = { name: 'Jack', surname: 'Johnson', email: 'jj@mail.com', password: '123' }
+        annaData = { name: 'Anna', surname: 'Kennedy', email: 'ak@mail.com', password: '456' }
+        groupData = { name: 'California' }
+
+        return Promise.all([User.remove(), Group.deleteMany()])
+    })
 
     describe('create user', () => {
         it('should succeed on correct data', () => {
@@ -82,25 +85,48 @@ describe('models (settle-wise)', () => {
                     expect(user2).to.exist
                     expect(user2.name).to.equal(annaData.name)
 
-                    const group = new Group(groupData)                    
+                    const group = new Group(groupData)
 
                     group.users.push(user1._id)
                     group.users.push(user2._id)
 
-                    const spend = new Spend(spendData)                    
+                    const spend = new Spend({
+                        fractions: [
+                            { userId: user1._id, fraction: 75 },
+                            { userId: user2._id, fraction: 25 }
+                        ]
+                    })
+
+                    group.spends.push(spend)
 
                     return group.save()
                         .then(group => {
                             expect(group._id).to.exist
                             expect(group.name).to.equal(groupData.name)
 
-                            expect(spend._id).to.exist
-                            expect(spend.name).to.equal(spendData.name)
-
                             const { users: [userId1, userId2] } = group
 
                             expect(userId1.toString()).to.equal(user1._id.toString())
                             expect(userId2.toString()).to.equal(user2._id.toString())
+
+                            expect(group.spends).to.exist
+                            expect(group.spends.length).to.equal(1)
+
+                            const { spends: [spend] } = group
+
+                            expect(spend._id).to.exist
+                            expect(spend.fractions).to.exist
+                            expect(spend.fractions.length).to.equal(2)
+
+                            const { fractions: [fraction1, fraction2] } = spend
+
+                            expect(fraction1.userId).to.exist
+                            expect(fraction1.userId.toString()).to.equal(user1._id.toString())
+                            expect(fraction1.fraction).to.equal(75)
+
+                            expect(fraction2.userId).to.exist
+                            expect(fraction2.userId.toString()).to.equal(user2._id.toString())
+                            expect(fraction2.fraction).to.equal(25)
                         })
                 })
         )

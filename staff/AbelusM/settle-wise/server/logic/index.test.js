@@ -8,17 +8,19 @@ const { expect } = require('chai')
 
 const { env: { DB_URL } } = process
 describe('logic (settle-wise)', () => {
-    const userData = { name: 'John', surname: 'Doe', email: 'jd@mail.com', password: '123' }
-    const otherUserData = { name: 'Jack', surname: 'Wayne', email: 'jw@mail.com', password: '456' }
-    const groupData = { name: 'California', user: '123456781234567812345678'}
-    const dummyUserId = '123456781234567812345678'
-    const dummySpendId = '123456781234567812345678'
-    const fraction = 100
-    const indexes = []
+    let userData, otherUserData, groupData, dummyUserId, dummySpendId, fraction, indexes
 
     before(() => mongoose.connect(DB_URL))
 
     beforeEach(() => {
+        userData = { name: 'John', surname: 'Doe', email: 'jd@mail.com', password: '123' }
+        otherUserData = { name: 'Jack', surname: 'Wayne', email: 'jw@mail.com', password: '456' }
+        groupData = { name: 'California' }
+        dummyUserId = '123456781234567812345678'
+        dummySpendId = '123456781234567812345678'
+        fraction = 100
+        indexes = []
+
         let count = 10 + Math.floor(Math.random() * 10)
         indexes.length = 0
         while (count--) indexes.push(count)
@@ -354,31 +356,34 @@ describe('logic (settle-wise)', () => {
             logic.unregisterUser(dummyUserId, userData.email, '     ')
                 .catch(({ message }) => expect(message).to.equal('user password is empty or blank'))
         )
-    }),
+    })
 
-        ////////////////////////////////////////
+    ////////////////////////////////////////
 
-        describe('create group', () => {
-            it('should succeed on correct data', () =>
-                User.create(userData)
-                    .then((users) => {
-                        return logic.createGroup(groupData.name, groupData.user)
-                            .then(groupId => {
-                                expect(groupId).to.be.a('string')
-                                expect(groupId).to.exist
+    describe('create group', () => {
+        it('should succeed on correct data', () =>
+            User.create(userData)
+                .then((user) => {
+                    return logic.createGroup(user._id.toString(), groupData.name)
+                        .then(groupId => {
+                            expect(groupId).to.be.a('string')
+                            expect(groupId).to.exist
 
-                                return Group.findById(groupId)
-                                    .then(groupInfo => {
-                                        console.log(groupInfo)
-                                        expect(groupInfo).to.exist
+                            return Group.findById(groupId)
+                                .then(group => {
+                                    expect(group).to.exist
 
-                                        expect(groupInfo.users).to.exist
-                                        expect(groupInfo.users.length).to.equal(1)
-                                    })
-                            })
-                    })
-            )
-        })
+                                    expect(group.users).to.exist
+                                    expect(group.users.length).to.equal(1)
+
+                                    const { users: [_user] } = group
+
+                                    expect(_user._id.toString()).to.equal(user._id.toString())
+                                })
+                        })
+                })
+        )
+    })
 
 
 
