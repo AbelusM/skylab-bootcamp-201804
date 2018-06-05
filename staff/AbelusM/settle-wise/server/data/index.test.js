@@ -11,6 +11,7 @@ describe('models (settle-wise)', () => {
     const jackData = { name: 'Jack', surname: 'Johnson', email: 'jj@mail.com', password: '123' }
     const annaData = { name: 'Anna', surname: 'Kennedy', email: 'ak@mail.com', password: '456' }
     const groupData = { name: 'California' }
+    const spendData = { fraction: 100 }
 
     before(() => mongoose.connect(DB_URL))
 
@@ -56,6 +57,45 @@ describe('models (settle-wise)', () => {
                         .then(group => {
                             expect(group._id).to.exist
                             expect(group.name).to.equal(groupData.name)
+
+                            const { users: [userId1, userId2] } = group
+
+                            expect(userId1.toString()).to.equal(user1._id.toString())
+                            expect(userId2.toString()).to.equal(user2._id.toString())
+                        })
+                })
+        )
+    })
+
+    describe('add spend', () => {
+        it('should succeed on correct data', () =>
+            Promise.all([
+                User.create(jackData),
+                User.create(annaData)
+            ])
+                .then(res => {
+                    const [{ _doc: user1 }, { _doc: user2 }] = res
+
+                    expect(user1).to.exist
+                    expect(user1.name).to.equal(jackData.name)
+
+                    expect(user2).to.exist
+                    expect(user2.name).to.equal(annaData.name)
+
+                    const group = new Group(groupData)                    
+
+                    group.users.push(user1._id)
+                    group.users.push(user2._id)
+
+                    const spend = new Spend(spendData)                    
+
+                    return group.save()
+                        .then(group => {
+                            expect(group._id).to.exist
+                            expect(group.name).to.equal(groupData.name)
+
+                            expect(spend._id).to.exist
+                            expect(spend.name).to.equal(spendData.name)
 
                             const { users: [userId1, userId2] } = group
 
