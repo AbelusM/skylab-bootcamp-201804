@@ -17,6 +17,7 @@ const logic = {
     registerUser(name, surname, email, password) {
         return Promise.resolve()
             .then(() => {
+
                 if (typeof name !== 'string') throw Error('user name is not a string')
 
                 if (!(name = name.trim()).length) throw Error('user name is empty or blank')
@@ -38,7 +39,7 @@ const logic = {
                         if (user) throw Error(`user with email ${email} already exists`)
 
                         return User.create({ name, surname, email, password })
-                            .then(() => true)
+                            .then(user => user._id)
                     })
             })
     },
@@ -190,6 +191,7 @@ const logic = {
             })
             .then(() => true)
     },
+
     /**
      * 
      * @param {string} userId The userID that creates the group
@@ -212,6 +214,88 @@ const logic = {
                     .then(res => res._doc._id.toString())
             })
     },
+
+    /**
+      * @param {string} userId
+      * 
+      * @returns {Promise<[group]>}
+      */
+    listGroups(userId) {
+        return Promise.resolve()
+            .then(() => {
+                if (typeof userId !== 'string') throw Error('user id is not a string')
+
+                if (!(userId = userId.trim()).length) throw Error('user id is empty or blank')
+
+                return Group.find({ users: userId })
+                    .then(groups => {
+
+                        if (!groups) throw Error(`no user found with id ${userId}`)
+
+                        return groups
+                    })
+            })
+    },
+
+    /**
+    * 
+    * @param {string} groupId
+    * @param {string} userId
+    * 
+    * @returns {Promise<string>}
+    */
+    addGroupUser(groupId, email) {
+        return Promise.resolve()
+            .then(() => {
+                if (typeof groupId !== 'string') throw Error('user id is not a string')
+
+                if (!(groupId = groupId.trim()).length) throw Error('user id is empty or blank')
+
+                if (typeof email !== 'string') throw Error('user email is not a string')
+
+                if (!(email = email.trim()).length) throw Error('user email is empty or blank')
+
+                return User.find({ email })
+                    .then(user => {
+                        const _userId = user[0]._id
+                        return Group.findByIdAndUpdate(groupId, { $push: { users: _userId } }, { new: true })
+                            .then(group => {
+                                if (!group) throw Error(`no group found with id ${groupId}`)
+
+                                return group.users
+                            })
+                    })
+
+            })
+    },
+
+    /**
+        * 
+        * @param {string} userId
+        * @param {number} fraction 
+        * 
+        * @returns {Promise<string>}
+        */
+    addSpend(userId, fraction) {
+        return Promise.resolve()
+            .then(() => {
+                if (typeof userId !== 'string') throw Error('user id is not a string')
+
+                if (!(userId = userId.trim()).length) throw Error('user id is empty or blank')
+
+                if (typeof fraction !== 'number') throw Error('fraction is not a number')
+
+                if ((fraction = fraction.trim()).length === 0) throw Error('fraction is empty or blank')
+
+                return Group.findByIdAndUpdate(userId, { $push: { fractions: { fraction } } }, { new: true })
+                    .then(group => {
+                        if (!group) throw Error(`no group found with id ${groupId}`)
+
+                        return group.users[group.users.length - 1].id
+                    })
+            })
+    },
+
 
 
 }

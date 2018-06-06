@@ -31,8 +31,9 @@ describe('logic (settle-wise)', () => {
     describe('register user', () => {
         it('should succeed on correct dada', () =>
             logic.registerUser('John', 'Doe', 'jd@mail.com', '123')
-                .then(res => expect(res).to.be.true)
-        )
+                .then(res => {
+                    expect(res).to.exist
+                }))
 
         it('should fail on already registered user', () =>
             User.create(userData)
@@ -358,8 +359,6 @@ describe('logic (settle-wise)', () => {
         )
     })
 
-    ////////////////////////////////////////
-
     describe('create group', () => {
         it('should succeed on correct data', () =>
             User.create(userData)
@@ -385,6 +384,90 @@ describe('logic (settle-wise)', () => {
         )
     })
 
+    //////////////////////////////////////////7
+
+    // describe('list groups by user id', () => {
+    //     it('should succeed on correct data', () => {
+    //         const user = new User(userData)
+
+    //         const groups = indexes.map(index => new Note({ text: `${noteText} ${index}` }))
+
+    //         user.notes = notes
+
+    //         return user.save()
+    //             .then(({ id: userId, notes }) => {
+
+    //                 const validNoteIds = _.map(notes, 'id')
+    //                 const validNoteTexts = _.map(notes, 'text')
+
+    //                 return logic.listNotes(userId)
+    //                     .then(notes => {
+    //                         expect(notes).to.exist
+    //                         expect(notes.length).to.equal(indexes.length)
+
+    //                         notes.forEach(({ id, text, _id }) => {
+    //                             expect(validNoteIds).to.include(id)
+    //                             expect(validNoteTexts).to.include(text)
+    //                             expect(_id).not.to.exist
+    //                         })
+    //                     })
+    //             })
+    //         })
+    //     })
+
+    // describe('add a user on a group', () => {
+    //     it('should succeed on correct data', () =>
+    //         Group.create(userData)
+    //             .then(({ id }) => {
+    //                 return logic.addGroupUser(groupId, userId)
+    //                     .then(groupId => {
+
+    //                         expect(noteId).to.be.a('string')
+    //                         expect(noteId).to.exist
+
+    //                         return User.findById(id)
+    //                             .then(user => {
+    //                                 expect(user).to.exist
+
+    //                                 expect(user.notes).to.exist
+    //                                 expect(user.notes.length).to.equal(1)
+
+    //                                 const [{ id, text }] = user.notes
+
+    //                                 expect(id).to.equal(noteId)
+    //                                 expect(text).to.equal(noteText)
+    //                             })
+    //                     })
+    //             })
+    //     )
+    // })
+
+    // describe('add a spend', () => {
+    //     it('should succeed on correct data', () =>
+    //         Group.create(userData)
+    //             .then(({ id }) => {
+    //                 return logic.addSpend(id, fraction)
+    //                     .then(groupId => {
+
+    //                         expect(groupId).to.be.a('string')
+    //                         expect(groupId).to.exist
+
+    //                         return User.findById(id)
+    //                             .then(user => {
+    //                                 expect(user).to.exist
+
+    //                                 expect(user.notes).to.exist
+    //                                 expect(user.notes.length).to.equal(1)
+
+    //                                 const [{ id, text }] = user.notes
+
+    //                                 expect(id).to.equal(groupId)
+    //                                 expect(text).to.equal(noteText)
+    //                             })
+    //                     })
+    //             })
+    //     )
+    // })
 
 
     after(done => mongoose.connection.db.dropDatabase(() => mongoose.connection.close(done)))
