@@ -216,11 +216,13 @@ const logic = {
     },
 
     /**
-      * @param {string} userId
-      * 
-      * @returns {Promise<[group]>}
-      */
-    listGroups(userId) {
+     * List groups by user
+     * 
+    * @param {string} userId The user id
+    * 
+    * @returns {Promise<[group]>}
+    */
+    listGroupsByUser(userId) {
         return Promise.resolve()
             .then(() => {
                 if (typeof userId !== 'string') throw Error('user id is not a string')
@@ -229,7 +231,6 @@ const logic = {
 
                 return Group.find({ users: userId })
                     .then(groups => {
-
                         if (!groups) throw Error(`no user found with id ${userId}`)
 
                         return groups

@@ -2,19 +2,19 @@
 
 require('dotenv').config()
 
-const { mongoose, models: { User, Group } } = require('data')
+const { mongoose, models: { User, Group, Spend } } = require('data')
 const logic = require('.')
 const { expect } = require('chai')
 
 const { env: { DB_URL } } = process
 describe('logic (settle-wise)', () => {
-    let userData, otherUserData, groupData, dummyUserId, dummySpendId, fraction, indexes
+    let userData, userData2, groupData, dummyUserId, dummySpendId, fraction, indexes
 
     before(() => mongoose.connect(DB_URL))
 
     beforeEach(() => {
         userData = { name: 'John', surname: 'Doe', email: 'jd@mail.com', password: '123' }
-        otherUserData = { name: 'Jack', surname: 'Wayne', email: 'jw@mail.com', password: '456' }
+        userData2 = { name: 'Jack', surname: 'Wayne', email: 'jw@mail.com', password: '456' }
         groupData = { name: 'California' }
         dummyUserId = '123456781234567812345678'
         dummySpendId = '123456781234567812345678'
@@ -25,7 +25,7 @@ describe('logic (settle-wise)', () => {
         indexes.length = 0
         while (count--) indexes.push(count)
 
-        return Promise.all([User.remove()])
+        return Promise.all([User.remove(), Group.deleteMany()])
     })
 
     describe('register user', () => {
@@ -211,14 +211,14 @@ describe('logic (settle-wise)', () => {
         it('should fail on changing email to an already existing user\'s email', () =>
             Promise.all([
                 User.create(userData),
-                User.create(otherUserData)
+                User.create(userData2)
             ])
                 .then(([{ id: id1 }, { id: id2 }]) => {
                     const { name, surname, email, password } = userData
 
-                    return logic.updateUser(id1, name, surname, email, password, otherUserData.email)
+                    return logic.updateUser(id1, name, surname, email, password, userData2.email)
                 })
-                .catch(({ message }) => expect(message).to.equal(`user with email ${otherUserData.email} already exists`))
+                .catch(({ message }) => expect(message).to.equal(`user with email ${userData2.email} already exists`))
         )
 
         it('should fail on no user id', () =>
@@ -386,34 +386,54 @@ describe('logic (settle-wise)', () => {
 
     //////////////////////////////////////////7
 
-    // describe('list groups by user id', () => {
-    //     it('should succeed on correct data', () => {
-    //         const user = new User(userData)
+    describe('list groups by user id', () => {
+        it('should succeed on correct data', () => {
+            return Promise.all([
+                new User(userData).save(),
+                new User(userData2).save()
+            ])
+                .then(users => {
+                    expect(users).to.exist
+                    expect(users.length).to.equal(2)
 
-    //         const groups = indexes.map(index => new Note({ text: `${noteText} ${index}` }))
+                    const [user1, user2] = users
 
-    //         user.notes = notes
+                    return Promise.all(indexes.map((index, i) => new Group({ name: `group ${index}`, users: [i < indexes.length / 2 ? user1._id : user2._id] }).save()))
+                        .then(groups => {
+                            expect(groups.length).to.equal(indexes.length)
 
-    //         return user.save()
-    //             .then(({ id: userId, notes }) => {
+                            const validGroupIds = []
 
-    //                 const validNoteIds = _.map(notes, 'id')
-    //                 const validNoteTexts = _.map(notes, 'text')
+                            groups.forEach((group, i) => {
+                                expect(group.users.length).to.equal(1)
 
-    //                 return logic.listNotes(userId)
-    //                     .then(notes => {
-    //                         expect(notes).to.exist
-    //                         expect(notes.length).to.equal(indexes.length)
+                                const { users: [user] } = group
 
-    //                         notes.forEach(({ id, text, _id }) => {
-    //                             expect(validNoteIds).to.include(id)
-    //                             expect(validNoteTexts).to.include(text)
-    //                             expect(_id).not.to.exist
-    //                         })
-    //                     })
-    //             })
-    //         })
-    //     })
+                                expect(user._id.toString()).to.equal((i < groups.length / 2 ? user1._id : user2._id).toString())
+
+                                if (i < groups.length / 2) validGroupIds.push(group._id.toString())
+                            })
+
+                            return logic.listGroupsByUser(user1._id.toString())
+                                .then(groups => {
+                                    expect(groups.length).to.equal(validGroupIds.length)
+
+                                    groups.forEach(group => {
+                                        expect(group._id).to.exist
+                                        expect(validGroupIds).to.include(group._id.toString())
+
+                                        expect(group.users).to.exist
+                                        expect(group.users.length).to.equal(1)
+
+                                        const userIds = group.users.map(userId => userId.toString())
+
+                                        expect(userIds).to.include(user1._id.toString())
+                                    })
+                                })
+                        })
+                })
+        })
+    })
 
     // describe('add a user on a group', () => {
     //     it('should succeed on correct data', () =>

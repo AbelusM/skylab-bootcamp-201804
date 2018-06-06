@@ -3,7 +3,7 @@
 require('dotenv').config()
 const { mongoose } = require('data')
 const express = require('express')
-const router = require('./src/routes/index')
+const router = require('./routes')
 const { env: { DB_URL } } = process
 
 mongoose.connect(DB_URL)
