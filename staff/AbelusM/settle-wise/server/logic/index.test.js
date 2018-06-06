@@ -384,8 +384,6 @@ describe('logic (settle-wise)', () => {
         )
     })
 
-    //////////////////////////////////////////7
-
     describe('list groups by user id', () => {
         it('should succeed on correct data', () => {
             return Promise.all([
@@ -433,7 +431,24 @@ describe('logic (settle-wise)', () => {
                         })
                 })
         })
+
+        it('should fail on non user id', () =>
+            logic.listGroupsByUser()
+                .catch(({ message }) => expect(message).to.equal('user id is not a string'))
+        )
+
+        it('should fail on empty user id', () =>
+            logic.listGroupsByUser('')
+                .catch(({ message }) => expect(message).to.equal('user id is empty or blank'))
+        )
+
+        it('should fail on blank user id', () =>
+            logic.listGroupsByUser('      ')
+                .catch(({ message }) => expect(message).to.equal('user id is empty or blank'))
+        )
+
     })
+
 
     // describe('add a user on a group', () => {
     //     it('should succeed on correct data', () =>
