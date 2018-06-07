@@ -1,6 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const logic = require('../../../logic')
+const logic = require('../../logic')
 const jwt = require('jsonwebtoken')
 const jwtValidation = require('./utils/jwt-validation')
 
@@ -102,7 +102,7 @@ router.post('/users/:userId/groups', [jwtValidator, jsonBodyParser], (req, res) 
 router.get('/users/:userId/groups', jwtValidator, (req, res) => {
     const { params: { userId } } = req;
 
-    logic.listGroups(userId)
+    logic.listGroupsByUser(userId)
         .then(groups => {
             res.json({ status: 'OK', data: groups })
         })
@@ -116,7 +116,7 @@ router.get('/users/:userId/groups', jwtValidator, (req, res) => {
 router.patch('/users/:userId/groups/:groupId', [jwtValidator, jsonBodyParser], (req, res) => {
     const { params: { userId, groupId }, body: { name, email } } = req
 
-    logic.addGroupUser(groupId, email)
+    logic.addUserToGroup(groupId, email)
         .then(users => {
             res.status(200)
             res.json({ status: 'OK', data: users })

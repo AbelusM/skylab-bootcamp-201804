@@ -14,6 +14,8 @@ mongoose.connect(DB_URL)
 
         app.use('/api', router)
 
+        app.use('cors')
+
         app.listen(port, () => console.log(`server running on port ${port}`))
 
         process.on('SIGINT', () => {

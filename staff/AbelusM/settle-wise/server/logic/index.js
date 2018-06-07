@@ -6,11 +6,14 @@ const { Types: { ObjectId } } = mongoose
 const logic = {
 
     /**
+     * Register user 
      * 
-     * @param {string} name
-     * @param {string} surname 
+     * @param {string} name name of the user
+     * @param {string} surname surname of the user
      * @param {string} email used as userName too
      * @param {string} password 
+     * 
+     * @throws {Error} if register email already exists
      * 
      * @returns {Promise<string>} the user ID
      */
@@ -45,12 +48,16 @@ const logic = {
     },
 
     /**
-        * 
-        * @param {string} email 
-        * @param {string} password 
-        * 
-        * @returns {Promise<string>}
-        */
+     * Authenticate user to retrieve user id and token
+     * 
+     * @param {string} email user email
+     * @param {string} password password of the user
+     * 
+     * @throws {Error} if the user does not exist
+     * 
+     * @returns {Promise<string>} the user id
+     * 
+     */
     authenticateUser(email, password) {
         return Promise.resolve()
             .then(() => {
@@ -72,10 +79,13 @@ const logic = {
     },
 
     /**
+    * Retrieves the user's information
     * 
-    * @param {string} id
+    * @param {string} id The user Id
     * 
-    * @returns {Promise<User>} 
+    * @throws {Error} If the user id is not found
+    * 
+    * @returns {Promise<User>} All the information of the user
     */
     retrieveUser(id) {
         return Promise.resolve()
@@ -94,16 +104,17 @@ const logic = {
     },
 
     /**
+     * Updates the user information, if email and password are not changed the originals will persist
      * 
-     * @param {string} id 
-     * @param {string} name 
-     * @param {string} surname 
-     * @param {string} email 
-     * @param {string} password 
-     * @param {string} newEmail 
-     * @param {string} newPassword 
+     * @param {string} id Necessary to look for the user
+     * @param {string} name optional - user name
+     * @param {string} surname optional - surname of the user
+     * @param {string} email optional - email of the user
+     * @param {string} password optional - password of the user
+     * @param {string} [newEmail] optional - change email
+     * @param {string} [newPassword] optional - change password
      * 
-     * @returns {Promise<boolean>}
+     * @returns {Promise<boolean>} True, if the changes are applied
      */
     updateUser(id, name, surname, email, password, newEmail, newPassword) {
         return Promise.resolve()
@@ -158,12 +169,13 @@ const logic = {
     },
 
     /**
+      * Delete a user from the server, using the id to identify and email and password as a credentials
       * 
-      * @param {string} id 
-      * @param {string} email 
-      * @param {string} password 
+      * @param {string} id user id
+      * @param {string} email user email
+      * @param {string} password password of the user
       * 
-      * @returns {Promise<boolean>}
+      * @returns {Promise<boolean>} True, if the changes are applied
       */
     unregisterUser(id, email, password) {
         return Promise.resolve()
@@ -193,6 +205,7 @@ const logic = {
     },
 
     /**
+     * Creates a group and includes the creator user as a admin 
      * 
      * @param {string} userId The userID that creates the group
      * @param {string} name Group name
@@ -220,7 +233,9 @@ const logic = {
      * 
     * @param {string} userId The user id
     * 
-    * @returns {Promise<[group]>}
+    * @throws {Error} If the user does not belong to any group
+    * 
+    * @returns {Promise<[group]>} The complete group information
     */
     listGroupsByUser(userId) {
         return Promise.resolve()
@@ -239,13 +254,16 @@ const logic = {
     },
 
     /**
+    * Add a existing User to the current Group
     * 
-    * @param {string} groupId
-    * @param {string} userId
+    * @param {string} groupId The Id of the Group
+    * @param {string} userId The including user Id 
     * 
-    * @returns {Promise<string>}
+    * @throws {Error} If the Group does not exist
+    * 
+    * @returns {Promise<string>} All the users inside the group
     */
-    addGroupUser(groupId, email) {
+    addUserToGroup(groupId, email) {
         return Promise.resolve()
             .then(() => {
                 if (typeof groupId !== 'string') throw Error('user id is not a string')
@@ -296,8 +314,6 @@ const logic = {
                     })
             })
     },
-
-
 
 }
 

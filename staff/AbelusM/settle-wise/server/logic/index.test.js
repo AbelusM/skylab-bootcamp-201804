@@ -450,32 +450,47 @@ describe('logic (settle-wise)', () => {
     })
 
 
-    // describe('add a user on a group', () => {
-    //     it('should succeed on correct data', () =>
-    //         Group.create(userData)
-    //             .then(({ id }) => {
-    //                 return logic.addGroupUser(groupId, userId)
-    //                     .then(groupId => {
+    describe('should add a user to a group', () => {
+        it('should succeed on correct data', () => {
+            return Promise.all([
+                new User(userData).save(),
+                new User(userData2).save()
+            ])
+                .then(users => {
+                    expect(users).to.exist
+                    expect(users.length).to.equal(2)
 
-    //                         expect(noteId).to.be.a('string')
-    //                         expect(noteId).to.exist
+                    const [user1, user2] = users
+                    console.log(user1._id.toString())
 
-    //                         return User.findById(id)
-    //                             .then(user => {
-    //                                 expect(user).to.exist
+                    return Promise.all([
+                        new Group('Cali', ObjectId(user1._id.toString()))
+                    ])
+                        .then(group => {
+                            expect(group.length).to.equal(1)
+                            console.log(user1._doc._id)
+                            console.log(user1._doc._id)
 
-    //                                 expect(user.notes).to.exist
-    //                                 expect(user.notes.length).to.equal(1)
+                            return logic.addUserToGroup(group[0].toString(), user2[0]._doc._id.toString())
+                                .then(groups => {
+                                    expect(groups.users.length).to.equal(2)
 
-    //                                 const [{ id, text }] = user.notes
+                                    // groups.forEach(group => {
+                                    //     expect(group._id).to.exist
+                                    //     expect(validGroupIds).to.include(group._id.toString())
 
-    //                                 expect(id).to.equal(noteId)
-    //                                 expect(text).to.equal(noteText)
-    //                             })
-    //                     })
-    //             })
-    //     )
-    // })
+                                    //     expect(group.users).to.exist
+                                    //     expect(group.users.length).to.equal(1)
+
+                                    //     const userIds = group.users.map(userId => userId.toString())
+
+                                    //     expect(userIds).to.include(user1._id.toString())
+                                    // })
+                                })
+                        })
+                })
+        })
+    })
 
     // describe('add a spend', () => {
     //     it('should succeed on correct data', () =>
