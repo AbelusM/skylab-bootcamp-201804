@@ -4,7 +4,7 @@ require('dotenv').config()
 const axios = require('axios')  
 const api = {
 
-    url: 'http://localhost:5000/api',
+    url: 'NO-URL',
 
     token: 'NO-TOKEN',
 

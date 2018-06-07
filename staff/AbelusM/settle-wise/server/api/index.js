@@ -3,6 +3,7 @@
 require('dotenv').config()
 const { mongoose } = require('data')
 const express = require('express')
+const cors = require('cors')
 const router = require('./routes')
 const { env: { DB_URL } } = process
 
@@ -12,9 +13,9 @@ mongoose.connect(DB_URL)
 
         const app = express()
 
-        app.use('/api', router)
+        app.use(cors())
 
-        app.use('cors')
+        app.use('/api', router)
 
         app.listen(port, () => console.log(`server running on port ${port}`))
 

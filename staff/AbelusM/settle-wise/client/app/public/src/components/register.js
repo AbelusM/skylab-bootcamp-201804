@@ -27,7 +27,7 @@ class Register extends Component {
 
         this.setState({ name: '', surname:'', email:'', password: '' })
 
-        logic.register(name, surname, email, password)
+        logic.registerUser(name, surname, email, password)
             .then(() => this.props.onRegister())
             .catch(({ message }) => this.props.onRegisterError(message))
     }
