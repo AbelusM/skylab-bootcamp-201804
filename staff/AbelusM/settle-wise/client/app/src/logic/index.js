@@ -18,14 +18,18 @@ const logic = {
             })
     },
 
-    createGroup(userId, name) {
-        return api.createGroup(userId, name)
+    createGroup(name) {
+        return api.createGroup(this.userId, name)
             .then(() => true)
     },
 
-    listGroupsByUser(userId){
-        return api.listGroupsByUser(userId) 
+    listGroups(){
+        return api.listGroupsByUser(this.userId) 
             .then(data => data)
+    },
+
+    get loggedIn() {
+        return this.userId !== 'NO-ID' && this.userId !== null && this.userId !== undefined
     }
 
 }

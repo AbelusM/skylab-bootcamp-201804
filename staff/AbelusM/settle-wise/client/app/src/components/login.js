@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import logic from '../logic'
+import api from 'api'
 import '../styles/assets/css/main.css'
 import '../styles/assets/css/login.css'
 
@@ -19,7 +20,14 @@ class Login extends Component {
         e.preventDefault()
 
         logic.loginUser(this.state.email, this.state.password)
-            .then(() => this.props.onLogin())
+            .then(res => {
+                if (res) {
+                    sessionStorage.setItem('userId', logic.userId)
+                    sessionStorage.setItem('token', api.token)
+                    
+                    this.props.onLogin()
+                }
+            })
             .catch(({ message }) => this.props.onLoginError(message))
     }
 

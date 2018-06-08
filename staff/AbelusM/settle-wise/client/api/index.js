@@ -277,6 +277,7 @@ const api = {
 
                 if (!(userId = userId.trim()).length) throw Error('user id is empty or blank')
 
+                // TODO use axios here!
                 return Group.find({ users: userId })
                     .then(groups => {
                         if (!groups) throw Error(`no user found with id ${userId}`)
