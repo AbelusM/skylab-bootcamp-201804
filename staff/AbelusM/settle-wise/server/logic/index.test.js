@@ -461,31 +461,23 @@ describe('logic (settle-wise)', () => {
                     expect(users.length).to.equal(2)
 
                     const [user1, user2] = users
-                    console.log(user1._id.toString())
 
                     return Promise.all([
-                        new Group('Cali', ObjectId(user1._id.toString()))
+                        new Group({ name: 'Cali', users: [user1._id] }).save()
                     ])
-                        .then(group => {
-                            expect(group.length).to.equal(1)
-                            console.log(user1._doc._id)
-                            console.log(user1._doc._id)
+                        .then(groups => {
+                            expect(groups.length).to.equal(1)
 
-                            return logic.addUserToGroup(group[0].toString(), user2[0]._doc._id.toString())
-                                .then(groups => {
-                                    expect(groups.users.length).to.equal(2)
+                            const [group] = groups
 
-                                    // groups.forEach(group => {
-                                    //     expect(group._id).to.exist
-                                    //     expect(validGroupIds).to.include(group._id.toString())
+                            return logic.addUserToGroup(group.id, user2.email)
+                                .then(res => {
+                                    expect(res).to.be.true
 
-                                    //     expect(group.users).to.exist
-                                    //     expect(group.users.length).to.equal(1)
-
-                                    //     const userIds = group.users.map(userId => userId.toString())
-
-                                    //     expect(userIds).to.include(user1._id.toString())
-                                    // })
+                                    return Group.find()
+                                        .then(groups => {
+                                            // TODO check group corresponds to the one saved before with correct user id
+                                        })
                                 })
                         })
                 })

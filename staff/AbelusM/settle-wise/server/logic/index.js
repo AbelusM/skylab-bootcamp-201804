@@ -274,14 +274,14 @@ const logic = {
 
                 if (!(email = email.trim()).length) throw Error('user email is empty or blank')
 
-                return User.find({ email })
+                return User.findOne({ email })
                     .then(user => {
-                        const _userId = user[0]._id
-                        return Group.findByIdAndUpdate(groupId, { $push: { users: _userId } }, { new: true })
+                        debugger
+                        return Group.findByIdAndUpdate(groupId, { $push: { users: user._id } })
                             .then(group => {
                                 if (!group) throw Error(`no group found with id ${groupId}`)
 
-                                return group.users
+                                return true
                             })
                     })
 
