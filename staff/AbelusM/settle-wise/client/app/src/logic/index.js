@@ -1,5 +1,3 @@
-'use strict'
-
 const api = require('api')
 
 api.url = 'http://localhost:5000/api'
@@ -18,7 +16,18 @@ const logic = {
 
                 return true
             })
+    },
+
+    createGroup(userId, name) {
+        return api.createGroup(userId, name)
+            .then(() => true)
+    },
+
+    listGroupsByUser(userId){
+        return api.listGroupsByUser(userId) 
+            .then(data => data)
     }
+
 }
 
 module.exports = logic

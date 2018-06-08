@@ -6,9 +6,11 @@
     "ajv": "^6.5.0",
     "api": "file:../api",
     "chai": "^4.1.2",
+    "data": "../../server/data",
     "hash-router": "^0.4.0",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
+    "react-render-image": "^1.1.2",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.4"

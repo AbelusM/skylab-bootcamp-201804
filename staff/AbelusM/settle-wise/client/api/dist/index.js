@@ -1,5 +1,3 @@
-'use strict';
-
 require('dotenv').config();
 var axios = require('axios');
 var api = {
