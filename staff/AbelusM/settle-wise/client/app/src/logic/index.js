@@ -31,7 +31,7 @@ const logic = {
     },
 
     get loggedIn() {
-        return this.userId !== 'NO-ID' && this.userId !== null && this.userId !== undefined
+        if (this.userId !== 'NO-ID' && this.userId !== null && this.userId !== undefined) return true
     },
 
     /**
@@ -43,7 +43,7 @@ const logic = {
  * @returns {boolean} - Confirms log-out 
  */
     logout() {
-        this.storage.clear()
+        sessionStorage.clear()
 
         return true
     }

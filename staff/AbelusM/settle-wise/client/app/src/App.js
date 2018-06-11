@@ -54,7 +54,7 @@ class App extends Component {
           }} />
         }
         <Route exact path="/login" render={() => !logic.loggedIn && <Login onLogin={this.onLogin} onLoginError={this.onLoginError} />} />
-        {logic.loggedIn && <Route path="/home" render={() => <Home onLogout={this.onLogout} />} />}
+        {logic.loggedIn && <Route exact path="/home" render={() => <Home onLogout={this.onLogout} />} />}
         <Footer />
       </div>
     );
