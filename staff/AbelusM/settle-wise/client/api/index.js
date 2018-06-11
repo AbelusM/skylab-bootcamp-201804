@@ -272,15 +272,16 @@ const api = {
     listGroupsByUser(userId) {
         return Promise.resolve()
             .then(() => {
+
                 if (typeof userId !== 'string') throw Error('user id is not a string')
 
                 if (!(userId = userId.trim()).length) throw Error('user id is empty or blank')
 
-                return axios.get(`${this.url}/users/${userId}/groups`, { id })
+                return axios.get(`${this.url}/users/${userId}/groups`, { headers: { authorization: `Bearer ${this.token}` } })
                     .then(({ status, data }) => {
-                        if (status !== 201 || data.status !== 'OK') throw Error(`unexpected response status ${status} (${data.status})`)
+                        if (status !== 200 || data.status !== 'OK') throw Error(`unexpected response status ${status} (${data.status})`)
 
-                        return true
+                        return data.data
                     })
                     .catch(err => {
                         if (err.code === 'ECONNREFUSED') throw Error('could not reach server')

@@ -25,7 +25,9 @@ const logic = {
 
     listGroups() {
         return api.listGroupsByUser(this.userId)
-            .then(data => data)
+            .then(groups => {
+                console.log(groups)
+                return groups})
     },
 
     get loggedIn() {

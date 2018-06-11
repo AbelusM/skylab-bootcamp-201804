@@ -12,7 +12,7 @@ class App extends Component {
   state = { registered: false }
 
   componentDidMount() {
-    // if (logic.loggedIn) this.props.history.push('/home')
+    if (logic.loggedIn) this.props.history.push('/home')
   }
 
   onRegister = () => {
@@ -46,14 +46,14 @@ class App extends Component {
         <Header />
         <Route exact path="/" render={() => <Landing />} />
         {
-          <Route path="/register" render={() => {
+          <Route exact path="/register" render={() => {
             return this.state.registered ?
               <Link to="/login"><Login /></Link>
               :
               <Register onRegister={this.onRegister} onRegisterError={this.onRegisterError} />
           }} />
         }
-        <Route path="/login" render={() => !logic.loggedIn && <Login onLogin={this.onLogin} onLoginError={this.onLoginError} />} />
+        <Route exact path="/login" render={() => !logic.loggedIn && <Login onLogin={this.onLogin} onLoginError={this.onLoginError} />} />
         {logic.loggedIn && <Route path="/home" render={() => <Home onLogout={this.onLogout} />} />}
         <Footer />
       </div>

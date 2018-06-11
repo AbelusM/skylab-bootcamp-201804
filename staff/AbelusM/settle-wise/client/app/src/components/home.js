@@ -10,20 +10,18 @@ class Home extends Component {
 		groupName: ''
 	}
 
-	createGroup = () => {
-		let name = this.state.groupName
+	componentDidMount() {
+		logic.listGroups()
+			.then((groups) => this.setState({ groups }))
 
-		logic.createGroup(name)
-			.then(() => {
-				this.listGroups()
-			})
-			.then(() => console.log('created group'))
-			.then(()=> this.setState.groupName = '')
 	}
 
-	listGroups = () => {
-		logic.listGroups()
-			.then(groups => this.setState({ groups }))
+	createGroup = () => {
+		const name = this.state.groupName
+
+		logic.createGroup(name)
+			.then(() => console.log('created group'))
+			.then(() => this.setState.groupName = '')
 	}
 
 	catchGroupName = e => {
@@ -39,26 +37,17 @@ class Home extends Component {
 
 	render() {
 		return <main id="banner">
-			<h1>Home</h1>
 			<section id="main" className="wrapper">
 				<div className="inner">
 					<header className="align-center">
 						<h1>Groups Page</h1>
-						<p>These are your Groups</p>
+						<h2>These are your Groups</h2>
 					</header>
 					<form>
-						<input type="text" onChange={this.catchGroupName} placeholder="group name" />
+						<input className="inner flex flex-3" type="text" onChange={this.catchGroupName} placeholder="group name" />
 						<button value={this.groupName} onClick={this.createGroup}>Create Group</button>
 					</form>
 					<GroupsList groups={this.state.groups} />
-					{/* <button onClick={this.listGroups()}>List your Groups</button>
-					<div className="image fit">
-						<img src={surfgroup} alt="" />
-					</div>
-					<div className="image fit">
-						<input type="text" name="groupname" />
-						<button onClick={this.createGroup}>Create Group</button> 
-					</div>*/}
 				</div>
 			</section>
 			<button onClick={() => {
