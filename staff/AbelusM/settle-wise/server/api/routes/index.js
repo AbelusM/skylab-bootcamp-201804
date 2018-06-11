@@ -104,7 +104,7 @@ router.get('/users/:userId/groups', jwtValidator, (req, res) => {
 
     logic.listGroupsByUser(userId)
         .then(groups => {
-            res.status(201)
+            res.status(200)
             res.json({ status: 'OK', data: groups })
         })
         .catch(({ message }) => {
