@@ -1,7 +1,7 @@
 'use strict'
 
 require('dotenv').config()
-const axios = require('axios')  
+const axios = require('axios')
 const api = {
 
     url: 'NO-URL',
@@ -242,11 +242,10 @@ const api = {
 
                 if (!(name = name.trim()).length) throw Error('group name is empty or blank')
 
-                return axios.post(`${this.url}/users/${userId}/groups`, { name })
+                return axios.post(`${this.url}/users/${userId}/groups`, { name }, { headers: { authorization: `Bearer ${this.token}` } })
                     .then(({ status, data }) => {
                         if (status !== 201 || data.status !== 'OK') throw Error(`unexpected response status ${status} (${data.status})`)
-
-                        return true
+                        return data.data.id
                     })
                     .catch(err => {
                         if (err.code === 'ECONNREFUSED') throw Error('could not reach server')
@@ -277,12 +276,20 @@ const api = {
 
                 if (!(userId = userId.trim()).length) throw Error('user id is empty or blank')
 
-                // TODO use axios here!
-                return Group.find({ users: userId })
-                    .then(groups => {
-                        if (!groups) throw Error(`no user found with id ${userId}`)
+                return axios.get(`${this.url}/users/${userId}/groups`, { id })
+                    .then(({ status, data }) => {
+                        if (status !== 201 || data.status !== 'OK') throw Error(`unexpected response status ${status} (${data.status})`)
 
-                        return groups
+                        return true
+                    })
+                    .catch(err => {
+                        if (err.code === 'ECONNREFUSED') throw Error('could not reach server')
+
+                        if (err.response) {
+                            const { response: { data: { error: message } } } = err
+
+                            throw Error(message)
+                        } else throw err
                     })
             })
     },
@@ -290,38 +297,35 @@ const api = {
     /**
     * Add a existing User to the current Group
     * 
-    * @param {string} groupId The Id of the Group
     * @param {string} userId The including user Id 
+    * @param {string} groupId The Id of the Group
     * 
     * @throws {Error} If the Group does not exist
     * 
     * @returns {Promise<string>} All the users inside the group
     */
-    addUserToGroup(groupId, email) {
+    addUserToGroup(userId, groupId, email) {
         return Promise.resolve()
             .then(() => {
-                if (typeof groupId !== 'string') throw Error('user id is not a string')
+                if (typeof userId !== 'string') throw Error('user id is not a string')
 
-                if (!(groupId = groupId.trim()).length) throw Error('user id is empty or blank')
+                if (!(userId = userId.trim()).length) throw Error('user id is empty or blank')
+                
+                if (typeof groupId !== 'string') throw Error('group id is not a string')
+
+                if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
 
                 if (typeof email !== 'string') throw Error('user email is not a string')
 
                 if (!(email = email.trim()).length) throw Error('user email is empty or blank')
 
-                return User.find({ email })
-                    .then(user => {
-                        const _userId = user[0]._id
-                        return Group.findByIdAndUpdate(groupId, { $push: { users: _userId } }, { new: true })
-                            .then(group => {
-                                if (!group) throw Error(`no group found with id ${groupId}`)
-
-                                return group.users
-                            })
+                return axios.patch(`${this.url}/users/${userId}/groups/${groupId}`, { email }, { headers: { authorization: `Bearer ${this.token}` } })
+                    .then(({ status, data }) => {
+                        if (status !== 200 || data.status !== 'OK') throw Error(`unexpected response status ${status} (${data.status})`)
+                        return true
                     })
-
             })
     }
-
 }
 
 module.exports = api

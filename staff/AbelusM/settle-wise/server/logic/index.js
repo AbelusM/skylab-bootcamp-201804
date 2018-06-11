@@ -257,7 +257,7 @@ const logic = {
     * Add a existing User to the current Group
     * 
     * @param {string} groupId The Id of the Group
-    * @param {string} userId The including user Id 
+    * @param {string} email The including user email 
     * 
     * @throws {Error} If the Group does not exist
     * 
@@ -266,9 +266,9 @@ const logic = {
     addUserToGroup(groupId, email) {
         return Promise.resolve()
             .then(() => {
-                if (typeof groupId !== 'string') throw Error('user id is not a string')
+                if (typeof groupId !== 'string') throw Error('group id is not a string')
 
-                if (!(groupId = groupId.trim()).length) throw Error('user id is empty or blank')
+                if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
 
                 if (typeof email !== 'string') throw Error('user email is not a string')
 
@@ -276,7 +276,6 @@ const logic = {
 
                 return User.findOne({ email })
                     .then(user => {
-                        debugger
                         return Group.findByIdAndUpdate(groupId, { $push: { users: user._id } })
                             .then(group => {
                                 if (!group) throw Error(`no group found with id ${groupId}`)

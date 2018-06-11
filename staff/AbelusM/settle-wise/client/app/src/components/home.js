@@ -6,19 +6,35 @@ import GroupsList from './GroupsList'
 
 class Home extends Component {
 	state = {
-		groups: []
+		groups: [],
+		groupName: ''
 	}
 
-	// createGroup = () => {
-	// 	logic.createGroup(name)
-	// 		.then(() => {
-	// 			this.listGroups()
-	// 		})
-	// }
+	createGroup = () => {
+		let name = this.state.groupName
+
+		logic.createGroup(name)
+			.then(() => {
+				this.listGroups()
+			})
+			.then(() => console.log('created group'))
+			.then(()=> this.setState.groupName = '')
+	}
 
 	listGroups = () => {
 		logic.listGroups()
 			.then(groups => this.setState({ groups }))
+	}
+
+	catchGroupName = e => {
+		this.setState({
+			groupName: e.target.value
+		})
+	}
+
+	submit = (e) => {
+		e.preventDefault()
+		// this.props.history.push(`/groups`)
 	}
 
 	render() {
@@ -28,20 +44,21 @@ class Home extends Component {
 				<div className="inner">
 					<header className="align-center">
 						<h1>Groups Page</h1>
-						<p>Lorem ipsum dolor sit amet nullam id egestas urna aliquam</p>
+						<p>These are your Groups</p>
 					</header>
-					<button onClick={this.listGroups()}>List your Groups</button>
+					<form>
+						<input type="text" onChange={this.catchGroupName} placeholder="group name" />
+						<button value={this.groupName} onClick={this.createGroup}>Create Group</button>
+					</form>
 					<GroupsList groups={this.state.groups} />
-						<div className="image fit">
+					{/* <button onClick={this.listGroups()}>List your Groups</button>
+					<div className="image fit">
 						<img src={surfgroup} alt="" />
 					</div>
 					<div className="image fit">
 						<input type="text" name="groupname" />
-						<button onClick={this.createGroup}>Create Group</button>
-					</div>
-					<p>Nunc lacinia ante nunc ac lobortis. Interdum adipiscing gravida odio porttitor sem non mi integer non faucibus ornare mi ut ante amet placerat aliquet. Volutpat eu sed ante lacinia sapien lorem accumsan varius montes viverra nibh in adipiscing blandit tempus accumsan.</p>
-					<p> Aenean iaculis, neque sed pretium egestas, nunc lacus tempus enim, nec tincidunt urna massa a libero. Aenean mattis bibendum est, a pharetra elit. Morbi commodo lectus quis blandit mattis. Cras pharetra quam quis tincidunt tempus. Donec a sem magna. Nullam purus purus, fermentum id lorem sit amet, porta elementum neque. Proin vulputate metus ac faucibus luctus.</p>
-					<p>Ut congue purus sed elit consectetur tempus. Duis convallis, quam quis pellentesque vestibulum, tellus arcu hendrerit ante, sed dictum felis nisl vitae magna. Integer et sapien a erat molestie tempor. Cras est odio, suscipit id porttitor id, mollis et ligula. Curabitur molestie mi molestie accumsan faucibus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Integer porta malesuada pellentesque. Morbi imperdiet dictum velit, eu volutpat sem posuere non. Fusce ullamcorper gravida velit, sed sollicitudin libero iaculis id. Ut eu neque non odio fringilla faucibus nec quis neque. Quisque et nisi fermentum, tincidunt libero a, condimentum ligula. Quisque ultrices blandit lacinia. Nulla velit lorem, placerat nec eros ut, fermentum pharetra dolor. Maecenas arcu ipsum, mattis et suscipit sed, convallis nec lectus. Nulla facilisi. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; </p>
+						<button onClick={this.createGroup}>Create Group</button> 
+					</div>*/}
 				</div>
 			</section>
 			<button onClick={() => {

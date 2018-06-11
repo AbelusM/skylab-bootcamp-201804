@@ -1,8 +1,8 @@
-'use strict';
+'use strict'
 
-require('dotenv').config();
-var axios = require('axios');
-var api = {
+require('dotenv').config()
+const axios = require('axios')
+const api = {
 
     url: 'NO-URL',
 
@@ -17,46 +17,42 @@ var api = {
      * 
      * @returns {Promise<boolean>}
      */
-    registerUser: function registerUser(name, surname, email, password) {
-        var _this = this;
+    registerUser(name, surname, email, password) {
+        return Promise.resolve()
+            .then(() => {
+                if (typeof name !== 'string') throw Error('user name is not a string')
 
-        return Promise.resolve().then(function () {
-            if (typeof name !== 'string') throw Error('user name is not a string');
+                if (!(name = name.trim()).length) throw Error('user name is empty or blank')
 
-            if (!(name = name.trim()).length) throw Error('user name is empty or blank');
+                if (typeof surname !== 'string') throw Error('user surname is not a string')
 
-            if (typeof surname !== 'string') throw Error('user surname is not a string');
+                if ((surname = surname.trim()).length === 0) throw Error('user surname is empty or blank')
 
-            if ((surname = surname.trim()).length === 0) throw Error('user surname is empty or blank');
+                if (typeof email !== 'string') throw Error('user email is not a string')
 
-            if (typeof email !== 'string') throw Error('user email is not a string');
+                if (!(email = email.trim()).length) throw Error('user email is empty or blank')
 
-            if (!(email = email.trim()).length) throw Error('user email is empty or blank');
+                if (typeof password !== 'string') throw Error('user password is not a string')
 
-            if (typeof password !== 'string') throw Error('user password is not a string');
+                if ((password = password.trim()).length === 0) throw Error('user password is empty or blank')
 
-            if ((password = password.trim()).length === 0) throw Error('user password is empty or blank');
+                return axios.post(`${this.url}/users`, { name, surname, email, password })
+                    .then(({ status, data }) => {
+                        if (status !== 201 || data.status !== 'OK') throw Error(`unexpected response status ${status} (${data.status})`)
 
-            return axios.post(_this.url + '/users', { name: name, surname: surname, email: email, password: password }).then(function (_ref) {
-                var status = _ref.status,
-                    data = _ref.data;
+                        return true
+                    })
+                    .catch(err => {
+                        if (err.code === 'ECONNREFUSED') throw Error('could not reach server')
 
-                if (status !== 201 || data.status !== 'OK') throw Error('unexpected response status ' + status + ' (' + data.status + ')');
+                        if (err.response) {
+                            const { response: { data: { error: message } } } = err
 
-                return true;
-            }).catch(function (err) {
-                if (err.code === 'ECONNREFUSED') throw Error('could not reach server');
-
-                if (err.response) {
-                    var message = err.response.data.error;
-
-
-                    throw Error(message);
-                } else throw err;
-            });
-        });
+                            throw Error(message)
+                        } else throw err
+                    })
+            })
     },
-
 
     /**
      * 
@@ -65,45 +61,38 @@ var api = {
      * 
      * @returns {Promise<string>}
      */
-    authenticateUser: function authenticateUser(email, password) {
-        var _this2 = this;
+    authenticateUser(email, password) {
+        return Promise.resolve()
+            .then(() => {
+                if (typeof email !== 'string') throw Error('user email is not a string')
 
-        return Promise.resolve().then(function () {
-            if (typeof email !== 'string') throw Error('user email is not a string');
+                if (!(email = email.trim()).length) throw Error('user email is empty or blank')
 
-            if (!(email = email.trim()).length) throw Error('user email is empty or blank');
+                if (typeof password !== 'string') throw Error('user password is not a string')
 
-            if (typeof password !== 'string') throw Error('user password is not a string');
+                if ((password = password.trim()).length === 0) throw Error('user password is empty or blank')
 
-            if ((password = password.trim()).length === 0) throw Error('user password is empty or blank');
+                return axios.post(`${this.url}/auth`, { email, password })
+                    .then(({ status, data }) => {
+                        if (status !== 200 || data.status !== 'OK') throw Error(`unexpected response status ${status} (${data.status})`)
 
-            return axios.post(_this2.url + '/auth', { email: email, password: password }).then(function (_ref2) {
-                var status = _ref2.status,
-                    data = _ref2.data;
+                        const { data: { id, token } } = data
 
-                if (status !== 200 || data.status !== 'OK') throw Error('unexpected response status ' + status + ' (' + data.status + ')');
+                        this.token = token
 
-                var _data$data = data.data,
-                    id = _data$data.id,
-                    token = _data$data.token;
+                        return id
+                    })
+                    .catch(err => {
+                        if (err.code === 'ECONNREFUSED') throw Error('could not reach server')
 
+                        if (err.response) {
+                            const { response: { data: { error: message } } } = err
 
-                _this2.token = token;
-
-                return id;
-            }).catch(function (err) {
-                if (err.code === 'ECONNREFUSED') throw Error('could not reach server');
-
-                if (err.response) {
-                    var message = err.response.data.error;
-
-
-                    throw Error(message);
-                } else throw err;
-            });
-        });
+                            throw Error(message)
+                        } else throw err
+                    })
+            })
     },
-
 
     /**
      * 
@@ -111,34 +100,30 @@ var api = {
      * 
      * @returns {Promise<User>} 
      */
-    retrieveUser: function retrieveUser(id) {
-        var _this3 = this;
+    retrieveUser(id) {
+        return Promise.resolve()
+            .then(() => {
+                if (typeof id !== 'string') throw Error('user id is not a string')
 
-        return Promise.resolve().then(function () {
-            if (typeof id !== 'string') throw Error('user id is not a string');
+                if (!(id = id.trim()).length) throw Error('user id is empty or blank')
 
-            if (!(id = id.trim()).length) throw Error('user id is empty or blank');
+                return axios.get(`${this.url}/users/${id}`, { headers: { authorization: `Bearer ${this.token}` } })
+                    .then(({ status, data }) => {
+                        if (status !== 200 || data.status !== 'OK') throw Error(`unexpected response status ${status} (${data.status})`)
 
-            return axios.get(_this3.url + '/users/' + id, { headers: { authorization: 'Bearer ' + _this3.token } }).then(function (_ref3) {
-                var status = _ref3.status,
-                    data = _ref3.data;
+                        return data.data
+                    })
+                    .catch(err => {
+                        if (err.code === 'ECONNREFUSED') throw Error('could not reach server')
 
-                if (status !== 200 || data.status !== 'OK') throw Error('unexpected response status ' + status + ' (' + data.status + ')');
+                        if (err.response) {
+                            const { response: { data: { error: message } } } = err
 
-                return data.data;
-            }).catch(function (err) {
-                if (err.code === 'ECONNREFUSED') throw Error('could not reach server');
-
-                if (err.response) {
-                    var message = err.response.data.error;
-
-
-                    throw Error(message);
-                } else throw err;
-            });
-        });
+                            throw Error(message)
+                        } else throw err
+                    })
+            })
     },
-
 
     /**
      * 
@@ -152,50 +137,46 @@ var api = {
      * 
      * @returns {Promise<boolean>}
      */
-    updateUser: function updateUser(id, name, surname, email, password, newEmail, newPassword) {
-        var _this4 = this;
+    updateUser(id, name, surname, email, password, newEmail, newPassword) {
+        return Promise.resolve()
+            .then(() => {
+                if (typeof id !== 'string') throw Error('user id is not a string')
 
-        return Promise.resolve().then(function () {
-            if (typeof id !== 'string') throw Error('user id is not a string');
+                if (!(id = id.trim()).length) throw Error('user id is empty or blank')
 
-            if (!(id = id.trim()).length) throw Error('user id is empty or blank');
+                if (typeof name !== 'string') throw Error('user name is not a string')
 
-            if (typeof name !== 'string') throw Error('user name is not a string');
+                if (!(name = name.trim()).length) throw Error('user name is empty or blank')
 
-            if (!(name = name.trim()).length) throw Error('user name is empty or blank');
+                if (typeof surname !== 'string') throw Error('user surname is not a string')
 
-            if (typeof surname !== 'string') throw Error('user surname is not a string');
+                if ((surname = surname.trim()).length === 0) throw Error('user surname is empty or blank')
 
-            if ((surname = surname.trim()).length === 0) throw Error('user surname is empty or blank');
+                if (typeof email !== 'string') throw Error('user email is not a string')
 
-            if (typeof email !== 'string') throw Error('user email is not a string');
+                if (!(email = email.trim()).length) throw Error('user email is empty or blank')
 
-            if (!(email = email.trim()).length) throw Error('user email is empty or blank');
+                if (typeof password !== 'string') throw Error('user password is not a string')
 
-            if (typeof password !== 'string') throw Error('user password is not a string');
+                if ((password = password.trim()).length === 0) throw Error('user password is empty or blank')
 
-            if ((password = password.trim()).length === 0) throw Error('user password is empty or blank');
+                return axios.patch(`${this.url}/users/${id}`, { name, surname, email, password, newEmail, newPassword }, { headers: { authorization: `Bearer ${this.token}` } })
+                    .then(({ status, data }) => {
+                        if (status !== 200 || data.status !== 'OK') throw Error(`unexpected response status ${status} (${data.status})`)
 
-            return axios.patch(_this4.url + '/users/' + id, { name: name, surname: surname, email: email, password: password, newEmail: newEmail, newPassword: newPassword }, { headers: { authorization: 'Bearer ' + _this4.token } }).then(function (_ref4) {
-                var status = _ref4.status,
-                    data = _ref4.data;
+                        return true
+                    })
+                    .catch(err => {
+                        if (err.code === 'ECONNREFUSED') throw Error('could not reach server')
 
-                if (status !== 200 || data.status !== 'OK') throw Error('unexpected response status ' + status + ' (' + data.status + ')');
+                        if (err.response) {
+                            const { response: { data: { error: message } } } = err
 
-                return true;
-            }).catch(function (err) {
-                if (err.code === 'ECONNREFUSED') throw Error('could not reach server');
-
-                if (err.response) {
-                    var message = err.response.data.error;
-
-
-                    throw Error(message);
-                } else throw err;
-            });
-        });
+                            throw Error(message)
+                        } else throw err
+                    })
+            })
     },
-
 
     /**
      * 
@@ -205,40 +186,37 @@ var api = {
      * 
      * @returns {Promise<boolean>}
      */
-    unregisterUser: function unregisterUser(id, email, password) {
-        var _this5 = this;
+    unregisterUser(id, email, password) {
+        return Promise.resolve()
+            .then(() => {
+                if (typeof id !== 'string') throw Error('user id is not a string')
 
-        return Promise.resolve().then(function () {
-            if (typeof id !== 'string') throw Error('user id is not a string');
+                if (!(id = id.trim()).length) throw Error('user id is empty or blank')
 
-            if (!(id = id.trim()).length) throw Error('user id is empty or blank');
+                if (typeof email !== 'string') throw Error('user email is not a string')
 
-            if (typeof email !== 'string') throw Error('user email is not a string');
+                if (!(email = email.trim()).length) throw Error('user email is empty or blank')
 
-            if (!(email = email.trim()).length) throw Error('user email is empty or blank');
+                if (typeof password !== 'string') throw Error('user password is not a string')
 
-            if (typeof password !== 'string') throw Error('user password is not a string');
+                if ((password = password.trim()).length === 0) throw Error('user password is empty or blank')
 
-            if ((password = password.trim()).length === 0) throw Error('user password is empty or blank');
+                return axios.delete(`${this.url}/users/${id}`, { headers: { authorization: `Bearer ${this.token}` }, data: { email, password } })
+                    .then(({ status, data }) => {
+                        if (status !== 200 || data.status !== 'OK') throw Error(`unexpected response status ${status} (${data.status})`)
 
-            return axios.delete(_this5.url + '/users/' + id, { headers: { authorization: 'Bearer ' + _this5.token }, data: { email: email, password: password } }).then(function (_ref5) {
-                var status = _ref5.status,
-                    data = _ref5.data;
+                        return true
+                    })
+                    .catch(err => {
+                        if (err.code === 'ECONNREFUSED') throw Error('could not reach server')
 
-                if (status !== 200 || data.status !== 'OK') throw Error('unexpected response status ' + status + ' (' + data.status + ')');
+                        if (err.response) {
+                            const { response: { data: { error: message } } } = err
 
-                return true;
-            }).catch(function (err) {
-                if (err.code === 'ECONNREFUSED') throw Error('could not reach server');
-
-                if (err.response) {
-                    var message = err.response.data.error;
-
-
-                    throw Error(message);
-                } else throw err;
-            });
-        });
+                            throw Error(message)
+                        } else throw err
+                    })
+            })
     },
 
 
@@ -253,93 +231,101 @@ var api = {
      * 
      * @returns {Promise<string>} group ID
      */
-    createGroup: function createGroup(userId, name) {
-        var _this6 = this;
+    createGroup(userId, name) {
+        return Promise.resolve()
+            .then(() => {
+                if (typeof userId !== 'string') throw Error('user id is not a string')
 
-        return Promise.resolve().then(function () {
-            if (typeof userId !== 'string') throw Error('user id is not a string');
+                if (!(userId = userId.trim()).length) throw Error('user id is empty or blank')
 
-            if (!(userId = userId.trim()).length) throw Error('user id is empty or blank');
+                if (typeof name !== 'string') throw Error('group name is not a string')
 
-            if (typeof name !== 'string') throw Error('group name is not a string');
+                if (!(name = name.trim()).length) throw Error('group name is empty or blank')
 
-            if (!(name = name.trim()).length) throw Error('group name is empty or blank');
+                return axios.post(`${this.url}/users/${userId}/groups`, { name }, { headers: { authorization: `Bearer ${this.token}` } })
+                    .then(({ status, data }) => {
+                        if (status !== 201 || data.status !== 'OK') throw Error(`unexpected response status ${status} (${data.status})`)
+                        return data.data.id
+                    })
+                    .catch(err => {
+                        if (err.code === 'ECONNREFUSED') throw Error('could not reach server')
 
-            return axios.post(_this6.url + '/users/' + userId + '/groups', { name: name }).then(function (_ref6) {
-                var status = _ref6.status,
-                    data = _ref6.data;
+                        if (err.response) {
+                            const { response: { data: { error: message } } } = err
 
-                if (status !== 201 || data.status !== 'OK') throw Error('unexpected response status ' + status + ' (' + data.status + ')');
+                            throw Error(message)
+                        } else throw err
+                    })
 
-                return true;
-            }).catch(function (err) {
-                if (err.code === 'ECONNREFUSED') throw Error('could not reach server');
-
-                if (err.response) {
-                    var message = err.response.data.error;
-
-
-                    throw Error(message);
-                } else throw err;
-            });
-        });
+            })
     },
-
 
     /**
     * List groups by user
     * 
-    * @param {string} userId The user id
-    * 
-    * @throws {Error} If the user does not belong to any group
-    * 
-    * @returns {Promise<[group]>} The complete group information
-    */
-    listGroupsByUser: function listGroupsByUser(userId) {
-        return Promise.resolve().then(function () {
-            if (typeof userId !== 'string') throw Error('user id is not a string');
+   * @param {string} userId The user id
+   * 
+   * @throws {Error} If the user does not belong to any group
+   * 
+   * @returns {Promise<[group]>} The complete group information
+   */
+    listGroupsByUser(userId) {
+        return Promise.resolve()
+            .then(() => {
+                if (typeof userId !== 'string') throw Error('user id is not a string')
 
-            if (!(userId = userId.trim()).length) throw Error('user id is empty or blank');
+                if (!(userId = userId.trim()).length) throw Error('user id is empty or blank')
 
-            return Group.find({ users: userId }).then(function (groups) {
-                if (!groups) throw Error('no user found with id ' + userId);
+                return axios.get(`${this.url}/users/${userId}/groups`), { headers: { authorization: `Bearer ${this.token}` } }
+                    .then(({ status, data }) => {
+                        if (status !== 201 || data.status !== 'OK') throw Error(`unexpected response status ${status} (${data.status})`)
 
-                return groups;
-            });
-        });
+                        return true
+                    })
+                    .catch(err => {
+                        if (err.code === 'ECONNREFUSED') throw Error('could not reach server')
+
+                        if (err.response) {
+                            const { response: { data: { error: message } } } = err
+
+                            throw Error(message)
+                        } else throw err
+                    })
+            })
     },
-
 
     /**
     * Add a existing User to the current Group
     * 
-    * @param {string} groupId The Id of the Group
     * @param {string} userId The including user Id 
+    * @param {string} groupId The Id of the Group
     * 
     * @throws {Error} If the Group does not exist
     * 
     * @returns {Promise<string>} All the users inside the group
     */
-    addUserToGroup: function addUserToGroup(groupId, email) {
-        return Promise.resolve().then(function () {
-            if (typeof groupId !== 'string') throw Error('user id is not a string');
+    addUserToGroup(userId, groupId, email) {
+        return Promise.resolve()
+            .then(() => {
+                if (typeof userId !== 'string') throw Error('user id is not a string')
 
-            if (!(groupId = groupId.trim()).length) throw Error('user id is empty or blank');
+                if (!(userId = userId.trim()).length) throw Error('user id is empty or blank')
 
-            if (typeof email !== 'string') throw Error('user email is not a string');
+                if (typeof groupId !== 'string') throw Error('group id is not a string')
 
-            if (!(email = email.trim()).length) throw Error('user email is empty or blank');
+                if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
 
-            return User.find({ email: email }).then(function (user) {
-                var _userId = user[0]._id;
-                return Group.findByIdAndUpdate(groupId, { $push: { users: _userId } }, { new: true }).then(function (group) {
-                    if (!group) throw Error('no group found with id ' + groupId);
+                if (typeof email !== 'string') throw Error('user email is not a string')
 
-                    return group.users;
-                });
-            });
-        });
+                if (!(email = email.trim()).length) throw Error('user email is empty or blank')
+
+                return axios.patch(`${this.url}/users/${userId}/groups/${groupId}`, { email }, { headers: { authorization: `Bearer ${this.token}` } })
+                    .then(({ status, data }) => {
+                        if (status !== 200 || data.status !== 'OK') throw Error(`unexpected response status ${status} (${data.status})`)
+                        return true
+                    })
+            })
     }
-};
+}
 
-module.exports = api;
+module.exports = api

@@ -19,7 +19,7 @@ describe('logic (s api)', () => {
     const otherUserData = { name: 'Jack', surname: 'Wayne', email: 'jw@mail.com', password: '456' }
     const fakeUserId = '123456781234567812345678'
     const fakeNoteId = '123456781234567812345678'
-    const noteText = 'my note'
+    const groupName = 'California'
     const indexes = []
 
     before(() => mongoose.connect(DB_URL))
@@ -110,7 +110,7 @@ describe('logic (s api)', () => {
                 .catch(({ message }) => expect(message).to.equal('user password is empty or blank'))
         )
 
-         describe('on unexpected server behavior', () => {
+        describe('on unexpected server behavior', () => {
             let sandbox
 
             beforeEach(() => sandbox = sinon.createSandbox())
@@ -164,7 +164,7 @@ describe('logic (s api)', () => {
         })
     })
 
-     describe('authenticate user', () => {
+    describe('authenticate user', () => {
         it('should succeed on correct data', () =>
             User.create(userData)
                 .then(() =>
@@ -207,7 +207,7 @@ describe('logic (s api)', () => {
                 .catch(({ message }) => expect(message).to.equal('user password is empty or blank'))
         )
 
-         describe('on unexpected server behavior', () => {
+        describe('on unexpected server behavior', () => {
             let sandbox
 
             beforeEach(() => sandbox = sinon.createSandbox())
@@ -261,7 +261,7 @@ describe('logic (s api)', () => {
         })
     })
 
-     describe('retrieve user', () => {
+    describe('retrieve user', () => {
         it('should succeed on correct data', () =>
             User.create(userData)
                 .then(({ id }) => {
@@ -301,7 +301,7 @@ describe('logic (s api)', () => {
                 .catch(({ message }) => expect(message).to.equal('user id is empty or blank'))
         )
 
-         describe('on unexpected server behavior', () => {
+        describe('on unexpected server behavior', () => {
             let sandbox
 
             beforeEach(() => sandbox = sinon.createSandbox())
@@ -349,7 +349,7 @@ describe('logic (s api)', () => {
         })
     })
 
-     describe('udpate user', () => {
+    describe('udpate user', () => {
         it('should succeed on correct data', () =>
             User.create(userData)
                 .then(({ id }) => {
@@ -470,7 +470,7 @@ describe('logic (s api)', () => {
         )
     })
 
-     describe('unregister user', () => {
+    describe('unregister user', () => {
         it('should succeed on correct data', () =>
             User.create(userData)
                 .then(({ id }) => {
@@ -538,301 +538,168 @@ describe('logic (s api)', () => {
         )
     })
 
-    //  describe('add note', () => {
-    //     it('should succeed on correct data', () =>
-    //         User.create(userData)
-    //             .then(({ id }) => {
-    //                 const token = jwt.sign({ id }, TOKEN_SECRET)
-
-    //                 api.token = token
-
-    //                 return api.addNote(id, noteText)
-    //                     .then(noteId => {
-    //                         expect(noteId).to.be.a('string')
-    //                         expect(noteId).to.exist
-
-    //                         return User.findById(id)
-    //                             .then(user => {
-    //                                 expect(user).to.exist
-
-    //                                 expect(user.notes).to.exist
-    //                                 expect(user.notes.length).to.equal(1)
-
-    //                                 const [{ id, text }] = user.notes
-
-    //                                 expect(id).to.equal(noteId)
-    //                                 expect(text).to.equal(noteText)
-    //                             })
-    //                     })
-    //             })
-    //     )
-
-    //     it('should fail on wrong user id', () =>
-    //         User.create(userData)
-    //             .then(({ id }) => {
-    //                 const token = jwt.sign({ id }, TOKEN_SECRET)
-
-    //                 api.token = token
-
-    //                 return api.addNote(fakeUserId, noteText)
-    //                     .catch(({ message }) => expect(message).to.equal(`user id ${fakeUserId} does not match token user id ${id}`))
-    //             })
-    //     )
-
-    //     it('should fail on no user id', () =>
-    //         api.addNote()
-    //             .catch(({ message }) => expect(message).to.equal('user id is not a string'))
-    //     )
-
-    //     it('should fail on empty user id', () =>
-    //         api.addNote('')
-    //             .catch(({ message }) => expect(message).to.equal('user id is empty or blank'))
-    //     )
-
-    //     it('should fail on blank user id', () =>
-    //         api.addNote('     ')
-    //             .catch(({ message }) => expect(message).to.equal('user id is empty or blank'))
-    //     )
-
-    //     it('should fail on no text', () => {
-    //         api.addNote(fakeUserId)
-    //             .catch(({ message }) => expect(message).to.equal('text is not a string'))
-    //     })
-
-    //     it('should fail on empty text', () =>
-    //         api.addNote(fakeUserId, '')
-    //             .catch(({ message }) => expect(message).to.equal('text is empty or blank'))
-    //     )
-
-    //     it('should fail on blank text', () =>
-    //         api.addNote(fakeUserId, '   ')
-    //             .catch(({ message }) => expect(message).to.equal('text is empty or blank'))
-    //     )
-    // })
-
-    //  describe('retrieve note', () => {
-    //     it('should succeed on correct data', () => {
-    //         const user = new User(userData)
-    //         const note = new Note({ text: noteText })
-
-    //         user.notes.push(note)
-
-    //         return user.save()
-    //             .then(({ id: userId, notes: [{ id: noteId }] }) => {
-    //                 const token = jwt.sign({ id: userId }, TOKEN_SECRET)
-
-    //                 api.token = token
-
-    //                 return api.retrieveNote(userId, noteId)
-    //             })
-    //             .then(({ id, text }) => {
-    //                 expect(id).to.equal(note.id)
-    //                 expect(text).to.equal(note.text)
-    //             })
-    //     })
-
-    //     it('should fail on non user id', () =>
-    //         api.retrieveNote()
-    //             .catch(({ message }) => expect(message).to.equal('user id is not a string'))
-    //     )
-
-    //     it('should fail on empty user id', () =>
-    //         api.retrieveNote('')
-    //             .catch(({ message }) => expect(message).to.equal('user id is empty or blank'))
-    //     )
-
-    //     it('should fail on blank user id', () =>
-    //         api.retrieveNote('      ')
-    //             .catch(({ message }) => expect(message).to.equal('user id is empty or blank'))
-    //     )
-
-    //     it('should fail on wrong user id', () => {
-    //         const user = new User(userData)
-    //         const note = new Note({ text: noteText })
-
-    //         user.notes.push(note)
-
-    //         return user.save()
-    //             .then(({ notes: [{ id: noteId }] }) => {
-    //                 const token = jwt.sign({ id: user.id }, TOKEN_SECRET)
-
-    //                 api.token = token
-
-    //                 return api.retrieveNote(fakeUserId, noteId)
-    //                     .catch(({ message }) => expect(message).to.equal(`user id ${fakeUserId} does not match token user id ${user.id}`))
-    //             })
-    //     })
-
-    //     it('should fail on no note id', () =>
-    //         api.retrieveNote(fakeUserId)
-    //             .catch(({ message }) => expect(message).to.equal('note id is not a string'))
-    //     )
-
-    //     it('should fail on empty note id', () =>
-    //         api.retrieveNote(fakeUserId, '')
-    //             .catch(({ message }) => expect(message).to.equal('note id is empty or blank'))
-    //     )
-
-    //     it('should fail on blank note id', () =>
-    //         api.retrieveNote(fakeUserId, '       ')
-    //             .catch(({ message }) => expect(message).to.equal('note id is empty or blank'))
-    //     )
-
-    //     it('should fail on wrong note id', () => {
-    //         const user = new User(userData)
-    //         const note = new Note({ text: noteText })
-
-    //         user.notes.push(note)
-
-    //         return user.save()
-    //             .then(({ id: userId }) => {
-    //                 const token = jwt.sign({ id: userId }, TOKEN_SECRET)
-
-    //                 api.token = token
-
-    //                 return api.retrieveNote(userId, fakeNoteId)
-    //                     .catch(({ message }) => expect(message).to.equal(`no note found with id ${fakeNoteId}`))
-    //             })
-    //     })
-    // })
-
-    //  describe('list notes', () => {
-    //     it('should succeed on correct data', () => {
-    //         const user = new User(userData)
-
-    //         const notes = indexes.map(index => new Note({ text: `${noteText} ${index}` }))
-
-    //         user.notes = notes
-
-    //         return user.save()
-    //             .then(({ id: userId, notes }) => {
-    //                 // const validNoteIds = []
-    //                 // const validNoteTexts = []
-
-    //                 // notes.forEach(({ id, text }) => {
-    //                 //     validNoteIds.push(id)
-    //                 //     validNoteTexts.push(text)
-    //                 // })
-    //                 // or
-    //                 const validNoteIds = _.map(notes, 'id')
-    //                 const validNoteTexts = _.map(notes, 'text')
-
-    //                 const token = jwt.sign({ id: userId }, TOKEN_SECRET)
-
-    //                 api.token = token
-
-    //                 return api.listNotes(userId)
-    //                     .then(notes => {
-    //                         expect(notes).to.exist
-    //                         expect(notes.length).to.equal(indexes.length)
-
-    //                         notes.forEach(({ id, text, _id }) => {
-    //                             // expect(validNoteIds.includes(id)).to.be.true
-    //                             // expect(validNoteTexts.includes(text)).to.be.true
-    //                             // or
-    //                             expect(validNoteIds).to.include(id)
-    //                             expect(validNoteTexts).to.include(text)
-    //                             expect(_id).not.to.exist
-    //                         })
-    //                     })
-    //             })
-    //     })
-
-    //     it('should fail on non user id', () =>
-    //         api.listNotes()
-    //             .catch(({ message }) => expect(message).to.equal('user id is not a string'))
-    //     )
-
-    //     it('should fail on empty user id', () =>
-    //         api.listNotes('')
-    //             .catch(({ message }) => expect(message).to.equal('user id is empty or blank'))
-    //     )
-
-    //     it('should fail on blank user id', () =>
-    //         api.listNotes('      ')
-    //             .catch(({ message }) => expect(message).to.equal('user id is empty or blank'))
-    //     )
-    // })
-
-    //  describe('update note', () => {
-    //     it('should succeed on correct data', () =>
-    //         User.create(userData)
-    //             .then(({ id: userId }) =>
-    //                 User.findByIdAndUpdate(userId, { $push: { notes: { text: noteText } } }, { new: true })
-    //                     .then(user => {
-    //                         const noteId = user.notes[user.notes.length - 1].id
-
-    //                         const newNoteText = `${noteText} 2`
-
-    //                         const token = jwt.sign({ id: user.id }, TOKEN_SECRET)
-
-    //                         api.token = token
-
-    //                         return api.updateNote(userId, noteId, newNoteText)
-    //                             .then(res => {
-    //                                 expect(res).to.be.true
-
-    //                                 return User.findById(userId)
-    //                             })
-    //                             .then(({ notes }) => {
-    //                                 const [{ id, text }] = notes
-
-    //                                 expect(id).to.equal(noteId)
-    //                                 expect(text).to.equal(newNoteText)
-    //                             })
-    //                     })
-    //             )
-    //     )
-
-    //     it('should fail on non user id', () =>
-    //         api.updateNote()
-    //             .catch(({ message }) => expect(message).to.equal('user id is not a string'))
-    //     )
-
-    //     it('should fail on empty user id', () =>
-    //         api.updateNote('')
-    //             .catch(({ message }) => expect(message).to.equal('user id is empty or blank'))
-    //     )
-
-    //     it('should fail on blank user id', () =>
-    //         api.updateNote('      ')
-    //             .catch(({ message }) => expect(message).to.equal('user id is empty or blank'))
-    //     )
-
-    //     it('should fail on wrong user id', () => {
-    //         const user = new User(userData)
-    //         const note = new Note({ text: noteText })
-
-    //         user.notes.push(note)
-
-    //         return user.save()
-    //             .then(({ notes: [{ id: noteId }] }) => {
-    //                 const token = jwt.sign({ id: user.id }, TOKEN_SECRET)
-
-    //                 api.token = token
-
-    //                 return api.updateNote(fakeUserId, noteId, `${noteText} 2`)
-    //                     .catch(({ message }) => expect(message).to.equal(`user id ${fakeUserId} does not match token user id ${user.id}`))
-    //             })
-    //     })
-
-    //     it('should fail on wrong note id', () => {
-    //         const user = new User(userData)
-    //         const note = new Note({ text: noteText })
-
-    //         user.notes.push(note)
-
-    //         return user.save()
-    //             .then(({ id: userId }) => {
-    //                 const token = jwt.sign({ id: user.id }, TOKEN_SECRET)
-
-    //                 api.token = token
-
-    //                 return api.updateNote(userId, fakeNoteId, `${noteText} 2`)
-    //                     .catch(({ message }) => expect(message).to.equal(`no note found with id ${fakeNoteId}`))
-    //             })
-    //     })
-    // })
+    describe('create group', () => {
+        it('should succeed on correct data', () =>
+            User.create(userData)
+                .then(({ id }) => {
+                    const token = jwt.sign({ id }, TOKEN_SECRET)
+
+                    api.token = token
+
+                    return api.createGroup(id, groupName)
+                        .then(groupId => {
+                            expect(groupId).to.exist
+                            expect(groupId).to.be.string
+                        })
+                })
+        )
+
+        it('should fail on wrong user id', () =>
+            User.create(userData)
+                .then(({ id }) => {
+                    const token = jwt.sign({ id }, TOKEN_SECRET)
+
+                    api.token = token
+
+                    return api.createGroup(fakeUserId, groupName)
+                        .catch(({ message }) => expect(message).to.equal(`user id ${fakeUserId} does not match token user id ${id}`))
+                })
+        )
+
+        it('should fail on no user id', () =>
+            api.createGroup()
+                .catch(({ message }) => expect(message).to.equal('user id is not a string'))
+        )
+
+        it('should fail on empty user id', () =>
+            api.createGroup('')
+                .catch(({ message }) => expect(message).to.equal('user id is empty or blank'))
+        )
+
+        it('should fail on blank user id', () =>
+            api.createGroup('     ')
+                .catch(({ message }) => expect(message).to.equal('user id is empty or blank'))
+        )
+
+        it('should fail on no group name', () => {
+            api.createGroup(fakeUserId)
+                .catch(({ message }) => expect(message).to.equal('group name is not a string'))
+        })
+
+        it('should fail on empty group name', () =>
+            api.createGroup(fakeUserId, '')
+                .catch(({ message }) => expect(message).to.equal('group name is empty or blank'))
+        )
+
+        it('should fail on blank group name', () =>
+            api.createGroup(fakeUserId, '   ')
+                .catch(({ message }) => expect(message).to.equal('group name is empty or blank'))
+        )
+    })
+
+    describe('list groups by user id', () => {
+        it('should succeed on correct data', () => {
+            return User.create(userData)
+                .then(({ id }) => {
+                    const token = jwt.sign({ id }, TOKEN_SECRET)
+
+                    api.token = token
+
+                    return Promise.all(
+                        [api.createGroup(id.toString(), `group 1`),
+                        api.createGroup(id.toString(), `group 2`)
+                        ])
+                        .then(groups => {
+                            expect(groups.length).to.equal(2)
+                        })
+
+                    return api.listGroupsByUser(id.toString())
+                        .then(groups => {
+                            expect(groups.length).to.equal(validGroupIds.length)
+                            groups.forEach(group => {
+                                expect(group._id).to.exist
+                                expect(validGroupIds).to.include(group._id.toString())
+
+                                expect(group.users).to.exist
+                                expect(group.users.length).to.equal(1)
+
+                                const userIds = group.users.map(userId => userId.toString())
+
+                                expect(userIds).to.include(user1._id.toString())
+                            })
+                        })
+                })
+        })
+        it('should fail on non user id', () =>
+            api.listGroupsByUser()
+                .catch(({ message }) => expect(message).to.equal('user id is not a string'))
+        )
+
+        it('should fail on empty user id', () =>
+            api.listGroupsByUser('')
+                .catch(({ message }) => expect(message).to.equal('user id is empty or blank'))
+        )
+
+        it('should fail on blank user id', () =>
+            api.listGroupsByUser('      ')
+                .catch(({ message }) => expect(message).to.equal('user id is empty or blank'))
+        )
+    })
+
+    describe('add a User to a existent group', () => {
+        it('should succeed on correct data', () =>
+            Promise.all([
+                User.create(userData),
+                User.create(otherUserData)
+            ])
+                .then(([{ id: id1 }, { id: id2 }]) => {
+                    const token = jwt.sign({ id: id1 }, TOKEN_SECRET)
+
+                    api.token = token
+
+                    const { name, surname, email, password } = otherUserData
+
+                    return api.createGroup(id1, groupName)
+                        .then(groupId => {
+                            expect(groupId).to.exist
+                            expect(groupId).to.be.string
+
+                            return api.addUserToGroup(id1, groupId, email)
+                                .then(adduser => {
+                                    expect(adduser).to.be.true
+                                })
+                        })
+                })
+        )
+        it('should fail on non user id', () =>
+            api.addUserToGroup()
+                .catch(({ message }) => expect(message).to.equal('user id is not a string'))
+        )
+
+        it('should fail on empty user id', () =>
+            api.addUserToGroup('')
+                .catch(({ message }) => expect(message).to.equal('user id is empty or blank'))
+        )
+
+        it('should fail on blank user id', () =>
+            api.addUserToGroup('      ')
+                .catch(({ message }) => expect(message).to.equal('user id is empty or blank'))
+        )
+        it('should fail on non group id', () =>
+            api.addUserToGroup('123')
+                .catch(({ message }) => expect(message).to.equal('group id is not a string'))
+        )
+
+        it('should fail on empty group id', () =>
+            api.addUserToGroup('123','')
+                .catch(({ message }) => expect(message).to.equal('group id is empty or blank'))
+        )
+
+        it('should fail on blank group id', () =>
+            api.addUserToGroup('123','      ')
+                .catch(({ message }) => expect(message).to.equal('group id is empty or blank'))
+        )
+    })
 
     //  describe('remove note', () => {
     //     it('should succeed on correct data', () => {

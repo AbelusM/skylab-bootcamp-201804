@@ -104,17 +104,17 @@ router.get('/users/:userId/groups', jwtValidator, (req, res) => {
 
     logic.listGroupsByUser(userId)
         .then(groups => {
+            res.status(201)
             res.json({ status: 'OK', data: groups })
         })
         .catch(({ message }) => {
             res.status(400)
             res.json({ status: 'KO', error: message })
         })
-
 })
 
 router.patch('/users/:userId/groups/:groupId', [jwtValidator, jsonBodyParser], (req, res) => {
-    const { params: { userId, groupId }, body: { name, email } } = req
+    const { params: { userId, groupId }, body: { email } } = req
 
     logic.addUserToGroup(groupId, email)
         .then(users => {
