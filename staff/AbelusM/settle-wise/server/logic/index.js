@@ -309,27 +309,40 @@ const logic = {
 
                 if (!(fractions instanceof Array)) throw Error('fractions is not an array')
 
-                if (typeof amount !== 'number') throw Error('group id is not a number')
-                
-                if(!User.findById(payerId)) throw Error('payer is not a existant user')
+                if (typeof amount !== 'number') throw Error('amount is not a number')
 
-                for (let i = 0; i < fractions.length; i++) {
-                    if(!User.findById(fractions[i].user)) throw Error(`${fractions[i].user} does not exist`)
-                }
+                // TODO validate amount vs fractions coherence
 
-                    return Group.findById(groupId)
-                        .then(group => {
-                            if (!group) throw Error(`no group found with id ${group}`)
+                const userIds = [payerId]
 
-                            group.spends.push(new Spend({
-                                amount,
-                                payer: payerId,
-                                fractions
-                            }))
+                const promises = [User.findById(payerId)]
 
-                            return group.save()
+                fractions.forEach(fraction => {
+                    userIds.push(fraction.user)
+
+                    promises.push(User.findById(fraction.user))
+                })
+
+                return Promise.all(promises)
+                    .then(users => {
+                        users.forEach((user, index) => {
+                            if (!user) throw Error(`no user found with id ${userIds[index]}`)
                         })
-                        .then(() => true)
+
+                        return Group.findById(groupId)
+                            .then(group => {
+                                if (!group) throw Error(`no group found with id ${group}`)
+
+                                group.spends.push(new Spend({
+                                    amount,
+                                    payer: payerId,
+                                    fractions
+                                }))
+
+                                return group.save()
+                            })
+                            .then(() => true)
+                    })
             })
     },
 

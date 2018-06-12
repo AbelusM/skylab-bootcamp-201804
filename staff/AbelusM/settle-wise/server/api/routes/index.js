@@ -127,10 +127,6 @@ router.patch('/users/:userId/groups/:groupId', [jwtValidator, jsonBodyParser], (
         })
 })
 
-
-////////////////////////////////
-
-
 router.post('/users/:userId/groups/:groupId/spends', [jwtValidator, jsonBodyParser], (req, res) => {
     const { params: { userId, groupId }, body: { amount, payerId, fractions } } = req
 
@@ -144,4 +140,5 @@ router.post('/users/:userId/groups/:groupId/spends', [jwtValidator, jsonBodyPars
             res.json({ status: 'KO', error: message })
         })
 })
+
 module.exports = router

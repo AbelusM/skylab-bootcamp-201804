@@ -2,7 +2,7 @@
 
 require('dotenv').config()
 
-const { mongoose, models: { User } } = require('data')
+const { mongoose, models: { User, Group, Spend } } = require('data')
 const { expect } = require('chai')
 const api = require('./index')
 const _ = require('lodash')
@@ -16,7 +16,8 @@ api.url = API_URL
 
 describe('logic (s api)', () => {
     const userData = { name: 'John', surname: 'Doe', email: 'jd@mail.com', password: '123' }
-    const otherUserData = { name: 'Jack', surname: 'Wayne', email: 'jw@mail.com', password: '456' }
+    const userData2 = { name: 'Jack', surname: 'Wayne', email: 'jw@mail.com', password: '456' }
+    const groupData = { name: 'California' }
     const fakeUserId = '123456781234567812345678'
     const fakeNoteId = '123456781234567812345678'
     const groupName = 'California'
@@ -29,7 +30,7 @@ describe('logic (s api)', () => {
         indexes.length = 0
         while (count--) indexes.push(count)
 
-        return Promise.all([User.remove()]) // or User.deleteMany()
+        return Promise.all([User.remove(), Group.deleteMany()]) // or User.deleteMany()
     })
 
     describe('register user', () => {
@@ -380,7 +381,7 @@ describe('logic (s api)', () => {
         it('should fail on changing email to an already existing user\'s email', () =>
             Promise.all([
                 User.create(userData),
-                User.create(otherUserData)
+                User.create(userData2)
             ])
                 .then(([{ id: id1 }, { id: id2 }]) => {
                     const token = jwt.sign({ id: id1 }, TOKEN_SECRET)
@@ -389,9 +390,9 @@ describe('logic (s api)', () => {
 
                     const { name, surname, email, password } = userData
 
-                    return api.updateUser(id1, name, surname, email, password, otherUserData.email)
+                    return api.updateUser(id1, name, surname, email, password, userData2.email)
                 })
-                .catch(({ message }) => expect(message).to.equal(`user with email ${otherUserData.email} already exists`))
+                .catch(({ message }) => expect(message).to.equal(`user with email ${userData2.email} already exists`))
         )
 
         it('should fail on no user id', () =>
@@ -646,18 +647,18 @@ describe('logic (s api)', () => {
         )
     })
 
-    describe('add a User to a existent group', () => {
+    describe('add a user to a existent group', () => {
         it('should succeed on correct data', () =>
             Promise.all([
                 User.create(userData),
-                User.create(otherUserData)
+                User.create(userData2)
             ])
                 .then(([{ id: id1 }, { id: id2 }]) => {
                     const token = jwt.sign({ id: id1 }, TOKEN_SECRET)
 
                     api.token = token
 
-                    const { name, surname, email, password } = otherUserData
+                    const { name, surname, email, password } = userData2
 
                     return api.createGroup(id1, groupName)
                         .then(groupId => {
@@ -701,32 +702,74 @@ describe('logic (s api)', () => {
         )
     })
 
-    describe('add a Spend to a existent group', () => {
+    describe('add a spend to a existent group', () => {
         it('should succeed on correct data', () =>
             Promise.all([
                 User.create(userData),
-                User.create(otherUserData)
+                User.create(userData2)
             ])
-                .then(([{ id: id1 }, { id: id2 }]) => {
-                    const token = jwt.sign({ id: id1 }, TOKEN_SECRET)
+                .then(res => {
+                    const [{ _doc: user1 }, { _doc: user2 }] = res
 
-                    api.token = token
+                    expect(user1).to.exist
+                    expect(user1.name).to.equal(userData.name)
 
-                    const { name, surname, email, password } = otherUserData
+                    expect(user2).to.exist
+                    expect(user2.name).to.equal(userData2.name)
 
-                    return api.createGroup(id1, groupName)
-                        .then(groupId => {
-                            expect(groupId).to.exist
-                            expect(groupId).to.be.string
+                    const group = new Group(groupData)
 
-                            return api.addUserToGroup(id1, groupId, email)
-                                .then(adduser => {
-                                    expect(adduser).to.be.true
+                    group.users.push(user1._id)
+                    group.users.push(user2._id)
+
+                    return group.save()
+                        .then(group => {
+                            expect(group._id).to.exist
+                            expect(group.name).to.equal(groupData.name)
+
+                            const token = jwt.sign({ id: user1._id.toString() }, TOKEN_SECRET)
+
+                            api.token = token
+
+                            return api.addSpend(group._id.toString(), 100, user1._id.toString(), [
+                                { user: user1._id.toString(), fraction: 75 },
+                                { user: user2._id.toString(), fraction: 25 }
+                            ])
+                                .then(res => expect(res).to.be.true)
+                                .then(() => Group.findById(group.id))
+                                .then(group => {
+                                    const { users: [userId1, userId2] } = group
+
+                                    expect(userId1.toString()).to.equal(user1._id.toString())
+                                    expect(userId2.toString()).to.equal(user2._id.toString())
+
+                                    expect(group.spends).to.exist
+                                    expect(group.spends.length).to.equal(1)
+
+                                    const { spends: [spend] } = group
+
+                                    expect(spend._id).to.exist
+                                    expect(spend.amount).to.equal(100)
+                                    expect(spend.payer).to.exist
+                                    expect(spend.payer.toString()).to.equal(user1._id.toString())
+                                    expect(spend.fractions).to.exist
+                                    expect(spend.fractions.length).to.equal(2)
+
+                                    const { fractions: [fraction1, fraction2] } = spend
+
+                                    expect(fraction1.user).to.exist
+                                    expect(fraction1.user.toString()).to.equal(user1._id.toString())
+                                    expect(fraction1.fraction).to.equal(75)
+
+                                    expect(fraction2.user).to.exist
+                                    expect(fraction2.user.toString()).to.equal(user2._id.toString())
+                                    expect(fraction2.fraction).to.equal(25)
                                 })
                         })
                 })
         )
     })
+
 
     after(done => mongoose.connection.db.dropDatabase(() => mongoose.connection.close(done)))
 })

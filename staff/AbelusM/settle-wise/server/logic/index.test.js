@@ -547,6 +547,7 @@ describe('logic (settle-wise)', () => {
                         })
                 })
         )
+        
         it('should throw error on incorrect user', () =>
             Promise.all([
                 User.create(userData),

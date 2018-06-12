@@ -352,15 +352,13 @@ const api = {
 
                 if (typeof amount !== 'number') throw Error('group id is not a number')
 
-                if (!User.findById(payerId)) throw Error('payer is not a existant user')
+                // TODO check fractions users and amounts are strings and number, respectively
 
-                for (let i = 0; i < fractions.length; i++) {
-                    if (!User.findById(fractions[i].user)) throw Error(`${fractions[i].user} does not exist`)
-                }
-                return axios.post(`${this.url}/users/${userId}/groups/${groupId}`, { amount, payerId, fractions }, { headers: { authorization: `Bearer ${this.token}` } })
+                return axios.post(`${this.url}/users/${payerId}/groups/${groupId}/spends`, { amount, payerId, fractions }, { headers: { authorization: `Bearer ${this.token}` } })
                     .then(({ status, data }) => {
                         if (status !== 201 || data.status !== 'OK') throw Error(`unexpected response status ${status} (${data.status})`)
-                        return data.data.id
+
+                        return true
                     })
                     .catch(err => {
                         if (err.code === 'ECONNREFUSED') throw Error('could not reach server')
