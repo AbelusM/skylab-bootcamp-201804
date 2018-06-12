@@ -91,9 +91,11 @@ describe('models (settle-wise)', () => {
                     group.users.push(user2._id)
 
                     const spend = new Spend({
+                        amount: 100,
+                        payer: user1._id,
                         fractions: [
-                            { userId: user1._id, fraction: 75 },
-                            { userId: user2._id, fraction: 25 }
+                            { user: user1._id, fraction: 75 },
+                            { user: user2._id, fraction: 25 }
                         ]
                     })
 
@@ -115,17 +117,20 @@ describe('models (settle-wise)', () => {
                             const { spends: [spend] } = group
 
                             expect(spend._id).to.exist
+                            expect(spend.amount).to.equal(100)
+                            expect(spend.payer).to.exist
+                            expect(spend.payer).to.deep.equal(user1._id)
                             expect(spend.fractions).to.exist
                             expect(spend.fractions.length).to.equal(2)
 
                             const { fractions: [fraction1, fraction2] } = spend
 
-                            expect(fraction1.userId).to.exist
-                            expect(fraction1.userId.toString()).to.equal(user1._id.toString())
+                            expect(fraction1.user).to.exist
+                            expect(fraction1.user.toString()).to.equal(user1._id.toString())
                             expect(fraction1.fraction).to.equal(75)
 
-                            expect(fraction2.userId).to.exist
-                            expect(fraction2.userId.toString()).to.equal(user2._id.toString())
+                            expect(fraction2.user).to.exist
+                            expect(fraction2.user.toString()).to.equal(user2._id.toString())
                             expect(fraction2.fraction).to.equal(25)
                         })
                 })

@@ -1,8 +1,17 @@
 const { Schema, SchemaTypes: { ObjectId } } = require('mongoose')
 
 module.exports = new Schema({
+    amount: {
+        type: Number,
+        required: true
+    },
+    payer: {
+        type: ObjectId,
+        ref: 'User',
+        required: true
+    },
     fractions: [{
-        userId: {
+        user: {
             type: ObjectId,
             ref: 'User',
             required: true
