@@ -551,47 +551,86 @@ describe('logic (settle-wise)', () => {
 
     describe('list spends', () => {
         it('should succeed on correct data', () => {
-            return Promise.all([
-                new User(userData).save(),
-                new User(userData2).save()
+            Promise.all([
+                User.create(userData),
+                User.create(userData2)
             ])
-                .then(users => {
-                    expect(users).to.exist
-                    expect(users.length).to.equal(2)
+                .then(res => {
+                    const [{ _doc: user1 }, { _doc: user2 }] = res
 
-                    const [user1, user2] = users
+                    expect(user1).to.exist
+                    expect(user1.name).to.equal(userData.name)
 
-                    return Promise.all([
-                        new Group({ name: 'Cali', users: [user1._id] }).save()
-                    ])
-                        .then(groups => {
-                            expect(groups.length).to.equal(1)
+                    expect(user2).to.exist
+                    expect(user2.name).to.equal(userData2.name)
 
-                            const id1 = user1._id.toString()
+                    const group = new Group(groupData)
 
-                            const idGroup = groups[0]._id.toString()
+                    group.users.push(user1._id)
+                    group.users.push(user2._id)
 
-                            return logic.addUserToGroup(idGroup, user2.email)
+                    const spend = new Spend({
+                        amount: 100,
+                        payer: user1._id,
+                        fractions: [
+                            { user: user1._id, fraction: 75 },
+                            { user: user2._id, fraction: 25 }
+                        ]
+                    })
+                    const spend2 = new Spend({
+                        amount: 200,
+                        payer: user1._id,
+                        fractions: [
+                            { user: user1._id, fraction: 170 },
+                            { user: user2._id, fraction: 20 }
+                        ]
+                    })
+
+                    group.spends.push(spend)
+                    group.spends.push(spend2)
+
+                    return group.save()
+                        .then(group => {
+                            expect(group._id).to.exist
+                            expect(group.name).to.equal(groupData.name)
+
+                            const { users: [userId1, userId2] } = group
+
+                            expect(userId1.toString()).to.equal(user1._id.toString())
+                            expect(userId2.toString()).to.equal(user2._id.toString())
+
+                            expect(group.spends).to.exist
+                            expect(group.spends.length).to.equal(2)
+
+                            const { spends: [spend] } = group
+
+                            expect(spend._id).to.exist
+                            expect(spend.amount).to.equal(100)
+                            expect(spend.payer).to.exist
+                            expect(spend.payer).to.deep.equal(user1._id)
+                            expect(spend.fractions).to.exist
+                            expect(spend.fractions.length).to.equal(2)
+
+                            const { fractions: [fraction1, fraction2] } = spend
+
+                            expect(fraction1.user).to.exist
+                            expect(fraction1.user.toString()).to.equal(user1._id.toString())
+                            expect(fraction1.fraction).to.equal(75)
+
+                            expect(fraction2.user).to.exist
+                            expect(fraction2.user.toString()).to.equal(user2._id.toString())
+                            expect(fraction2.fraction).to.equal(25)
+                            
+                            return logic.listSpends(group._id.toString())
                                 .then(res => {
-                                    expect(res).to.be.true
+                                    expect(res).to.exist
+                                    expect(res.length).to.equal(2)
 
-                                    return logic.addSpend(idGroup, id1, 100)
-                                        .then(frac => {
-                                            expect(frac).to.be.true
-
-                                            return logic.listSpends(idGroup)
-                                                .then(spd => {
-                                                    expect(spd).to.exist
-                                                    expect(spd.lenght).to.equal(1)
-
-                                                })
-
-                                        })
                                 })
                         })
                 })
-        })
-    })
+            })   
+})
 
-    after(done => mongoose.connection.db.dropDatabase(() => mongoose.connection.close(done)))
+after(done => mongoose.connection.db.dropDatabase(() => mongoose.connection.close(done)))
 })

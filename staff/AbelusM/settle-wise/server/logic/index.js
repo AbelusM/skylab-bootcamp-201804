@@ -308,22 +308,29 @@ const logic = {
                 if (!(payerId = payerId.trim()).length) throw Error('user id is empty or blank')
 
                 if (!(fractions instanceof Array)) throw Error('fractions is not an array')
-
                 // TODO validate all params against db
 
-                return Group.findById(groupId)
-                    .then(group => {
-                        if (!group) throw Error(`no group found with id ${group}`)
+                if (typeof amount !== 'number') throw Error('group id is not a number')
+                
+                if(!User.findById(payerId)) throw Error('payer is not a existant user')
 
-                        group.spends.push(new Spend({
-                            amount,
-                            payer: payerId,
-                            fractions
-                        }))
+                for (let i = 0; i < fractions.length; i++) {
+                    if(!User.findById(fractions[i].user)) throw Error(`${fractions[i].user} does not exist`)
+                }
 
-                        return group.save()
-                    })
-                    .then(() => true)
+                    return Group.findById(groupId)
+                        .then(group => {
+                            if (!group) throw Error(`no group found with id ${group}`)
+
+                            group.spends.push(new Spend({
+                                amount,
+                                payer: payerId,
+                                fractions
+                            }))
+
+                            return group.save()
+                        })
+                        .then(() => true)
             })
     },
 
