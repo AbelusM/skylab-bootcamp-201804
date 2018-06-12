@@ -476,7 +476,8 @@ describe('logic (settle-wise)', () => {
 
                                     return Group.find()
                                         .then(groups => {
-                                            // TODO check group corresponds to the one saved before with correct user id
+                                            expect(groups[0].users).contains(user1._id)
+                                            expect(groups[0].users).contains(user2._id)
                                         })
                                 })
                         })
@@ -484,33 +485,85 @@ describe('logic (settle-wise)', () => {
         })
     })
 
-    // describe('add a spend', () => {
-    //     it('should succeed on correct data', () =>
-    //         Group.create(userData)
-    //             .then(({ id }) => {
-    //                 return logic.addSpend(id, fraction)
-    //                     .then(groupId => {
+    describe('add a spend', () => {
+        it('should succeed on correct data', () => {
+            return Promise.all([
+                new User(userData).save(),
+                new User(userData2).save()
+            ])
+                .then(users => {
+                    expect(users).to.exist
+                    expect(users.length).to.equal(2)
 
-    //                         expect(groupId).to.be.a('string')
-    //                         expect(groupId).to.exist
+                    const [user1, user2] = users
 
-    //                         return User.findById(id)
-    //                             .then(user => {
-    //                                 expect(user).to.exist
+                    return Promise.all([
+                        new Group({ name: 'Cali', users: [user1._id] }).save()
+                    ])
+                        .then(groups => {
+                            expect(groups.length).to.equal(1)
 
-    //                                 expect(user.notes).to.exist
-    //                                 expect(user.notes.length).to.equal(1)
+                            const id1 = user1._id.toString()
 
-    //                                 const [{ id, text }] = user.notes
+                            const idGroup = groups[0]._id.toString()
 
-    //                                 expect(id).to.equal(groupId)
-    //                                 expect(text).to.equal(noteText)
-    //                             })
-    //                     })
-    //             })
-    //     )
-    // })
+                            return logic.addUserToGroup(idGroup, user2.email)
+                                .then(res => {
+                                    expect(res).to.be.true
 
+                                    return logic.addSpend(idGroup, id1, 100)
+                                        .then(frac => {
+                                            expect(frac).to.be.true
+                                        })
+                                })
+                        })
+                })
+        }),
 
-    after(done => mongoose.connection.db.dropDatabase(() => mongoose.connection.close(done)))
-})
+            describe('list spends', () => {
+                it('should succeed on correct data', () => {
+                    return Promise.all([
+                        new User(userData).save(),
+                        new User(userData2).save()
+                    ])
+                        .then(users => {
+                            expect(users).to.exist
+                            expect(users.length).to.equal(2)
+
+                            const [user1, user2] = users
+
+                            return Promise.all([
+                                new Group({ name: 'Cali', users: [user1._id] }).save()
+                            ])
+                                .then(groups => {
+                                    expect(groups.length).to.equal(1)
+
+                                    const id1 = user1._id.toString()
+
+                                    const idGroup = groups[0]._id.toString()
+
+                                    return logic.addUserToGroup(idGroup, user2.email)
+                                        .then(res => {
+                                            expect(res).to.be.true
+
+                                            return logic.addSpend(idGroup, id1, 100)
+                                                .then(frac => {
+                                                    expect(frac).to.be.true
+
+                                                    return logic.listSpends(idGroup)
+                                                        .then(spd => {
+                                                            expect(spd).to.exist
+                                                            expect(spd.lenght).to.equal(1)
+
+                                                        })
+
+                                                })
+                                        })
+                                })
+                        })
+                })
+            })
+        })
+
+                after(done => mongoose.connection.db.dropDatabase(() => mongoose.connection.close(done)))
+            })

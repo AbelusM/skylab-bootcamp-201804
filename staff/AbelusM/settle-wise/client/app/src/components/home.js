@@ -13,10 +13,10 @@ class Home extends Component {
 	componentDidMount() {
 		logic.listGroups()
 			.then((groups) => this.setState({ groups }))
-
 	}
 
-	createGroup = () => {
+	createGroup = e => {
+		e.preventDefault()
 		const name = this.state.groupName
 
 		logic.createGroup(name)
@@ -25,6 +25,7 @@ class Home extends Component {
 	}
 
 	catchGroupName = e => {
+		e.preventDefault()
 		this.setState({
 			groupName: e.target.value
 		})

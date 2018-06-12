@@ -289,30 +289,128 @@ const logic = {
 
     /**
         * 
-        * @param {string} userId
+        * @param {string} groupId
+        * @param {string} userId of the user who pays
         * @param {number} fraction 
         * 
         * @returns {Promise<string>}
         */
-    addSpend(userId, fraction) {
+    addSpend(groupId, userId, fraction) {
         return Promise.resolve()
             .then(() => {
+                if (typeof groupId !== 'string') throw Error('group id is not a string')
+
+                if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
+
                 if (typeof userId !== 'string') throw Error('user id is not a string')
 
                 if (!(userId = userId.trim()).length) throw Error('user id is empty or blank')
 
                 if (typeof fraction !== 'number') throw Error('fraction is not a number')
 
-                if ((fraction = fraction.trim()).length === 0) throw Error('fraction is empty or blank')
-
-                return Group.findByIdAndUpdate(userId, { $push: { fractions: { fraction } } }, { new: true })
+                return Group.findByIdAndUpdate(groupId, { $push: { spends: {fractions: { fraction, userId }} } }, { new: true })
                     .then(group => {
-                        if (!group) throw Error(`no group found with id ${groupId}`)
+                        if (!group) throw Error(`no group found with id ${group}`)
 
-                        return group.users[group.users.length - 1].id
+                        return true
                     })
             })
     },
+
+   /**
+     * @param {string} groupId
+     * 
+     * @returns {Promise<[Spend]>}
+     */
+    listSpends(groupId) {
+        return Promise.resolve()
+            .then(() => {
+                if (typeof groupId !== 'string') throw Error('group id is not a string')
+
+                if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
+
+                return Group.findById(groupId)
+                    .then(group => {
+                        if (!group) throw Error(`no group found with id ${groupId}`)
+
+                        return group.spends.map(({ id, fraction }) => ({ id, fraction }))
+                    })
+            })
+    },
+
+//     /**
+//      * 
+//      * @param {string} userId
+//      * @param {string} noteId 
+//      *
+//      * @returns {Promise<boolean>}
+//      */
+//     removeNote(userId, noteId) {
+//         return Promise.resolve()
+//             .then(() => {
+//                 if (typeof userId !== 'string') throw Error('user id is not a string')
+
+//                 if (!(userId = userId.trim()).length) throw Error('user id is empty or blank')
+
+//                 if (typeof noteId !== 'string') throw Error('note id is not a string')
+
+//                 if (!(noteId = noteId.trim())) throw Error('note id is empty or blank')
+
+//                 return User.findById(userId)
+//                     .then(user => {
+//                         if (!user) throw Error(`no user found with id ${userId}`)
+
+//                         const note = user.notes.id(noteId)
+
+//                         if (!note) throw Error(`no note found with id ${noteId}`)
+
+//                         note.remove()
+
+//                         return user.save()
+//                     })
+//                     .then(() => true)
+//             })
+//     },
+
+//     /**
+//      * 
+//      * @param {string} userId
+//      * @param {string} noteId 
+//      * @param {string} text 
+//      * 
+//      * @returns {Promise<boolean>}
+//      */
+//     updateNote(userId, noteId, text) {
+//         return Promise.resolve()
+//             .then(() => {
+//                 if (typeof userId !== 'string') throw Error('user id is not a string')
+
+//                 if (!(userId = userId.trim()).length) throw Error('user id is empty or blank')
+
+//                 if (typeof noteId !== 'string') throw Error('note id is not a string')
+
+//                 if (!(noteId = noteId.trim())) throw Error('note id is empty or blank')
+
+//                 if (typeof text !== 'string') throw Error('text is not a string')
+
+//                 if ((text = text.trim()).length === 0) throw Error('text is empty or blank')
+
+//                 return User.findById(userId)
+//                     .then(user => {
+//                         if (!user) throw Error(`no user found with id ${userId}`)
+
+//                         const note = user.notes.id(noteId)
+
+//                         if (!note) throw Error(`no note found with id ${noteId}`)
+
+//                         note.text = text
+
+//                         return user.save()
+//                     })
+//                     .then(() => true)
+//             })
+//     },
+
 
 }
 

@@ -1,5 +1,6 @@
-import React from 'react'
+import React, {Component} from 'react'
 
+// componentWillReceiveProps
 function GroupsList(props) {
     return props.groups.map(group => <div>
         <button>
