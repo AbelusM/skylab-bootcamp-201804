@@ -311,7 +311,7 @@ const api = {
                 if (typeof userId !== 'string') throw Error('user id is not a string')
 
                 if (!(userId = userId.trim()).length) throw Error('user id is empty or blank')
-                
+
                 if (typeof groupId !== 'string') throw Error('group id is not a string')
 
                 if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
@@ -326,7 +326,54 @@ const api = {
                         return true
                     })
             })
-    }
+    },
+
+    /**
+       * 
+       * @param {string} groupId
+       * @param {Number} amount
+       * @param {string} payerId of the user who pays
+       * @param {[{user: string, fraction: Number}]} fractions 
+       * 
+       * @returns {Promise<string>}
+       */
+    addSpend(groupId, amount, payerId, fractions) {
+        return Promise.resolve()
+            .then(() => {
+                if (typeof groupId !== 'string') throw Error('group id is not a string')
+
+                if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
+
+                if (typeof payerId !== 'string') throw Error('user id is not a string')
+
+                if (!(payerId = payerId.trim()).length) throw Error('user id is empty or blank')
+
+                if (!(fractions instanceof Array)) throw Error('fractions is not an array')
+
+                if (typeof amount !== 'number') throw Error('group id is not a number')
+
+                if (!User.findById(payerId)) throw Error('payer is not a existant user')
+
+                for (let i = 0; i < fractions.length; i++) {
+                    if (!User.findById(fractions[i].user)) throw Error(`${fractions[i].user} does not exist`)
+                }
+                return axios.post(`${this.url}/users/${userId}/groups/${groupId}`, { amount, payerId, fractions }, { headers: { authorization: `Bearer ${this.token}` } })
+                    .then(({ status, data }) => {
+                        if (status !== 201 || data.status !== 'OK') throw Error(`unexpected response status ${status} (${data.status})`)
+                        return data.data.id
+                    })
+                    .catch(err => {
+                        if (err.code === 'ECONNREFUSED') throw Error('could not reach server')
+
+                        if (err.response) {
+                            const { response: { data: { error: message } } } = err
+
+                            throw Error(message)
+                        } else throw err
+                    })
+            })
+    },
+
 }
 
 module.exports = api

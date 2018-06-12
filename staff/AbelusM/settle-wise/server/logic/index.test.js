@@ -595,9 +595,7 @@ describe('logic (settle-wise)', () => {
                                     expect(spend.fractions).to.exist
                                     expect(spend.fractions.length).to.equal(2)
 
-                                    const { fractions: [fraction1, fraction2] } = spend
-
-                                    expect(fractions).to.contain(dummyUserId)
+                                    expect(spend.fractions).not.to.includes(dummyUserId)
                                 })
                         })
                 })

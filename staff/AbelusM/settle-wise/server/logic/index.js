@@ -308,7 +308,6 @@ const logic = {
                 if (!(payerId = payerId.trim()).length) throw Error('user id is empty or blank')
 
                 if (!(fractions instanceof Array)) throw Error('fractions is not an array')
-                // TODO validate all params against db
 
                 if (typeof amount !== 'number') throw Error('group id is not a number')
                 
