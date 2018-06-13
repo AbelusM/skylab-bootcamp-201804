@@ -3,6 +3,7 @@ import logic from '../logic'
 import '../styles/assets/css/main.css'
 import surfgroup from '../styles/images/surfgroup.jpg'
 import GroupsList from './GroupsList'
+import Group from './group'
 
 class Home extends Component {
 	state = {
@@ -49,6 +50,7 @@ class Home extends Component {
 						<button value={this.groupName} onClick={this.createGroup}>Create Group</button>
 					</form>
 					<GroupsList groups={this.state.groups} />
+					<Group data={this.state.groups}/>
 				</div>
 			</section>
 			<button onClick={() => {

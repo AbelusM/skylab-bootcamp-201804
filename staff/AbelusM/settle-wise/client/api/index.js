@@ -219,10 +219,6 @@ const api = {
             })
     },
 
-
-    /////////////////////////////////
-
-
     /**
      * Creates a group and includes the creator user as a admin 
      * 
@@ -337,16 +333,16 @@ const api = {
        * 
        * @returns {Promise<string>}
        */
-    addSpend(groupId, amount, payerId, fractions) {
+    addSpend(userId, groupId, amount, payerId, fractions) {
         return Promise.resolve()
             .then(() => {
                 if (typeof groupId !== 'string') throw Error('group id is not a string')
 
                 if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
 
-                if (typeof payerId !== 'string') throw Error('user id is not a string')
+                if (typeof payerId !== 'string') throw Error('payer id is not a string')
 
-                if (!(payerId = payerId.trim()).length) throw Error('user id is empty or blank')
+                if (!(payerId = payerId.trim()).length) throw Error('payer id is empty or blank')
 
                 if (!(fractions instanceof Array)) throw Error('fractions is not an array')
 
@@ -354,7 +350,7 @@ const api = {
 
                 // TODO check fractions users and amounts are strings and number, respectively
 
-                return axios.post(`${this.url}/users/${payerId}/groups/${groupId}/spends`, { amount, payerId, fractions }, { headers: { authorization: `Bearer ${this.token}` } })
+                return axios.post(`${this.url}/users/${userId}/groups/${groupId}/spends`, { amount, payerId, fractions }, { headers: { authorization: `Bearer ${this.token}` } })
                     .then(({ status, data }) => {
                         if (status !== 201 || data.status !== 'OK') throw Error(`unexpected response status ${status} (${data.status})`)
 

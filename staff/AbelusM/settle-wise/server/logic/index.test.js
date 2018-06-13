@@ -547,7 +547,7 @@ describe('logic (settle-wise)', () => {
                         })
                 })
         )
-        
+
         it('should throw error on incorrect user', () =>
             Promise.all([
                 User.create(userData),
@@ -645,7 +645,7 @@ describe('logic (settle-wise)', () => {
 
                     return group.save()
                         .then(group => {
-                           
+
                             expect(group._id).to.exist
                             expect(group.name).to.equal(groupData.name)
 
@@ -676,18 +676,39 @@ describe('logic (settle-wise)', () => {
                             expect(fraction2.user.toString()).to.equal(user2._id.toString())
                             expect(fraction2.fraction).to.equal(25)
 
+                            expect(spend2._id).to.exist
+                            expect(spend2.amount).to.equal(200)
+                            expect(spend2.payer).to.exist
+                            expect(spend2.payer).to.deep.equal(user1._id)
+                            expect(spend2.fractions).to.exist
+                            expect(spend2.fractions.length).to.equal(2)
+
+                            const { fractions: [fractionA, fractionB] } = spend2
+
+                            expect(fractionA.user).to.exist
+                            expect(fractionA.user.toString()).to.equal(user1._id.toString())
+                            expect(fractionA.fraction).to.equal(170)
+
+                            expect(fractionB.user).to.exist
+                            expect(fractionB.user.toString()).to.equal(user2._id.toString())
+                            expect(fractionB.fraction).to.equal(30)
+
                             return logic.listSpends(group._id.toString())
                                 .then(spends => {
                                     expect(spends).to.exist
                                     expect(spends.length).to.equal(2)
-                                    
+
                                     const [_spend1, _spend2] = spends
 
                                     expect(_spend1.id).to.exist
                                     expect(_spend1.id).to.be.a('string')
 
                                     expect(_spend1.amount).to.equal(spend1.amount)
-                                    // TODO ...
+
+                                    expect(_spend2.id).to.exist
+                                    expect(_spend2.id).to.be.a('string')
+
+                                    expect(_spend2.amount).to.equal(spend2.amount)
                                 })
                         })
                 })

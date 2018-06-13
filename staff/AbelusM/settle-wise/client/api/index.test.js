@@ -14,7 +14,7 @@ const { env: { DB_URL, API_URL, TOKEN_SECRET } } = process
 
 api.url = API_URL
 
-describe('logic (s api)', () => {
+describe('logic (settle-wise api)', () => {
     const userData = { name: 'John', surname: 'Doe', email: 'jd@mail.com', password: '123' }
     const userData2 = { name: 'Jack', surname: 'Wayne', email: 'jw@mail.com', password: '456' }
     const groupData = { name: 'California' }
@@ -731,7 +731,7 @@ describe('logic (s api)', () => {
 
                             api.token = token
 
-                            return api.addSpend(group._id.toString(), 100, user1._id.toString(), [
+                            return api.addSpend(user1._id.toString(), group._id.toString(), 100, user1._id.toString(), [
                                 { user: user1._id.toString(), fraction: 75 },
                                 { user: user2._id.toString(), fraction: 25 }
                             ])
@@ -798,7 +798,7 @@ describe('logic (s api)', () => {
 
                             api.token = token
 
-                            return api.addSpend(group._id.toString(), 100, user1._id.toString(), [
+                            return api.addSpend(user1._id.toString(), group._id.toString(), 100, user1._id.toString(), [
                                 { user: user1._id.toString(), fraction: 75 },
                                 { user: user2._id.toString(), fraction: 25 }
                             ])
@@ -835,7 +835,6 @@ describe('logic (s api)', () => {
                                     return api.listSpends(group.id)
                                     .then(res=>{
                                         expect(res).to.exist
-                                        
                                     })
                                 })
                         })

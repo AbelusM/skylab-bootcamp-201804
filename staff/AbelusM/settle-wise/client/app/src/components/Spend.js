@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import Group from './group'
 
 // componentWillReceiveProps
-function GroupsList(props) {
+function Spend(props) {
     return props.groups.map(group => <div>
         <button>
         {group.name}
@@ -10,4 +10,4 @@ function GroupsList(props) {
         </div>)
 }
 
-export default GroupsList;
+export default Spend;

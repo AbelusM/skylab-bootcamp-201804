@@ -296,7 +296,7 @@ const logic = {
         * 
         * @returns {Promise<string>}
         */
-    addSpend(groupId, amount, payerId, fractions) {
+    addSpend(userId, groupId, amount, payerId, fractions) {
         return Promise.resolve()
             .then(() => {
                 if (typeof groupId !== 'string') throw Error('group id is not a string')

@@ -4,6 +4,7 @@ api.url = 'http://localhost:5000/api'
 
 const logic = {
     userId: 'NO-ID',
+    groupId: 'NO-ID',
 
     registerUser(name, surname, email, password) {
         return api.registerUser(name, surname, email, password)
@@ -27,8 +28,34 @@ const logic = {
         return api.listGroupsByUser(this.userId)
             .then(groups => {
                 console.log(groups)
-                return groups})
+                return groups
+            })
     },
+
+    addUserToGroup(groupId, email) {
+        return api.addUserToGroup(this.userId, groupId, email)
+            .then(user => {
+                console.log(user)
+                return user
+            })
+    },
+
+    addSpend(amount, payerId, fractions) {
+        return api.addSpend(this.userId, this.groupId, amount, payerId, fractions)
+            .then(spend => {
+                console.log(spend)
+                return spend
+            })
+    },
+
+    listSpends(groupId) {
+        return api.listSpends(this.groupId)
+            .then(spends => {
+                console.log(spends)
+                return spends
+            })
+    },
+
 
     get loggedIn() {
         if (this.userId !== 'NO-ID' && this.userId !== null && this.userId !== undefined) return true
@@ -51,4 +78,3 @@ const logic = {
 }
 
 module.exports = logic
-//export default logic
