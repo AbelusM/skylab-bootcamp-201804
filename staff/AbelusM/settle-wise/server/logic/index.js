@@ -368,9 +368,12 @@ const logic = {
                 return Group.findById(groupId)
                     .then(group => {
                         if (!group) throw Error(`no group found with id ${groupId}`)
-                        return group.spends.map(({ amount, payer, fractions: { user, fraction } }) => ({ amount, payer, user, fraction }))
+                        return group.spends.map(({ id, amount, payer, fractions }) => {
+                            const _fractions = fractions.map(({ user, fraction }) => ({ userId: user.toString(), fraction }))
+
+                            return { id, amount, payerId: payer.toString(), fractions: _fractions }
+                        })
                     })
-                    .catch(({ message }) => { console.error(message) })
             })
     }
 }

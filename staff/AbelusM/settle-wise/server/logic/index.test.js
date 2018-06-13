@@ -91,8 +91,8 @@ describe('logic (settle-wise)', () => {
             logic.registerUser(userData.name, userData.surname, '     ')
                 .catch(({ message }) => expect(message).to.equal('user email is empty or blank'))
         )
-
         it('should fail on no user password', () =>
+
             logic.registerUser(userData.name, userData.surname, userData.email)
                 .catch(({ message }) => expect(message).to.equal('user password is not a string'))
         )
@@ -604,7 +604,7 @@ describe('logic (settle-wise)', () => {
     })
 
     describe('list spends', () => {
-        it('should succeed on correct data', () => {
+        it('should succeed on correct data', () =>
             Promise.all([
                 User.create(userData),
                 User.create(userData2)
@@ -636,7 +636,7 @@ describe('logic (settle-wise)', () => {
                         payer: user1._id,
                         fractions: [
                             { user: user1._id, fraction: 170 },
-                            { user: user2._id, fraction: 20 }
+                            { user: user2._id, fraction: 30 }
                         ]
                     })
 
@@ -657,16 +657,16 @@ describe('logic (settle-wise)', () => {
                             expect(group.spends).to.exist
                             expect(group.spends.length).to.equal(2)
 
-                            const { spends: [spend] } = group
+                            const { spends: [spend1, spend2] } = group
 
-                            expect(spend._id).to.exist
-                            expect(spend.amount).to.equal(100)
-                            expect(spend.payer).to.exist
-                            expect(spend.payer).to.deep.equal(user1._id)
-                            expect(spend.fractions).to.exist
-                            expect(spend.fractions.length).to.equal(2)
+                            expect(spend1._id).to.exist
+                            expect(spend1.amount).to.equal(100)
+                            expect(spend1.payer).to.exist
+                            expect(spend1.payer).to.deep.equal(user1._id)
+                            expect(spend1.fractions).to.exist
+                            expect(spend1.fractions.length).to.equal(2)
 
-                            const { fractions: [fraction1, fraction2] } = spend
+                            const { fractions: [fraction1, fraction2] } = spend1
 
                             expect(fraction1.user).to.exist
                             expect(fraction1.user.toString()).to.equal(user1._id.toString())
@@ -677,14 +677,21 @@ describe('logic (settle-wise)', () => {
                             expect(fraction2.fraction).to.equal(25)
 
                             return logic.listSpends(group._id.toString())
-                                .then(list => {
-                                    expect(list).to.exist
-                                    expect(list.length).to.equal(2)
+                                .then(spends => {
+                                    expect(spends).to.exist
+                                    expect(spends.length).to.equal(2)
                                     
+                                    const [_spend1, _spend2] = spends
+
+                                    expect(_spend1.id).to.exist
+                                    expect(_spend1.id).to.be.a('string')
+
+                                    expect(_spend1.amount).to.equal(spend1.amount)
+                                    // TODO ...
                                 })
                         })
                 })
-        })
+        )
     })
 
     after(done => mongoose.connection.db.dropDatabase(() => mongoose.connection.close(done)))
