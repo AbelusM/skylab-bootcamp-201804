@@ -256,6 +256,7 @@ const logic = {
     /**
     * Add a existing User to the current Group
     * 
+    * @param {string} userId A user that already belongs to the group and invites a new user by its email
     * @param {string} groupId The Id of the Group
     * @param {string} email The including user email 
     * 
@@ -263,7 +264,7 @@ const logic = {
     * 
     * @returns {Promise<string>} All the users inside the group
     */
-    addUserToGroup(groupId, email) {
+    addUserToGroup(userId, groupId, email) {
         return Promise.resolve()
             .then(() => {
                 if (typeof groupId !== 'string') throw Error('group id is not a string')
@@ -274,16 +275,22 @@ const logic = {
 
                 if (!(email = email.trim()).length) throw Error('user email is empty or blank')
 
-                return User.findOne({ email })
+                return User.findById(userId)
                     .then(user => {
-                        return Group.findByIdAndUpdate(groupId, { $push: { users: user._id } })
-                            .then(group => {
-                                if (!group) throw Error(`no group found with id ${groupId}`)
+                        if (!user) throw Error(`no user found with id ${userId}`)
 
-                                return true
+                        return User.findOne({ email })
+                            .then(user => {
+                                return Group.findByIdAndUpdate(groupId, { $push: { users: user._id } })
+                                    .then(group => {
+                                        if (!group) throw Error(`no group found with id ${groupId}`)
+
+                                        if (!group.users.some(_userId => _userId.toString() === userId)) throw Error(`user with id ${userId} does not belong to group with id ${groupId}`)
+
+                                        return true
+                                    })
                             })
                     })
-
             })
     },
 
@@ -299,6 +306,10 @@ const logic = {
     addSpend(userId, groupId, amount, payerId, fractions) {
         return Promise.resolve()
             .then(() => {
+                if (typeof userId !== 'string') throw Error('user id is not a string')
+
+                if (!(userId = userId.trim()).length) throw Error('user id is empty or blank')
+
                 if (typeof groupId !== 'string') throw Error('group id is not a string')
 
                 if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
@@ -340,7 +351,10 @@ const logic = {
                             .then(group => {
                                 if (!group) throw Error(`no group found with id ${group}`)
 
+                                if (!group.users.some(_userId => _userId.toString() === userId)) throw Error(`user with id ${userId} does not belong to group with id ${groupId}`)
+
                                 group.spends.push(new Spend({
+                                    user: userId,
                                     amount,
                                     payer: payerId,
                                     fractions
@@ -358,9 +372,13 @@ const logic = {
       * 
       * @returns {Promise<[Spend]>}
       */
-    listSpends(groupId) {
+    listSpends(userId, groupId) {
         return Promise.resolve()
             .then(() => {
+                if (typeof userId !== 'string') throw Error('group id is not a string')
+
+                if (!(userId = userId.trim()).length) throw Error('group id is empty or blank')
+
                 if (typeof groupId !== 'string') throw Error('group id is not a string')
 
                 if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
@@ -368,6 +386,9 @@ const logic = {
                 return Group.findById(groupId)
                     .then(group => {
                         if (!group) throw Error(`no group found with id ${groupId}`)
+
+                        if (!group.users.some(_userId => _userId.toString() === userId)) throw Error(`user with id ${userId} does not belong to group with id ${groupId}`)
+
                         return group.spends.map(({ id, amount, payer, fractions }) => {
                             const _fractions = fractions.map(({ user, fraction }) => ({ userId: user.toString(), fraction }))
 

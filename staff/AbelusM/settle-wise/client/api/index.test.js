@@ -798,6 +798,7 @@ describe('logic (settle-wise api)', () => {
 
                             api.token = token
 
+                            // TODO use mongoose instead, not api here for adding a spend
                             return api.addSpend(user1._id.toString(), group._id.toString(), 100, user1._id.toString(), [
                                 { user: user1._id.toString(), fraction: 75 },
                                 { user: user2._id.toString(), fraction: 25 }
@@ -832,14 +833,16 @@ describe('logic (settle-wise api)', () => {
                                     expect(fraction2.user.toString()).to.equal(user2._id.toString())
                                     expect(fraction2.fraction).to.equal(25)
 
-                                    return api.listSpends(group.id)
-                                    .then(res=>{
-                                        expect(res).to.exist
-                                    })
+                                    return api.listSpends(userId1.toString(), group.id)
+                                        .then(res => {
+                                            expect(res).to.exist
+                                            debugger
+                                        })
                                 })
                         })
                 })
-        )})
+        )
+    })
 
 
     after(done => mongoose.connection.db.dropDatabase(() => mongoose.connection.close(done)))

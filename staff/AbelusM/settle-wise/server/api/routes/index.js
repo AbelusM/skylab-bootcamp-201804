@@ -116,7 +116,7 @@ router.get('/users/:userId/groups', jwtValidator, (req, res) => {
 router.patch('/users/:userId/groups/:groupId', [jwtValidator, jsonBodyParser], (req, res) => {
     const { params: { userId, groupId }, body: { email } } = req
 
-    logic.addUserToGroup(groupId, email)
+    logic.addUserToGroup(userId, groupId, email)
         .then(users => {
             res.status(200)
             res.json({ status: 'OK', data: users })
@@ -130,10 +130,10 @@ router.patch('/users/:userId/groups/:groupId', [jwtValidator, jsonBodyParser], (
 router.post('/users/:userId/groups/:groupId/spends', [jwtValidator, jsonBodyParser], (req, res) => {
     const { params: { userId, groupId }, body: { amount, payerId, fractions } } = req
 
-    logic.addSpend(groupId, amount, payerId, fractions)
+    logic.addSpend(userId, groupId, amount, payerId, fractions)
         .then(id => {
             res.status(201)
-            res.json({ status: 'OK', data: { id } })
+            res.json({ status: 'OK', data: id })
         })
         .catch(({ message }) => {
             res.status(400)
@@ -142,12 +142,12 @@ router.post('/users/:userId/groups/:groupId/spends', [jwtValidator, jsonBodyPars
 })
 
 router.get('/users/:userId/groups/:groupId/spends', [jwtValidator, jsonBodyParser], (req, res) => {
-    const { params: { groupId } } = req
+    const { params: { userId, groupId } } = req
 
-    logic.listSpends(groupId)
+    logic.listSpends(userId, groupId)
         .then(spends => {
             res.status(200)
-            res.json({ status: 'OK', data: { spends } })
+            res.json({ status: 'OK', data: spends })
         })
         .catch(({ message }) => {
             res.status(400)

@@ -470,7 +470,7 @@ describe('logic (settle-wise)', () => {
 
                             const [group] = groups
 
-                            return logic.addUserToGroup(group.id, user2.email)
+                            return logic.addUserToGroup(user1._id.toString(), group.id, user2.email)
                                 .then(res => {
                                     expect(res).to.be.true
 
@@ -510,7 +510,7 @@ describe('logic (settle-wise)', () => {
                             expect(group._id).to.exist
                             expect(group.name).to.equal(groupData.name)
 
-                            return logic.addSpend(group._id.toString(), 100, user1._id.toString(), [
+                            return logic.addSpend(user1._id.toString(), group._id.toString(), 100, user1._id.toString(), [
                                 { user: user1._id.toString(), fraction: 75 },
                                 { user: user2._id.toString(), fraction: 25 }
                             ])
@@ -572,7 +572,7 @@ describe('logic (settle-wise)', () => {
                             expect(group._id).to.exist
                             expect(group.name).to.equal(groupData.name)
 
-                            return logic.addSpend(group._id.toString(), 100, user1._id.toString(), [
+                            return logic.addSpend(user1._id.toString(), group._id.toString(), 100, user1._id.toString(), [
                                 { user: user1._id.toString(), fraction: 75 },
                                 { user: user2._id.toString(), fraction: 25 }
                             ])
@@ -624,6 +624,7 @@ describe('logic (settle-wise)', () => {
                     group.users.push(user2._id)
 
                     const spend = new Spend({
+                        user: user1._id,
                         amount: 100,
                         payer: user1._id,
                         fractions: [
@@ -632,6 +633,7 @@ describe('logic (settle-wise)', () => {
                         ]
                     })
                     const spend2 = new Spend({
+                        user: user1._id,
                         amount: 200,
                         payer: user1._id,
                         fractions: [
@@ -693,7 +695,7 @@ describe('logic (settle-wise)', () => {
                             expect(fractionB.user.toString()).to.equal(user2._id.toString())
                             expect(fractionB.fraction).to.equal(30)
 
-                            return logic.listSpends(group._id.toString())
+                            return logic.listSpends(userId1.toString(), group._id.toString())
                                 .then(spends => {
                                     expect(spends).to.exist
                                     expect(spends.length).to.equal(2)

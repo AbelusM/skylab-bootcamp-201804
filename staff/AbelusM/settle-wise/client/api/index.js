@@ -376,9 +376,12 @@ const api = {
    * 
    * @returns {Promise<[group]>} The complete group information
    */
-  listSpends(groupId) {
+  listSpends(userId, groupId) {
     return Promise.resolve()
         .then(() => {
+            if (typeof userId !== 'string') throw Error('user id is not a string')
+
+            if (!(userId = userId.trim()).length) throw Error('user id is empty or blank')
 
             if (typeof groupId !== 'string') throw Error('group id is not a string')
 
