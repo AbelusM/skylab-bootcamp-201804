@@ -645,6 +645,7 @@ describe('logic (settle-wise)', () => {
 
                     return group.save()
                         .then(group => {
+                           
                             expect(group._id).to.exist
                             expect(group.name).to.equal(groupData.name)
 
@@ -676,10 +677,10 @@ describe('logic (settle-wise)', () => {
                             expect(fraction2.fraction).to.equal(25)
 
                             return logic.listSpends(group._id.toString())
-                                .then(res => {
-                                    expect(res).to.exist
-                                    expect(res.length).to.equal(2)
-
+                                .then(list => {
+                                    expect(list).to.exist
+                                    expect(list.length).to.equal(2)
+                                    
                                 })
                         })
                 })

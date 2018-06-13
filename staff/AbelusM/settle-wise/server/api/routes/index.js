@@ -141,4 +141,18 @@ router.post('/users/:userId/groups/:groupId/spends', [jwtValidator, jsonBodyPars
         })
 })
 
+router.get('/users/:userId/groups/:groupId/spends', [jwtValidator, jsonBodyParser], (req, res) => {
+    const { params: { groupId } } = req
+
+    logic.listSpends(groupId)
+        .then(spends => {
+            res.status(200)
+            res.json({ status: 'OK', data: { spends } })
+        })
+        .catch(({ message }) => {
+            res.status(400)
+            res.json({ status: 'KO', error: message })
+        })
+})
+
 module.exports = router

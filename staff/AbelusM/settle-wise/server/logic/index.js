@@ -313,6 +313,13 @@ const logic = {
 
                 // TODO validate amount vs fractions coherence
 
+                for (let i = 0; i < fractions.length; i++) {
+                    for (let n = 0; n < fractions[i].fraction.length; i++) {
+                        let res = + fractions[i].fraction[n]
+                        if (amount !== res) throw Error('amount is not equal to the sum of fractions')
+                    }
+                }
+
                 const userIds = [payerId]
 
                 const promises = [User.findById(payerId)]
@@ -361,86 +368,11 @@ const logic = {
                 return Group.findById(groupId)
                     .then(group => {
                         if (!group) throw Error(`no group found with id ${groupId}`)
-
-                        return group.spends.map(({ id, fraction }) => ({ id, fraction }))
+                        return group.spends.map(({ amount, payer, fractions: { user, fraction } }) => ({ amount, payer, user, fraction }))
                     })
+                    .catch(({ message }) => { console.error(message) })
             })
-    },
-
-    //     /**
-    //      * 
-    //      * @param {string} userId
-    //      * @param {string} noteId 
-    //      *
-    //      * @returns {Promise<boolean>}
-    //      */
-    //     removeNote(userId, noteId) {
-    //         return Promise.resolve()
-    //             .then(() => {
-    //                 if (typeof userId !== 'string') throw Error('user id is not a string')
-
-    //                 if (!(userId = userId.trim()).length) throw Error('user id is empty or blank')
-
-    //                 if (typeof noteId !== 'string') throw Error('note id is not a string')
-
-    //                 if (!(noteId = noteId.trim())) throw Error('note id is empty or blank')
-
-    //                 return User.findById(userId)
-    //                     .then(user => {
-    //                         if (!user) throw Error(`no user found with id ${userId}`)
-
-    //                         const note = user.notes.id(noteId)
-
-    //                         if (!note) throw Error(`no note found with id ${noteId}`)
-
-    //                         note.remove()
-
-    //                         return user.save()
-    //                     })
-    //                     .then(() => true)
-    //             })
-    //     },
-
-    //     /**
-    //      * 
-    //      * @param {string} userId
-    //      * @param {string} noteId 
-    //      * @param {string} text 
-    //      * 
-    //      * @returns {Promise<boolean>}
-    //      */
-    //     updateNote(userId, noteId, text) {
-    //         return Promise.resolve()
-    //             .then(() => {
-    //                 if (typeof userId !== 'string') throw Error('user id is not a string')
-
-    //                 if (!(userId = userId.trim()).length) throw Error('user id is empty or blank')
-
-    //                 if (typeof noteId !== 'string') throw Error('note id is not a string')
-
-    //                 if (!(noteId = noteId.trim())) throw Error('note id is empty or blank')
-
-    //                 if (typeof text !== 'string') throw Error('text is not a string')
-
-    //                 if ((text = text.trim()).length === 0) throw Error('text is empty or blank')
-
-    //                 return User.findById(userId)
-    //                     .then(user => {
-    //                         if (!user) throw Error(`no user found with id ${userId}`)
-
-    //                         const note = user.notes.id(noteId)
-
-    //                         if (!note) throw Error(`no note found with id ${noteId}`)
-
-    //                         note.text = text
-
-    //                         return user.save()
-    //                     })
-    //                     .then(() => true)
-    //             })
-    //     },
-
-
+    }
 }
 
 module.exports = logic
