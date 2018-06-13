@@ -49,14 +49,7 @@ class Group extends Component {
             })
     }
 
-    catchUserName = e => {
-        e.preventDefault()
-        this.setState({
-            email: e.target.value
-        })
-    }
-
-    catchUserName = e => {
+    catchInfoSpend = e => {
         e.preventDefault()
         this.setState({
             email: e.target.value
