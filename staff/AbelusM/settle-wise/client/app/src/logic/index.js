@@ -48,8 +48,8 @@ const logic = {
             })
     },
 
-    listSpends(groupId) {
-        return api.listSpends(this.groupId)
+    listSpends(group) {
+        return api.listSpends(this.userId, group)
             .then(spends => {
                 console.log(spends)
                 return spends

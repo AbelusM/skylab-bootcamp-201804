@@ -31,6 +31,14 @@ class Home extends Component {
 			groupName: e.target.value
 		})
 	}
+	
+	showList(){
+        return this.state.groups.map(group => <div>
+            <button>
+                {group.name}
+                <Group onClick={this.state.groups} groupId={group._id} /></button>
+        </div>)
+    }
 
 	submit = (e) => {
 		e.preventDefault()
@@ -49,8 +57,9 @@ class Home extends Component {
 						<input className="inner flex flex-3" type="text" onChange={this.catchGroupName} placeholder="group name" />
 						<button value={this.groupName} onClick={this.createGroup}>Create Group</button>
 					</form>
-					<GroupsList groups={this.state.groups} />
-					<Group data={this.state.groups}/>
+					<div>{this.showList}</div>
+					<GroupsList props={this.state.groups} />
+					<Group data={this.state.groups} />
 				</div>
 			</section>
 			<button onClick={() => {

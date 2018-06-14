@@ -4,7 +4,7 @@ import logic from '../logic'
 import '../styles/assets/css/main.css'
 import surfgroup from '../styles/images/surfgroup.jpg'
 import GroupsList from './GroupsList'
-import Spend from './Spend'
+// import Spend from './Spend'
 
 class Group extends Component {
     state = {
@@ -18,14 +18,16 @@ class Group extends Component {
     }
 
     componentDidMount() {
-        logic.listSpends(this.state.groupId)
-            .then((spends) => this.setState({ spends }))
+        if (this.state.groupId) this.listSpends()
+
+        // logic.listSpends(this.state.groupId)
+        //     .then((spends) => this.setState({ spends }))
     }
 
     addUserToGroup = e => {
         e.preventDefault()
         const email = this.state.email
-        const groupId = this.state.groupId
+        const groupId = this.state.groupId.toString()
 
         logic.addUserToGroup(groupId, email)
             .then(() => console.log('user added to group'))
@@ -49,10 +51,29 @@ class Group extends Component {
             })
     }
 
+    listSpends = e => {
+        e.preventDefault()
+        const group = this.state.groupId.toString()
+
+        if (typeof group !== undefined) {
+            logic.listSpends(group)
+                .then(() => {
+                    this.setState.groupId = ''
+                })
+        }
+    }
+
     catchInfoSpend = e => {
         e.preventDefault()
         this.setState({
             email: e.target.value
+        })
+    }
+
+    catchGroupId = e => {
+        e.preventDefault()
+        this.setState({
+            groupId: e.target.value
         })
     }
 
@@ -65,14 +86,16 @@ class Group extends Component {
             <section id="main" className="wrapper">
                 <div className="inner">
                     <header className="align-center">
-                        <h1>{this.state.groups.name}</h1>
+                        <h1 onClick={this.catchGroupId}>Users</h1>
 
                     </header>
                     <form>
                         <input className="inner flex flex-3" type="text" onChange={this.catchUserName} placeholder="user email" />
-                        <button value={this.email} onClick={this.addUserToGroup}>Add User to Group</button>
+                        <button value={this.email} onChange={this.addUserToGroup}>Add User to Group</button>
                     </form>
-                    <Spend/>
+                    <div>
+                        {this.listSpends}
+                    </div>
                 </div>
             </section>
         </main>
