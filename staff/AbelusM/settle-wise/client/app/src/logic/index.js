@@ -47,6 +47,13 @@ const logic = {
                 return spend
             })
     },
+    listUsers(group) {
+        return api.listUsers(this.userId, group)
+            .then(users => {
+                console.log(users)
+                return users
+            })
+    },
 
     listSpends(group) {
         return api.listSpends(this.userId, group)

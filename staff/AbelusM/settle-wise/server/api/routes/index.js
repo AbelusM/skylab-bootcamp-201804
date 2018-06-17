@@ -113,6 +113,20 @@ router.get('/users/:userId/groups', jwtValidator, (req, res) => {
         })
 })
 
+router.get('/users/:userId/groups/:groupId', jwtValidator, (req, res) => {
+    const { params: { userId, groupId } } = req;
+
+    logic.listUsers(userId, groupId)
+        .then(users => {
+            res.status(200)
+            res.json({ status: 'OK', data: users })
+        })
+        .catch(({ message }) => {
+            res.status(400)
+            res.json({ status: 'KO', error: message })
+        })
+})
+
 router.patch('/users/:userId/groups/:groupId', [jwtValidator, jsonBodyParser], (req, res) => {
     const { params: { userId, groupId }, body: { email } } = req
 

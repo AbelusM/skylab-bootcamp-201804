@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
-import { Register, Login, Landing, Home } from './components'
+import { Register, Login, Landing, Home, Group } from './components'
 import { Link, Route, withRouter } from 'react-router-dom'
 import './styles/assets/css/main.css';
 import logic from './logic'
 import Menu from './components/menu.js'
 import Header from './components/header.js'
 import Footer from './components/footer.js'
-
 
 class App extends Component {
   state = { registered: false }
@@ -45,6 +44,7 @@ class App extends Component {
         <Menu />
         <Header />
         <Route exact path="/" render={() => <Landing />} />
+        <Route path="/groups" render={() => <Group />} />
         {
           <Route exact path="/register" render={() => {
             return this.state.registered ?

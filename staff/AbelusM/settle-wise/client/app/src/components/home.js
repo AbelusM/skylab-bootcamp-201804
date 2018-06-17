@@ -21,28 +21,27 @@ class Home extends Component {
 		const name = this.state.groupName
 
 		logic.createGroup(name)
+			.then(res => this.state.groups.push(res))
 			.then(() => console.log('created group'))
 			.then(() => this.setState.groupName = '')
 	}
 
 	catchGroupName = e => {
-		e.preventDefault()
+		// e.preventDefault()
 		this.setState({
 			groupName: e.target.value
 		})
 	}
-	
-	showList(){
-        return this.state.groups.map(group => <div>
-            <button>
-                {group.name}
-                <Group onClick={this.state.groups} groupId={group._id} /></button>
-        </div>)
-    }
+
+	showList() {
+		return this.state.groups.map(group => <div>
+			<button>{group.name}</button>
+		</div>)
+	}
 
 	submit = (e) => {
 		e.preventDefault()
-		// this.props.history.push(`/groups`)
+		this.props.history.push(`/groups`)
 	}
 
 	render() {
@@ -54,12 +53,11 @@ class Home extends Component {
 						<h2>These are your Groups</h2>
 					</header>
 					<form>
-						<input className="inner flex flex-3" type="text" onChange={this.catchGroupName} placeholder="group name" />
+						<input className="inner flex flex-3" type="text" onChange={this.catchGroupName} placeholder="group name" autoComplete="off" />
 						<button value={this.groupName} onClick={this.createGroup}>Create Group</button>
 					</form>
-					<div>{this.showList}</div>
-					<GroupsList props={this.state.groups} />
-					<Group data={this.state.groups} />
+					{/* {this.state.groups.length > 0 && this.showList} */}
+					<GroupsList groups={this.state.groups}/>
 				</div>
 			</section>
 			<button onClick={() => {

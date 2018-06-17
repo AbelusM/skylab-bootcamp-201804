@@ -717,5 +717,121 @@ describe('logic (settle-wise)', () => {
         )
     })
 
+    describe('split the spends between the users of the groups', () => {
+        it('should succeed on correct data', () =>
+            Promise.all([
+                User.create(userData),
+                User.create(userData2)
+            ])
+                .then(res => {
+                    const [{ _doc: user1 }, { _doc: user2 }] = res
+
+                    expect(user1).to.exist
+                    expect(user1.name).to.equal(userData.name)
+
+                    expect(user2).to.exist
+                    expect(user2.name).to.equal(userData2.name)
+
+                    const group = new Group(groupData)
+
+                    group.users.push(user1._id)
+                    group.users.push(user2._id)
+
+                    const spend = new Spend({
+                        user: user1._id,
+                        amount: 100,
+                        payer: user1._id,
+                        fractions: [
+                            { user: user1._id, fraction: 75 },
+                            { user: user2._id, fraction: 25 }
+                        ]
+                    })
+                    const spend2 = new Spend({
+                        user: user1._id,
+                        amount: 200,
+                        payer: user1._id,
+                        fractions: [
+                            { user: user1._id, fraction: 170 },
+                            { user: user2._id, fraction: 30 }
+                        ]
+                    })
+
+                    group.spends.push(spend)
+                    group.spends.push(spend2)
+
+                    return group.save()
+                        .then(group => {
+
+                            expect(group._id).to.exist
+                            expect(group.name).to.equal(groupData.name)
+
+                            const { users: [userId1, userId2] } = group
+
+                            expect(userId1.toString()).to.equal(user1._id.toString())
+                            expect(userId2.toString()).to.equal(user2._id.toString())
+
+                            expect(group.spends).to.exist
+                            expect(group.spends.length).to.equal(2)
+
+                            const { spends: [spend1, spend2] } = group
+
+                            expect(spend1._id).to.exist
+                            expect(spend1.amount).to.equal(100)
+                            expect(spend1.payer).to.exist
+                            expect(spend1.payer).to.deep.equal(user1._id)
+                            expect(spend1.fractions).to.exist
+                            expect(spend1.fractions.length).to.equal(2)
+
+                            const { fractions: [fraction1, fraction2] } = spend1
+
+                            expect(fraction1.user).to.exist
+                            expect(fraction1.user.toString()).to.equal(user1._id.toString())
+                            expect(fraction1.fraction).to.equal(75)
+
+                            expect(fraction2.user).to.exist
+                            expect(fraction2.user.toString()).to.equal(user2._id.toString())
+                            expect(fraction2.fraction).to.equal(25)
+
+                            expect(spend2._id).to.exist
+                            expect(spend2.amount).to.equal(200)
+                            expect(spend2.payer).to.exist
+                            expect(spend2.payer).to.deep.equal(user1._id)
+                            expect(spend2.fractions).to.exist
+                            expect(spend2.fractions.length).to.equal(2)
+
+                            const { fractions: [fractionA, fractionB] } = spend2
+
+                            expect(fractionA.user).to.exist
+                            expect(fractionA.user.toString()).to.equal(user1._id.toString())
+                            expect(fractionA.fraction).to.equal(170)
+
+                            expect(fractionB.user).to.exist
+                            expect(fractionB.user.toString()).to.equal(user2._id.toString())
+                            expect(fractionB.fraction).to.equal(30)
+
+                            return logic.splitSpends(userId1.toString(), group._id.toString())
+                                .then(splits => {
+                                    expect(splits).to.exist
+                                    expect(splits.length).to.equal(1)
+
+                                    const [_splits1, _splits2] = splits
+
+                                    expect(_splits1).to.exist
+                                    expect(_splits1.amount).to.be.a('number')
+
+                                    expect(_splits1.amount).to.equal(25)
+                                    expect(_splits1.user).to.equal(user2._id)
+
+                                    expect(_splits2.id).to.exist
+                                    expect(_splits2.id).to.be.a('number')
+
+                                    expect(_splits2.amount).to.equal(140)
+                                    expect(_splits2.user).to.equal(user2._id)
+                                })
+                        })
+                })
+        )
+    })
+
     after(done => mongoose.connection.db.dropDatabase(() => mongoose.connection.close(done)))
 })

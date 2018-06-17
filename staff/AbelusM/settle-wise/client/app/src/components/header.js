@@ -1,6 +1,7 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
 import '../styles/assets/css/main.css';
+
 
 
 function Header(props) {
@@ -13,8 +14,10 @@ function Header(props) {
                 </nav>
                 <a href="index.html" className="logo">SettleWise</a>
                 <nav className="right">
-                    <a href="#login" className="button alt">Log in</a>
-                    <a href="#register" className="button alt">Register</a>
+                <Link to="/login" className="button alt">Log in</Link>
+                <Link to="/register" className="button alt">Register</Link>
+                {/* <a href="#login" >Log in</a>
+                    <a href="#register" className="button alt">Register</a> */}
                 </nav>
             </header>
         </div>

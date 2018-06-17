@@ -8,17 +8,18 @@ import GroupsList from './GroupsList'
 
 class Group extends Component {
     state = {
-        groups: [],
+        users: [],
+        spends: [],
         email: '',
         groupId: '',
-        spends: '',
         amount: 0,
         payerId: '',
         fractions: []
     }
 
     componentDidMount() {
-        if (this.state.groupId) this.listSpends()
+        // this.listUsers()
+        if (this.props.groupId) this.listSpends()
 
         // logic.listSpends(this.state.groupId)
         //     .then((spends) => this.setState({ spends }))
@@ -51,19 +52,43 @@ class Group extends Component {
             })
     }
 
-    listSpends = e => {
-        e.preventDefault()
-        const group = this.state.groupId.toString()
+    listUsers() {
+        const group = this.props.groupId.toString()
 
         if (typeof group !== undefined) {
-            logic.listSpends(group)
-                .then(() => {
+            logic.listUsers(group)
+                .then(user => {
+                    this.setState({
+                        users: user.users
+                    })
                     this.setState.groupId = ''
+                }).then(() => {
+                    return this.state.users.map(res => <div>
+                        <label>{res}</label>
+                    </div>)
                 })
         }
     }
 
-    catchInfoSpend = e => {
+    listSpends() {
+        const group = this.props.groupId.toString()
+
+        if (typeof group !== undefined) {
+            logic.listSpends(group)
+                .then(spend => {
+                    this.setState({
+                        spends: spend
+                    })
+                    this.setState.groupId = ''
+                }).then(() => {
+                    return this.state.spends.map(res => <div>
+                        <label>{res}</label>
+                    </div>)
+                })
+        }
+    }
+
+    catchUserName = e => {
         e.preventDefault()
         this.setState({
             email: e.target.value
@@ -86,14 +111,14 @@ class Group extends Component {
             <section id="main" className="wrapper">
                 <div className="inner">
                     <header className="align-center">
-                        <h1 onClick={this.catchGroupId}>Users</h1>
-
+                        <h1>Users</h1>
                     </header>
                     <form>
                         <input className="inner flex flex-3" type="text" onChange={this.catchUserName} placeholder="user email" />
                         <button value={this.email} onChange={this.addUserToGroup}>Add User to Group</button>
                     </form>
                     <div>
+                        {this.listUsers}
                         {this.listSpends}
                     </div>
                 </div>
