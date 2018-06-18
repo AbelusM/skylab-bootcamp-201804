@@ -252,30 +252,30 @@ const logic = {
                     })
             })
     },
- /**
-     * List users by group
-     * 
-    * @param {string} groupId The user id
-    * 
-    * @throws {Error} If the user does not belong to any group
-    * 
-    * @returns {Promise<[group]>} The complete group information
-    */
-   listUsers(userId, groupId) {
-    return Promise.resolve()
-        .then(() => {
-            if (typeof groupId !== 'string') throw Error('group id is not a string')
+    /**
+        * List users by group
+        * 
+       * @param {string} groupId The user id
+       * 
+       * @throws {Error} If the user does not belong to any group
+       * 
+       * @returns {Promise<[group]>} The complete group information
+       */
+    listUsers(userId, groupId) {
+        return Promise.resolve()
+            .then(() => {
+                if (typeof groupId !== 'string') throw Error('group id is not a string')
 
-            if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
+                if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
 
-            return Group.findById({ groupId })
-                .then(users => {
-                    if (!users) throw Error(`no group found with id ${groupId}`)
+                return Group.findById({ groupId })
+                    .then(users => {
+                        if (!users) throw Error(`no group found with id ${groupId}`)
 
-                    return users
-                })
-        })
-},
+                        return users
+                    })
+            })
+    },
     /**
     * Add a existing User to the current Group
     * 
@@ -423,50 +423,80 @@ const logic = {
 
 
     //TODO - split spends and make the less transactions possibles to clean the account 
-    
-    splitSpends(groupId, userId, amount, payer, {users, fraction}) {
+
+    splitSpends(groupId, userId, amount, payer, { users, fraction }) {
+        if (typeof groupId !== 'string') throw Error('group id is not a string')
+
+        if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
+
+        if (typeof userId !== 'string') throw Error('group id is not a string')
+
+        if (!(userId = userId.trim()).length) throw Error('group id is empty or blank')
+
+        if (typeof amount !== 'number') throw Error('amount is not a number')
+
+        if (!(amount = amount.trim()).length) throw Error('amount is empty or blank')
+
+        if (typeof payer !== 'string') throw Error('payer id is not a string')
+
+        if (!(payer = payer.trim()).length) throw Error('payer id is empty or blank')
+
+        const usersFractions = users.map(index => User.findById(index))
+
+        const userAmount = []
+
+        const userDebts = []
+
         return Promise.resolve()
             .then(() => {
-                if (typeof groupId !== 'string') throw Error('group id is not a string')
-
-                if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
-
-                if (typeof userId !== 'string') throw Error('group id is not a string')
-
-                if (!(userId = userId.trim()).length) throw Error('group id is empty or blank')
-
-                if (typeof amount !== 'number') throw Error('amount is not a number')
-
-                if (!(amount = amount.trim()).length) throw Error('amount is empty or blank')
-
-                if (typeof payer !== 'string') throw Error('payer id is not a string')
-
-                if (!(payer = payer.trim()).length) throw Error('payer id is empty or blank')
-                
                 return Group.findById(groupId)
-                    .then(group => {
-                        if (!group) throw Error(`no group found with id ${groupId}`)
+                    .then(GroupPromise => {
+                        return Promise.all([
+                            User.findById(userId),
+                            User.findById(payerId)
+                        ]).then(res => {
+                            const [{ _doc: userSaver }, { _doc: payerInfo }] = res
+                        })
+                            .then(() => {
+                                return Promise.all(usersFractions)
+                                    .then(ids => {
+                                        const userFraction = ids.map(idx => ids = fraction)
+                                        const payerFraction = payerInfo.fraction
 
-                        if (!group.users.some(_userId => _userId.toString() === userId)) throw Error(`user with id ${userId} does not belong to group with id ${groupId}`)
-
-                        return group.spends.map(({ id, amount, payer, fractions }) => {
-                            const _fractions = fractions.map(({ user, fraction }) => ({ userId: user.toString(), fraction }))
-
-                            for (const [user, fraction] of _fractions) {
-                            
+                                        if (amount === payerFraction) {
+                                            for (let i; i < users.length; i++) {
+                                                (user[i].fraction - payer.fraction) = res
+                                                user[i] = debt to payer = fraction
+                                                userAmount[i] = res - amount
+                                            }
+                                            return res
+                                        } else {
+                                            amount - payer fraction - otherPayer.fraction
+                                            for (let n; n < users.length; n++) {
+                                                (user[n].fraction - payer.fraction - otherPayer.fraction) = res
+                                                user[i] = debt to payer = fraction
+                                                userAmount[i] = res - amount
+                                            }
+                                            return res
+                                        }
+                                        if (userAmount)
+                                            for (let y; y < users.length; y++) {
+                                                if (userAmount[i] > userAmount[n])
+                                                    userDebts[i] = userDebts[n]
+                                                usersDebts.push(userDebts[i])
+                                                return usersDebts
+                                            }
+                                    }
 // let user, payer, amount, fractions: user, fraction;
-
-
-
 
 // user is the one who registers the payment
 // the sum of the all fractions must be the amount
-                            }
+
 // user1 payes 75, user2 25, amount is 100, user1 to be the most payer is set up as 0 - 25 (user 2), then user2 debts 25 to user1. 
 // the same if there are more ppl, first is set up as 0, we take the 2nd and always will be negative account, and some debt users.
 // chain of operations to do this, or a for.
 
-                            // return { id, amount, payerId: payer.toString(), fractions: _fractions }
+// return { id, amount, payerId: payer.toString(), fractions: _fractions }
                         })
                     })
             })
