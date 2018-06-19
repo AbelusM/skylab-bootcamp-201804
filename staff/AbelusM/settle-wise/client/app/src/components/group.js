@@ -113,14 +113,19 @@ class Group extends Component {
                     <header className="align-center">
                         <h1>Users</h1>
                     </header>
+                    <section>
+                        {this.listUsers}
+                        {this.listSpends}
+                    </section>
+                    <form>
+                        <input className="inner flex flex-3" type="text" onChange={this.catchUserName} placeholder="new payment" />
+                        <input className="inner flex flex-3" type="text" onChange={this.catchUserName} placeholder="user email" />
+                        <button value={this.email} onChange={this.addSpend}>Add a Spend</button>
+                    </form>
                     <form>
                         <input className="inner flex flex-3" type="text" onChange={this.catchUserName} placeholder="user email" />
                         <button value={this.email} onChange={this.addUserToGroup}>Add User to Group</button>
                     </form>
-                    <div>
-                        {this.listUsers}
-                        {this.listSpends}
-                    </div>
                 </div>
             </section>
         </main>

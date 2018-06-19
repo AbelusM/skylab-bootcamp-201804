@@ -465,16 +465,16 @@ const logic = {
 
                                         if (amount === payerFraction) {
                                             for (let i; i < users.length; i++) {
-                                                (user[i].fraction - payer.fraction) = res
-                                                user[i] = debt to payer = fraction
+                                                (user[i].fraction - payerFraction) = res
+                                                user[i] = debt = fraction
                                                 userAmount[i] = res - amount
                                             }
                                             return res
                                         } else {
-                                            amount - payer fraction - otherPayer.fraction
+                                            amount - payerFraction - otherPayer.fraction
                                             for (let n; n < users.length; n++) {
-                                                (user[n].fraction - payer.fraction - otherPayer.fraction) = res
-                                                user[i] = debt to payer = fraction
+                                                (user[n].fraction - payerFraction - otherPayer.fraction) = res
+                                                user[i] = debt = fraction
                                                 userAmount[i] = res - amount
                                             }
                                             return res
