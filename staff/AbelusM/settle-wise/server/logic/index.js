@@ -424,7 +424,7 @@ const logic = {
 
     //TODO - split spends and make the less transactions possibles to clean the account 
 
-    splitSpends(groupId, userId, amount, payer, { users, fraction }) {
+    splitSpends(userId, groupId) {
         if (typeof groupId !== 'string') throw Error('group id is not a string')
 
         if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
@@ -433,60 +433,84 @@ const logic = {
 
         if (!(userId = userId.trim()).length) throw Error('group id is empty or blank')
 
-        if (typeof amount !== 'number') throw Error('amount is not a number')
+        // const usersFractions = users.map(index => User.findById(index))
 
-        if (!(amount = amount.trim()).length) throw Error('amount is empty or blank')
-
-        if (typeof payer !== 'string') throw Error('payer id is not a string')
-
-        if (!(payer = payer.trim()).length) throw Error('payer id is empty or blank')
-
-        const usersFractions = users.map(index => User.findById(index))
-
-        const userAmount = []
-
-        const userDebts = []
+        let userDebts = []
 
         return Promise.resolve()
             .then(() => {
                 return Group.findById(groupId)
-                    .then(GroupPromise => {
-                        return Promise.all([
-                            User.findById(userId),
-                            User.findById(payerId)
-                        ]).then(res => {
-                            const [{ _doc: userSaver }, { _doc: payerInfo }] = res
-                        })
-                            .then(() => {
-                                return Promise.all(usersFractions)
-                                    .then(ids => {
-                                        const userFraction = ids.map(idx => ids = fraction)
-                                        const payerFraction = payerInfo.fraction
+                    .then(groupData => {
+                        debugger
+                        // const debts = groupData.spends.reduce((debt, userId) => {
+                        //     (groupData.spends.payer === groupData.spends.user) ? debt[userId] += groupData.spends.fractions.fraction : debt[userId] -= groupData.spends.fractions.fraction;
+                        //     return debt
+                        // }, {})
 
-                                        if (amount === payerFraction) {
-                                            for (let i; i < users.length; i++) {
-                                                (user[i].fraction - payerFraction) = res
-                                                user[i] = debt = fraction
-                                                userAmount[i] = res - amount
-                                            }
-                                            return res
-                                        } else {
-                                            amount - payerFraction - otherPayer.fraction
-                                            for (let n; n < users.length; n++) {
-                                                (user[n].fraction - payerFraction - otherPayer.fraction) = res
-                                                user[i] = debt = fraction
-                                                userAmount[i] = res - amount
-                                            }
-                                            return res
-                                        }
-                                        if (userAmount)
-                                            for (let y; y < users.length; y++) {
-                                                if (userAmount[i] > userAmount[n])
-                                                    userDebts[i] = userDebts[n]
-                                                usersDebts.push(userDebts[i])
-                                                return usersDebts
-                                            }
-                                    }
+                        // userDebts.push(debts)
+                    
+                        // userDebts.forEach(user => user._id = debts[user._id])
+
+                        // return userDebts
+
+                    })
+
+            })
+    }
+}
+
+// listProductsFromCart() {
+//     return clientApi.listProductsByIds(this.cart())
+//         .then(products => {
+//             const quantities = this.cart().reduce((accum, productId) => {
+//                 if (accum[productId]) accum[productId]++
+//                 else accum[productId] = 1
+
+//                 return accum
+//             }, {})
+
+//             products.forEach(product => product.quantity = quantities[product.id])
+
+//             return products
+//         })
+// },
+
+// return Promise.all([
+//     User.findById(userId),
+//     User.findById(payerId)
+// ]).then(res => {
+//     const [{ _doc: userSaver }, { _doc: payerInfo }] = res
+// })
+//     .then(() => {
+//         return Promise.all(usersFractions)
+//             .then(ids => {
+//                 const userFraction = ids.map(idx => ids = fraction)
+//                 const payerFraction = payerInfo.fraction
+
+//                 if (amount === payerFraction) {
+//                     for (let i; i < users.length; i++) {
+//                         (user[i].fraction - payerFraction) = res
+//                         user[i] = debt = fraction
+//                         userAmount[i] = res - amount
+//                     }
+//                     return res
+//                 } else {
+//                     amount - payerFraction - otherPayer.fraction
+//                     for (let n; n < users.length; n++) {
+//                         (user[n].fraction - payerFraction - otherPayer.fraction) = res
+//                         user[i] = debt = fraction
+//                         userAmount[i] = res - amount
+//                     }
+//                     return res
+//                 }
+//                 if (userAmount)
+//                     for (let y; y < users.length; y++) {
+//                         if (userAmount[i] > userAmount[n])
+//                             userDebts[i] = userDebts[n]
+//                         usersDebts.push(userDebts[i])
+//                         return usersDebts
+//                     }
+//             }
 // let user, payer, amount, fractions: user, fraction;
 
 // user is the one who registers the payment
@@ -497,10 +521,10 @@ const logic = {
 // chain of operations to do this, or a for.
 
 // return { id, amount, payerId: payer.toString(), fractions: _fractions }
-                        })
-                    })
-            })
-    }
-}
+// })
+// })
+// })
+//     }
+// }
 
 module.exports = logic

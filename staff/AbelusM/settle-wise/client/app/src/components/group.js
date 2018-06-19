@@ -126,6 +126,9 @@ class Group extends Component {
                         <input className="inner flex flex-3" type="text" onChange={this.catchUserName} placeholder="user email" />
                         <button value={this.email} onChange={this.addUserToGroup}>Add User to Group</button>
                     </form>
+                    <section>
+                        <button value={this.email} onChange={this.splitSpends}>Split Spends</button>
+                    </section>
                 </div>
             </section>
         </main>
