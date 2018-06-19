@@ -913,6 +913,8 @@ describe('logic (settle-wise)', () => {
                                     expect(debt3_1.amount).to.equal(40)
                                     expect(debt3_2.userId).to.equal(user2._id.toString())
                                     expect(debt3_2.amount).to.equal(25)
+
+                                    // TODO now check balance is valid too
                                 })
                         })
                 })
