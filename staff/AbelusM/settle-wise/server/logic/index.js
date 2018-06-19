@@ -441,17 +441,21 @@ const logic = {
             .then(() => {
                 return Group.findById(groupId)
                     .then(groupData => {
-                        debugger
-                        // const debts = groupData.spends.reduce((debt, userId) => {
-                        //     (groupData.spends.payer === groupData.spends.user) ? debt[userId] += groupData.spends.fractions.fraction : debt[userId] -= groupData.spends.fractions.fraction;
-                        //     return debt
-                        // }, {})
+                        const numberUsers = groupData.users.length
+                        const debts = groupData.spends.reduce((debt, data, index) => {
+                            const user = data._id.toString()
+                            const userDebt = data._doc.amount
+                            const userFrac = data._doc.amount
+                            const payer = data._doc.payer.toString()
 
-                        // userDebts.push(debts)
-                    
-                        // userDebts.forEach(user => user._id = debts[user._id])
+                            const ifPayer = (userDebt - (userDebt / numberUsers));
+                            const ifDebt = ((userDebt / numberUsers) - userDebt)
 
-                        // return userDebts
+                                (payer === user) ? userDebts.push({ debt: user, ifPayer }) : userDebts.push({ debt: payer, ifDebt })
+                                debugger
+                        }, {})
+
+                        return userDebts
 
                     })
 
