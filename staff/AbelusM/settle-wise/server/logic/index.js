@@ -424,44 +424,44 @@ const logic = {
 
     //TODO - split spends and make the less transactions possibles to clean the account 
 
-    splitSpends(userId, groupId) {
-        if (typeof groupId !== 'string') throw Error('group id is not a string')
+        splitSpends(userId, groupId) {
+            if (typeof groupId !== 'string') throw Error('group id is not a string')
 
-        if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
+            if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
 
-        if (typeof userId !== 'string') throw Error('group id is not a string')
+            if (typeof userId !== 'string') throw Error('group id is not a string')
 
-        if (!(userId = userId.trim()).length) throw Error('group id is empty or blank')
+            if (!(userId = userId.trim()).length) throw Error('group id is empty or blank')
 
-        // const usersFractions = users.map(index => User.findById(index))
+            // const usersFractions = users.map(index => User.findById(index))
 
-        let userDebts = []
+            let userDebts = []
 
-        return Promise.resolve()
-            .then(() => {
-                return Group.findById(groupId)
-                    .then(groupData => {
-                        const numberUsers = groupData.users.length
-                        const debts = groupData.spends.reduce((debt, data, index) => {
-                            const user = data._id.toString()
-                            const userDebt = data._doc.amount
-                            const userFrac = data._doc.amount
-                            const payer = data._doc.payer.toString()
+            return Promise.resolve()
+                .then(() => {
+                    return Group.findById(groupId)
+                        .then(groupData => {
+                            const numberUsers = groupData.users.length
+                            const debts = groupData.spends.reduce((debt, data, index) => {
+                                const user = data._id.toString()
+                                const userDebt = data._doc.amount
+                                const userFrac = data._doc.amount
+                                const payer = data._doc.payer.toString()
 
-                            const ifPayer = (userDebt - (userDebt / numberUsers));
-                            const ifDebt = ((userDebt / numberUsers) - userDebt)
+                                const ifPayer = (userDebt - (userDebt / numberUsers));
+                                const ifDebt = ((userDebt / numberUsers) - userDebt)
 
-                                (payer === user) ? userDebts.push({ debt: user, ifPayer }) : userDebts.push({ debt: payer, ifDebt })
-                                debugger
-                        }, {})
+                                    (payer === user) ? userDebts.push({ debt: user, ifPayer }) : userDebts.push({ debt: payer, ifDebt })
+                                    debugger
+                            }, {})
 
-                        return userDebts
+                            return userDebts
 
-                    })
+                        })
 
-            })
+                })
+        }
     }
-}
 
 // listProductsFromCart() {
 //     return clientApi.listProductsByIds(this.cart())

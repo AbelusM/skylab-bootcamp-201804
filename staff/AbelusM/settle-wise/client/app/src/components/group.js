@@ -118,8 +118,9 @@ class Group extends Component {
                         {this.listSpends}
                     </section>
                     <form>
-                        <input className="inner flex flex-3" type="text" onChange={this.catchUserName} placeholder="new payment" />
-                        <input className="inner flex flex-3" type="text" onChange={this.catchUserName} placeholder="user email" />
+                        <input className="inner flex flex-3" type="text" onChange={this.state.amount} placeholder="new payment" />
+                        <input className="inner flex flex-3" type="text" onChange={this.state.payerId} placeholder="payer" />
+                        <input className="inner flex flex-3" type="text" onChange={this.state.fractions} placeholder="fractions" />
                         <button value={this.email} onChange={this.addSpend}>Add a Spend</button>
                     </form>
                     <form>
