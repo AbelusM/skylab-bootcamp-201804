@@ -743,6 +743,8 @@ describe('logic (settle-wise)', () => {
                     group.users.push(user2._id)
                     group.users.push(user3._id)
 
+                    debugger
+
                     const spend = new Spend({
                         user: user1._id,
                         amount: 100,

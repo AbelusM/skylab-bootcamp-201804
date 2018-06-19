@@ -472,9 +472,12 @@ const logic = {
                         }, [])
 
                         debugger
-                        return debts
 
-                        // TODO calculate balances before returning...
+                        // TODO calculate balance before returning...
+
+                        const balance = {}
+
+                        return { debts, balance }
                     })
 
             })
