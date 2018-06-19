@@ -21,7 +21,7 @@ module.exports = new Schema({
             ref: 'User',
             required: true
         },
-        fraction: {
+        amount: {
             type: Number,
             required: true
         }

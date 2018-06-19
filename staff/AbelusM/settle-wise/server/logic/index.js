@@ -347,12 +347,12 @@ const logic = {
 
                 // TODO validate amount vs fractions coherence
 
-                for (let i = 0; i < fractions.length; i++) {
-                    for (let n = 0; n < fractions[i].fraction.length; i++) {
-                        let res = + fractions[i].fraction[n]
-                        if (amount !== res) throw Error('amount is not equal to the sum of fractions')
-                    }
-                }
+                // for (let i = 0; i < fractions.length; i++) {
+                //     for (let n = 0; n < fractions[i].fraction.length; i++) {
+                //         let res = + fractions[i].fraction[n]
+                //         if (amount !== res) throw Error('amount is not equal to the sum of fractions')
+                //     }
+                // }
 
                 const userIds = [payerId]
 
@@ -441,18 +441,40 @@ const logic = {
             .then(() => {
                 return Group.findById(groupId)
                     .then(groupData => {
+                        const debts = groupData.spends.reduce((debtors, spend) => {
+                            const payerId = spend.payer.toString()
+
+                            spend.fractions.forEach(fraction => {
+                                const userId = fraction.user.toString()
+
+                                if (userId !== payerId) {
+                                    const debtor = debtors.find(debtor => debtor.userId === userId) || (userId => {
+                                        const debtor = { userId, debts: [] }
+
+                                        debtors.push(debtor)
+
+                                        return debtor
+                                    })(userId)
+
+                                    const creditor = debtor.debts.find(debt => debt.userId === payerId) || (userId => {
+                                        const creditor = { userId, debt: 0 }
+                                        
+                                        debtor.debts.push(creditor)
+
+                                        return creditor
+                                    })(payerId)
+
+                                    creditor.debt += fraction.amount
+                                }
+                            })
+
+                            return debtors
+                        }, [])
+
                         debugger
-                        // const debts = groupData.spends.reduce((debt, userId) => {
-                        //     (groupData.spends.payer === groupData.spends.user) ? debt[userId] += groupData.spends.fractions.fraction : debt[userId] -= groupData.spends.fractions.fraction;
-                        //     return debt
-                        // }, {})
+                        return debts
 
-                        // userDebts.push(debts)
-                    
-                        // userDebts.forEach(user => user._id = debts[user._id])
-
-                        // return userDebts
-
+                        // TODO calculate balances before returning...
                     })
 
             })
