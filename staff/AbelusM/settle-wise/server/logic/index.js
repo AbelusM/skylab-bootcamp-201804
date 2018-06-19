@@ -391,10 +391,10 @@ const logic = {
     },
 
     /**
-      * @param {string} groupId
-      * 
-      * @returns {Promise<[Spend]>}
-      */
+    * @param {string} groupId
+    * 
+    * @returns {Promise<[Spend]>}
+    */
     listSpends(userId, groupId) {
         return Promise.resolve()
             .then(() => {
@@ -424,6 +424,11 @@ const logic = {
 
     //TODO - split spends and make the less transactions possibles to clean the account 
 
+    /**
+     * 
+     * @param {string} userId 
+     * @param {string} groupId 
+     */
     splitSpends(userId, groupId) {
         if (typeof groupId !== 'string') throw Error('group id is not a string')
 
@@ -457,14 +462,14 @@ const logic = {
                                     })(userId)
 
                                     const creditor = debtor.debts.find(debt => debt.userId === payerId) || (userId => {
-                                        const creditor = { userId, debt: 0 }
-                                        
+                                        const creditor = { userId, amount: 0 }
+
                                         debtor.debts.push(creditor)
 
                                         return creditor
                                     })(payerId)
 
-                                    creditor.debt += fraction.amount
+                                    creditor.amount += fraction.amount
                                 }
                             })
 

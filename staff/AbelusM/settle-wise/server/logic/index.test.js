@@ -868,23 +868,51 @@ describe('logic (settle-wise)', () => {
                             expect(spend3Fraction3.amount).to.equal(30)
 
                             return logic.splitSpends(userId1.toString(), group._id.toString())
-                                .then(splits => {
-                                    expect(splits).to.exist
-                                    expect(splits.length).to.equal(1)
+                                .then(res => {
+                                    expect(res).to.exist
+                                    expect(res.debts).to.exist
+                                    expect(res.balance).to.exist
 
-                                    const [_splits1, _splits2] = splits
+                                    expect(res.debts).to.be.an('array')
+                                    expect(res.debts.length).to.equal(3)
 
-                                    expect(_splits1).to.exist
-                                    expect(_splits1.amount).to.be.a('number')
+                                    const [ debt1, debt2, debt3 ] = res.debts
 
-                                    expect(_splits1.amount).to.equal(25)
-                                    expect(_splits1.user).to.equal(user2._id)
+                                    expect(debt1.userId).to.equal(user2._id.toString())
+                                    expect(debt1.debts).to.exist
+                                    expect(debt1.debts).to.be.an('array')
+                                    expect(debt1.debts.length).to.equal(2)
 
-                                    expect(_splits2.id).to.exist
-                                    expect(_splits2.id).to.be.a('number')
+                                    const [debt1_1, debt1_2] = debt1.debts
 
-                                    expect(_splits2.amount).to.equal(140)
-                                    expect(_splits2.user).to.equal(user2._id)
+                                    expect(debt1_1.userId).to.equal(user1._id.toString())
+                                    expect(debt1_1.amount).to.equal(30)
+                                    expect(debt1_2.userId).to.equal(user3._id.toString())
+                                    expect(debt1_2.amount).to.equal(40)
+
+                                    expect(debt2.userId).to.equal(user3._id.toString())
+                                    expect(debt2.debts).to.exist
+                                    expect(debt2.debts).to.be.an('array')
+                                    expect(debt2.debts.length).to.equal(2)
+
+                                    const [debt2_1, debt2_2] = debt2.debts
+
+                                    expect(debt2_1.userId).to.equal(user1._id.toString())
+                                    expect(debt2_1.amount).to.equal(30)
+                                    expect(debt2_2.userId).to.equal(user2._id.toString())
+                                    expect(debt2_2.amount).to.equal(30)
+
+                                    expect(debt3.userId).to.equal(user1._id.toString())
+                                    expect(debt3.debts).to.exist
+                                    expect(debt3.debts).to.be.an('array')
+                                    expect(debt3.debts.length).to.equal(2)
+
+                                    const [debt3_1, debt3_2] = debt3.debts
+
+                                    expect(debt3_1.userId).to.equal(user3._id.toString())
+                                    expect(debt3_1.amount).to.equal(40)
+                                    expect(debt3_2.userId).to.equal(user2._id.toString())
+                                    expect(debt3_2.amount).to.equal(25)
                                 })
                         })
                 })
