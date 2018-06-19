@@ -347,12 +347,12 @@ const logic = {
 
                 // TODO validate amount vs fractions coherence
 
-                for (let i = 0; i < fractions.length; i++) {
-                    for (let n = 0; n < fractions[i].fraction.length; i++) {
-                        let res = + fractions[i].fraction[n]
-                        if (amount !== res) throw Error('amount is not equal to the sum of fractions')
-                    }
-                }
+                // for (let i = 0; i < fractions.length; i++) {
+                //     for (let n = 0; n < fractions[i].fraction.length; i++) {
+                //         let res = + fractions[i].fraction[n]
+                //         if (amount !== res) throw Error('amount is not equal to the sum of fractions')
+                //     }
+                // }
 
                 const userIds = [payerId]
 
@@ -437,27 +437,45 @@ const logic = {
 
             let userDebts = []
 
-            return Promise.resolve()
-                .then(() => {
-                    return Group.findById(groupId)
-                        .then(groupData => {
-                            const numberUsers = groupData.users.length
-                            const debts = groupData.spends.reduce((debt, data, index) => {
-                                const user = data._id.toString()
-                                const userDebt = data._doc.amount
-                                const userFrac = data._doc.amount
-                                const payer = data._doc.payer.toString()
+        return Promise.resolve()
+            .then(() => {
+                return Group.findById(groupId)
+                    .then(groupData => {
+                        const debts = groupData.spends.reduce((debtors, spend) => {
+                            const payerId = spend.payer.toString()
 
-                                const ifPayer = (userDebt - (userDebt / numberUsers));
-                                const ifDebt = ((userDebt / numberUsers) - userDebt)
+                            spend.fractions.forEach(fraction => {
+                                const userId = fraction.user.toString()
 
-                                    (payer === user) ? userDebts.push({ debt: user, ifPayer }) : userDebts.push({ debt: payer, ifDebt })
-                                    debugger
-                            }, {})
+                                if (userId !== payerId) {
+                                    const debtor = debtors.find(debtor => debtor.userId === userId) || (userId => {
+                                        const debtor = { userId, debts: [] }
 
-                            return userDebts
+                                        debtors.push(debtor)
 
-                        })
+                                        return debtor
+                                    })(userId)
+
+                                    const creditor = debtor.debts.find(debt => debt.userId === payerId) || (userId => {
+                                        const creditor = { userId, debt: 0 }
+                                        
+                                        debtor.debts.push(creditor)
+
+                                        return creditor
+                                    })(payerId)
+
+                                    creditor.debt += fraction.amount
+                                }
+                            })
+
+                            return debtors
+                        }, [])
+
+                        debugger
+                        return debts
+
+                        // TODO calculate balances before returning...
+                    })
 
                 })
         }
