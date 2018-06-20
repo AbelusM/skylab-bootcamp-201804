@@ -14,7 +14,8 @@ class Group extends Component {
         groupId: this.props.match.params.groupId,
         amount: 0,
         payerId: '',
-        fractions: []
+        fractions: [],
+        result: []
     }
 
     addUserToGroup = e => {
@@ -26,10 +27,6 @@ class Group extends Component {
 
         logic.addUserToGroup(groupId, this.state.email)
             .then(() => console.log('user added to group'))
-            .then(() => {
-                this.setState.email = ''
-                this.setState.groupId = ''
-            })
     }
 
     addSpend = e => {
@@ -40,18 +37,15 @@ class Group extends Component {
 
         logic.addSpend(amount, payerId, fraction)
             .then(() => console.log('added a spend to the group'))
-            .then(() => {
-                this.setState.email = ''
-                this.setState.groupId = ''
-            })
     }
 
     listUsers = () => {
-        const group = this.state.groupId.toString()
+        const group = this.state.groupId
+        console.log( group)
 
-        logic.listUsers(group)
+         logic.listUsers(group)
             .then((users) => {
-                return users.users.map(user => <p>{user.email}</p>
+                return users.users.map(user => <p>{user.name}</p>
                 )
             })
     }
@@ -64,7 +58,6 @@ class Group extends Component {
                 this.setState({
                     spends: spend
                 })
-                this.setState.groupId = ''
             }).then(() => {
                 return this.state.spends.map(res => <div>
                     <label>{res}</label>
@@ -95,7 +88,23 @@ class Group extends Component {
         e.preventDefault()
     }
 
+    splitSpends() {
+        const group = this.state.groupId.toString()
+
+        logic.splitSpends(group)
+            .then(balance => {
+                this.setState({
+                    result: balance
+                })
+            }).then(() => {
+                return this.state.result.map(res => <div>
+                    <label>{res}</label>
+                </div>)
+            })
+    }
+
     render() {
+
         return <main id="banner">
             <section id="main" className="wrapper">
                 <div className="inner">
