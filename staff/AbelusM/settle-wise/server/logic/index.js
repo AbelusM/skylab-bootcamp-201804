@@ -422,24 +422,22 @@ const logic = {
     },
 
 
-    //TODO - split spends and make the less transactions possibles to clean the account 
-
     /**
      * 
      * @param {string} userId 
      * @param {string} groupId 
      */
-    splitSpends(userId, groupId) {
-        if (typeof groupId !== 'string') throw Error('group id is not a string')
-
-        if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
-
-        if (typeof userId !== 'string') throw Error('group id is not a string')
-
-        if (!(userId = userId.trim()).length) throw Error('group id is empty or blank')
-
+    calculateDebts(userId, groupId) {
         return Promise.resolve()
             .then(() => {
+                if (typeof groupId !== 'string') throw Error('group id is not a string')
+
+                if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
+
+                if (typeof userId !== 'string') throw Error('group id is not a string')
+
+                if (!(userId = userId.trim()).length) throw Error('group id is empty or blank')
+
                 return Group.findById(groupId)
                     .then(groupData => {
                         const debts = groupData.spends.reduce((debtors, spend) => {
@@ -470,64 +468,39 @@ const logic = {
                             })
 
                             return debtors
-                        }, []);
-                        // debugger
-                        // TODO calculate balance before returning...
+                        }, [])
 
-                        const balance = {}
+                        return debts
+                    })
+            })
+    },
 
-                        // for (let i = 0; i < debts.length; i++) {
-                        //     for (let y = i + 1; y < debts[i].debts.length; y++) {
-                        //         debugger
-                        //         if (debts[i].userId === debts[y].debts.userId) {
-                        //             debugger
-                        //             if (debts[i].amount > debts[y].debts[i].amount) {
-                        //                 let res = debts[i - 1].amount - debts[y].debts[i].amount
-                        //             } else {
-                        //                 debugger
-                        //                 let res1 = debts[y].debts[i].amount - debts[i - 1].amount
-                        //             }
-                        //         } else {
-                        //             let total = 0
-                        //                 total += res.debts[y].amount
-                        //         }
-                        //         }
-                        //     }
+    /**
+     * 
+     * @param {string} userId 
+     * @param {string} groupId 
+     */
+    splitSpends(userId, groupId) {
+        return this.calculateDebts(userId, groupId)
+            .then(debts => {
+                const balance = debts.reduce((balance, userDebt) => {
+                    userDebt.debts.forEach(debtTo => {
+                        if (!balance.some(item => item.userId === debtTo.userId && item.debtorId === userDebt.userId)) {
 
-                        const balanceResults = debts.forEach(res => {
-                            let balanceAmount = 0
-                            let actualUser = ''
-                            let debtUser = ''
-                            // debugger
-                            for (let y = 0; y < res.debts.length; y++) {
-                                actualUser = res.userId
-                                debtUser = res.debts[y].userId
-                                if (res.debts[y].userId !== actualUser) balanceAmount += res.debts[y].amount
-                                balanceAmount -= res.debts[y].amount
+                            const userDebtTo = debts.find(debt => debt.userId === debtTo.userId)
 
-                                balance.push({ actualUser, balanceAmount, debtUser })
-                                return { actualUser, balanceAmount, debtUser }
-                            }
-                        })
+                            const debtToMe = userDebtTo.debts.find(debt => debt.userId === userDebt.userId)
 
-                        debugger
-
-                        // return result.forEach(sim => {
-
-                        //     for (let n = 0; n < debts.length; n++) {
-                        //         if (sim.userId !== debts[n].userId)
-                        //             for (let z = 0; z < debts.debts.length; z++) {
-                        //                 if (sim.userId === debts[z].userId)
-                        //                     sim.total - debts[z].amount
-                        //                 debugger
-                        //             }
-                        //     }
-
-                        // })
-
-                        return { debts, balance }
+                            if (debtToMe)
+                                if (debtTo.amount > debtToMe.amount)
+                                    balance.push({ creditorId: debtTo.userId, debtorId: userDebt.userId, amount: debtTo.amount - debtToMe.amount })
+                        }
                     })
 
+                    return balance
+                }, [])
+
+                return balance
             })
     }
 }

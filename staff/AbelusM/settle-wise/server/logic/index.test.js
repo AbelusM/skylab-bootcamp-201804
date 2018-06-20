@@ -718,7 +718,7 @@ describe('logic (settle-wise)', () => {
         )
     })
 
-    describe('split the spends between the users of the groups', () => {
+    describe('calculate debts between the users of the groups', () => {
         it('should succeed on correct data', () =>
             Promise.all([
                 User.create(userData),
@@ -865,16 +865,14 @@ describe('logic (settle-wise)', () => {
                             expect(spend3Fraction3.user.toString()).to.equal(user3._id.toString())
                             expect(spend3Fraction3.amount).to.equal(30)
 
-                            return logic.splitSpends(userId1.toString(), group._id.toString())
-                                .then(res => {
-                                    expect(res).to.exist
-                                    expect(res.debts).to.exist
-                                    expect(res.balance).to.exist
+                            return logic.calculateDebts(userId1.toString(), group._id.toString())
+                                .then(debts => {
+                                    expect(debts).to.exist
 
-                                    expect(res.debts).to.be.an('array')
-                                    expect(res.debts.length).to.equal(3)
+                                    expect(debts).to.be.an('array')
+                                    expect(debts.length).to.equal(3)
 
-                                    const [ debt1, debt2, debt3 ] = res.debts
+                                    const [ debt1, debt2, debt3 ] = debts
 
                                     expect(debt1.userId).to.equal(user2._id.toString())
                                     expect(debt1.debts).to.exist
@@ -911,23 +909,77 @@ describe('logic (settle-wise)', () => {
                                     expect(debt3_1.amount).to.equal(40)
                                     expect(debt3_2.userId).to.equal(user2._id.toString())
                                     expect(debt3_2.amount).to.equal(25)
-
-                                    expect(res.balance).to.be.an('array')
-                                    expect(res.balance.length).to.equal(3)
-
-                                    const [ balance1, balance2, balance3 ] = res.balance
-
-                                    expect(balance1.userId).to.equal(user2._id.toString())
-                                    expect(balance1.balance).to.exist
-                                    expect(balance1.balance).to.be.an('array')
-                                    expect(balance1.balance).to.equal(3)
-
-
-                                    // TODO now check balance is valid too
                                 })
                         })
                 })
         )
+    })
+
+    /*
+    DEMOS:
+
+    [  
+        {  
+            "userId":"5b2a1401a3b67354110d4954",
+            "debts":[  
+                {  
+                    "userId":"5b2a1401a3b67354110d4953",
+                    "amount":30
+                },
+                {  
+                    "userId":"5b2a1401a3b67354110d4955",
+                    "amount":40
+                }
+            ]
+        },
+        {  
+            "userId":"5b2a1401a3b67354110d4955",
+            "debts":[  
+                {  
+                    "userId":"5b2a1401a3b67354110d4953",
+                    "amount":30
+                },
+                {  
+                    "userId":"5b2a1401a3b67354110d4954",
+                    "amount":30
+                }
+            ]
+        },
+        {  
+            "userId":"5b2a1401a3b67354110d4953",
+            "debts":[  
+                {  
+                    "userId":"5b2a1401a3b67354110d4955",
+                    "amount":40
+                },
+                {  
+                    "userId":"5b2a1401a3b67354110d4954",
+                    "amount":25
+                }
+            ]
+        }
+    ]
+
+    [  
+        {  
+            "creditorId":"5b2a1401a3b67354110d4953",
+            "debtorId":"5b2a1401a3b67354110d4954",
+            "amount":5
+        },
+        {  
+            "creditorId":"5b2a1401a3b67354110d4955",
+            "debtorId":"5b2a1401a3b67354110d4954",
+            "amount":10
+        },
+        {  
+            "creditorId":"5b2a1401a3b67354110d4955",
+            "debtorId":"5b2a1401a3b67354110d4953",
+            "amount":10
+        }
+    ]
+    */
+    describe('split the spends between the users of the groups', () => {
+        it('should succeed on correct data', () => {})
     })
 
     after(done => mongoose.connection.db.dropDatabase(() => mongoose.connection.close(done)))
