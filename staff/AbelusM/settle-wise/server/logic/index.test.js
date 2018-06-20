@@ -872,7 +872,7 @@ describe('logic (settle-wise)', () => {
                                     expect(debts).to.be.an('array')
                                     expect(debts.length).to.equal(3)
 
-                                    const [ debt1, debt2, debt3 ] = debts
+                                    const [debt1, debt2, debt3] = debts
 
                                     expect(debt1.userId).to.equal(user2._id.toString())
                                     expect(debt1.debts).to.exist
@@ -979,7 +979,176 @@ describe('logic (settle-wise)', () => {
     ]
     */
     describe('split the spends between the users of the groups', () => {
-        it('should succeed on correct data', () => {})
+        it('should succeed on correct data', () => {
+            Promise.all([
+                User.create(userData),
+                User.create(userData2),
+                User.create(userData3)
+            ])
+                .then(res => {
+                    const [{ _doc: user1 }, { _doc: user2 }, { _doc: user3 }] = res
+
+                    expect(user1).to.exist
+                    expect(user1.name).to.equal(userData.name)
+
+                    expect(user2).to.exist
+                    expect(user2.name).to.equal(userData2.name)
+
+                    expect(user3).to.exist
+                    expect(user3.name).to.equal(userData3.name)
+
+                    const group = new Group(groupData)
+
+                    group.users.push(user1._id)
+                    group.users.push(user2._id)
+                    group.users.push(user3._id)
+
+                    const spend = new Spend({
+                        user: user1._id,
+                        amount: 100,
+                        payer: user1._id,
+                        fractions: [
+                            { user: user1._id, amount: 40 },
+                            { user: user2._id, amount: 30 },
+                            { user: user3._id, amount: 30 }
+                        ]
+                    })
+
+                    const spend2 = new Spend({
+                        user: user2._id,
+                        amount: 120,
+                        payer: user3._id,
+                        fractions: [
+                            { user: user1._id, amount: 40 },
+                            { user: user2._id, amount: 40 },
+                            { user: user3._id, amount: 40 }
+                        ]
+                    })
+
+                    const spend3 = new Spend({
+                        user: user3._id,
+                        amount: 80,
+                        payer: user2._id,
+                        fractions: [
+                            { user: user1._id, amount: 25 },
+                            { user: user2._id, amount: 25 },
+                            { user: user3._id, amount: 30 }
+                        ]
+                    })
+
+                    group.spends.push(spend)
+                    group.spends.push(spend2)
+                    group.spends.push(spend3)
+
+                    return group.save()
+                        .then(group => {
+
+                            expect(group._id).to.exist
+                            expect(group.name).to.equal(groupData.name)
+
+                            const { users: [userId1, userId2] } = group
+
+                            expect(userId1.toString()).to.equal(user1._id.toString())
+                            expect(userId2.toString()).to.equal(user2._id.toString())
+
+                            expect(group.spends).to.exist
+                            expect(group.spends.length).to.equal(3)
+
+                            const { spends: [spend1, spend2, spend3] } = group
+
+                            expect(spend1._id).to.exist
+                            expect(spend1.amount).to.equal(100)
+                            expect(spend1.user).to.exist
+                            expect(spend1.user.toString()).to.equal(user1._id.toString())
+                            expect(spend1.payer).to.exist
+                            expect(spend1.payer.toString()).to.equal(user1._id.toString())
+                            expect(spend1.fractions).to.exist
+                            expect(spend1.fractions.length).to.equal(3)
+
+                            const { fractions: [spend1Fraction1, spend1Fraction2, spend1Fraction3] } = spend1
+
+                            expect(spend1Fraction1.user).to.exist
+                            expect(spend1Fraction1.user.toString()).to.equal(user1._id.toString())
+                            expect(spend1Fraction1.amount).to.equal(40)
+
+                            expect(spend1Fraction2.user).to.exist
+                            expect(spend1Fraction2.user.toString()).to.equal(user2._id.toString())
+                            expect(spend1Fraction2.amount).to.equal(30)
+
+                            expect(spend1Fraction3.user).to.exist
+                            expect(spend1Fraction3.user.toString()).to.equal(user3._id.toString())
+                            expect(spend1Fraction3.amount).to.equal(30)
+
+                            expect(spend2._id).to.exist
+                            expect(spend2.amount).to.equal(120)
+                            expect(spend2.user).to.exist
+                            expect(spend2.user.toString()).to.equal(user2._id.toString())
+                            expect(spend2.payer).to.exist
+                            expect(spend2.payer.toString()).to.equal(user3._id.toString())
+                            expect(spend2.fractions).to.exist
+                            expect(spend2.fractions.length).to.equal(3)
+
+                            const { fractions: [spend2Fraction1, spend2Fraction2, spend2Fraction3] } = spend2
+
+                            expect(spend2Fraction1.user).to.exist
+                            expect(spend2Fraction1.user.toString()).to.equal(user1._id.toString())
+                            expect(spend2Fraction1.amount).to.equal(40)
+
+                            expect(spend2Fraction2.user).to.exist
+                            expect(spend2Fraction2.user.toString()).to.equal(user2._id.toString())
+                            expect(spend2Fraction2.amount).to.equal(40)
+
+                            expect(spend2Fraction3.user).to.exist
+                            expect(spend2Fraction3.user.toString()).to.equal(user3._id.toString())
+                            expect(spend2Fraction3.amount).to.equal(40)
+
+                            expect(spend3._id).to.exist
+                            expect(spend3.amount).to.equal(80)
+                            expect(spend3.user).to.exist
+                            expect(spend3.user.toString()).to.equal(user3._id.toString())
+                            expect(spend3.payer).to.exist
+                            expect(spend3.payer.toString()).to.equal(user2._id.toString())
+                            expect(spend3.fractions).to.exist
+                            expect(spend3.fractions.length).to.equal(3)
+
+                            const { fractions: [spend3Fraction1, spend3Fraction2, spend3Fraction3] } = spend3
+
+                            expect(spend3Fraction1.user).to.exist
+                            expect(spend3Fraction1.user.toString()).to.equal(user1._id.toString())
+                            expect(spend3Fraction1.amount).to.equal(25)
+
+                            expect(spend3Fraction2.user).to.exist
+                            expect(spend3Fraction2.user.toString()).to.equal(user2._id.toString())
+                            expect(spend3Fraction2.amount).to.equal(25)
+
+                            expect(spend3Fraction3.user).to.exist
+                            expect(spend3Fraction3.user.toString()).to.equal(user3._id.toString())
+                            expect(spend3Fraction3.amount).to.equal(30)
+
+                            logic.splitSpends(user1._id.toString(), group._id.toString())
+                                .then(balance => {
+                                    expect(balance).to.exist
+
+                                    expect(balance).to.be.an('array')
+                                    expect(balance.length).to.equal(3)
+
+                                    const [debt1, debt2, debt3] = balance
+
+                                    expect(debt1.creditorId).to.equal(user1._id.toString())
+                                    expect(debt1.debtorId).to.equal(user2._id.toString())
+                                    expect(debt1.amount).to.equal(5)
+
+                                    expect(debt2.creditorId).to.equal(user1._id.toString())
+                                    expect(debt2.debtorId).to.equal(user2._id.toString())
+                                    expect(debt2.amount).not.to.equal(10)
+
+                                    expect(debt3.creditorId).to.equal(user1._id.toString())
+                                    expect(debt3.debtorId).to.equal(user2._id.toString())
+                                    expect(debt3.amount).to.equal(10)
+                                })
+                        })
+                })
+        })
     })
 
     after(done => mongoose.connection.db.dropDatabase(() => mongoose.connection.close(done)))

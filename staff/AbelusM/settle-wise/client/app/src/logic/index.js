@@ -47,6 +47,7 @@ const logic = {
                 return spend
             })
     },
+    
     listUsers(group) {
         return api.listUsers(this.userId, group)
             .then(users => {
@@ -63,9 +64,8 @@ const logic = {
             })
     },
 
-
     splitSpends(group) {
-        return api.listSpends(this.userId, group)
+        return api.splitSpends(this.userId, group)
             .then(balance => {
                 console.log(balance)
                 return balance

@@ -5,6 +5,7 @@ import './styles/assets/css/main.css';
 import logic from './logic'
 import Menu from './components/menu.js'
 import Header from './components/header.js'
+import One from './components/one.js'
 import Footer from './components/footer.js'
 
 class App extends Component {
@@ -44,7 +45,8 @@ class App extends Component {
         <Menu />
         <Header />
         <Route exact path="/" render={() => <Landing />} />
-        <Route path="/groups" render={() => <Group />} />
+        <Route path="/groups/:groupId" render={routeProps => <Group {...routeProps}/>} />
+        <Route path="/one" render={() => <One />} />
         {
           <Route exact path="/register" render={() => {
             return this.state.registered ?

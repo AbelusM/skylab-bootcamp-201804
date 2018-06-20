@@ -21,11 +21,18 @@ class Home extends Component {
 		const name = this.state.groupName
 
 		logic.createGroup(name)
-			.then(res => this.state.groups.push(res))
-			.then(() => console.log('created group'))
-			.then(() => this.setState.groupName = '')
-	}
+			.then(() => {
+				return logic.listGroups()
+			})
+			.then(lists => {
+				this.setState({
+					groups: lists
+				})
+				 console.log('created group')
+			})
 
+	}
+	
 	catchGroupName = e => {
 		// e.preventDefault()
 		this.setState({
@@ -57,7 +64,7 @@ class Home extends Component {
 						<button value={this.groupName} onClick={this.createGroup}>Create Group</button>
 					</form>
 					{/* {this.state.groups.length > 0 && this.showList} */}
-					<GroupsList groups={this.state.groups}/>
+					<GroupsList groups={this.state.groups} />
 				</div>
 			</section>
 			<button onClick={() => {

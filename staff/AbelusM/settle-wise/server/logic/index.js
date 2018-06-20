@@ -268,7 +268,7 @@ const logic = {
 
                 if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
 
-                return Group.findById({ groupId })
+                return Group.findById({ _id:groupId }).populate('users')
                     .then(users => {
                         if (!users) throw Error(`no group found with id ${groupId}`)
 
