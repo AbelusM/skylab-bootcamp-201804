@@ -64,6 +64,14 @@ const logic = {
     },
 
 
+    splitSpends(group) {
+        return api.listSpends(this.userId, group)
+            .then(balance => {
+                console.log(balance)
+                return balance
+            })
+    },
+
     get loggedIn() {
         if (this.userId !== 'NO-ID' && this.userId !== null && this.userId !== undefined) return true
     },

@@ -169,4 +169,19 @@ router.get('/users/:userId/groups/:groupId/spends', [jwtValidator, jsonBodyParse
         })
 })
 
+
+router.get('/users/:userId/groups/:groupId/balance', [jwtValidator, jsonBodyParser], (req, res) => {
+    const { params: { userId, groupId } } = req
+
+    logic.splitSpends(userId, groupId)
+        .then(balance => {
+            res.status(200)
+            res.json({ status: 'OK', data: balance })
+        })
+        .catch(({ message }) => {
+            res.status(400)
+            res.json({ status: 'KO', error: message })
+        })
+})
+
 module.exports = router

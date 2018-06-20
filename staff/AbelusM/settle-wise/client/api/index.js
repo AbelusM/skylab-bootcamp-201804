@@ -401,6 +401,7 @@ const api = {
                     })
             })
     },
+    
     /**
        * List groups by user
        * 
@@ -422,6 +423,45 @@ const api = {
                 if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
 
                 return axios.get(`${this.url}/users/${userId}/groups/${groupId}/spends`, { headers: { authorization: `Bearer ${this.token}` } })
+                    .then(({ status, data }) => {
+                        if (status !== 200 || data.status !== 'OK') throw Error(`unexpected response status ${status} (${data.status})`)
+
+                        return data.data
+                    })
+                    .catch(err => {
+                        if (err.code === 'ECONNREFUSED') throw Error('could not reach server')
+
+                        if (err.response) {
+                            const { response: { data: { error: message } } } = err
+
+                            throw Error(message)
+                        } else throw err
+                    })
+            })
+    },
+
+    /**
+       * Balance expenses groups by user
+       * 
+      * @param {string} userId The user id
+      * @param {string} groupId The group id
+      * 
+      * @throws {Error} If the user does not belong to any group
+      * 
+      * @returns {Promise<[group]>} The complete group balance of the debts
+      */
+     splitSpends(userId, groupId) {
+        return Promise.resolve()
+            .then(() => {
+                if (typeof userId !== 'string') throw Error('user id is not a string')
+
+                if (!(userId = userId.trim()).length) throw Error('user id is empty or blank')
+
+                if (typeof groupId !== 'string') throw Error('group id is not a string')
+
+                if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
+
+                return axios.get(`${this.url}/users/${userId}/groups/${groupId}/balance`, { headers: { authorization: `Bearer ${this.token}` } })
                     .then(({ status, data }) => {
                         if (status !== 200 || data.status !== 'OK') throw Error(`unexpected response status ${status} (${data.status})`)
 

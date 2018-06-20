@@ -391,10 +391,10 @@ const logic = {
     },
 
     /**
-      * @param {string} groupId
-      * 
-      * @returns {Promise<[Spend]>}
-      */
+    * @param {string} groupId
+    * 
+    * @returns {Promise<[Spend]>}
+    */
     listSpends(userId, groupId) {
         return Promise.resolve()
             .then(() => {
@@ -424,18 +424,19 @@ const logic = {
 
     //TODO - split spends and make the less transactions possibles to clean the account 
 
-        splitSpends(userId, groupId) {
-            if (typeof groupId !== 'string') throw Error('group id is not a string')
+    /**
+     * 
+     * @param {string} userId 
+     * @param {string} groupId 
+     */
+    splitSpends(userId, groupId) {
+        if (typeof groupId !== 'string') throw Error('group id is not a string')
 
-            if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
+        if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
 
-            if (typeof userId !== 'string') throw Error('group id is not a string')
+        if (typeof userId !== 'string') throw Error('group id is not a string')
 
-            if (!(userId = userId.trim()).length) throw Error('group id is empty or blank')
-
-            // const usersFractions = users.map(index => User.findById(index))
-
-            let userDebts = []
+        if (!(userId = userId.trim()).length) throw Error('group id is empty or blank')
 
         return Promise.resolve()
             .then(() => {
@@ -457,96 +458,78 @@ const logic = {
                                     })(userId)
 
                                     const creditor = debtor.debts.find(debt => debt.userId === payerId) || (userId => {
-                                        const creditor = { userId, debt: 0 }
-                                        
+                                        const creditor = { userId, amount: 0 }
+
                                         debtor.debts.push(creditor)
 
                                         return creditor
                                     })(payerId)
 
-                                    creditor.debt += fraction.amount
+                                    creditor.amount += fraction.amount
                                 }
                             })
 
                             return debtors
-                        }, [])
+                        }, []);
+                        // debugger
+                        // TODO calculate balance before returning...
+
+                        const balance = {}
+
+                        // for (let i = 0; i < debts.length; i++) {
+                        //     for (let y = i + 1; y < debts[i].debts.length; y++) {
+                        //         debugger
+                        //         if (debts[i].userId === debts[y].debts.userId) {
+                        //             debugger
+                        //             if (debts[i].amount > debts[y].debts[i].amount) {
+                        //                 let res = debts[i - 1].amount - debts[y].debts[i].amount
+                        //             } else {
+                        //                 debugger
+                        //                 let res1 = debts[y].debts[i].amount - debts[i - 1].amount
+                        //             }
+                        //         } else {
+                        //             let total = 0
+                        //                 total += res.debts[y].amount
+                        //         }
+                        //         }
+                        //     }
+
+                        const balanceResults = debts.forEach(res => {
+                            let balanceAmount = 0
+                            let actualUser = ''
+                            let debtUser = ''
+                            // debugger
+                            for (let y = 0; y < res.debts.length; y++) {
+                                actualUser = res.userId
+                                debtUser = res.debts[y].userId
+                                if (res.debts[y].userId !== actualUser) balanceAmount += res.debts[y].amount
+                                balanceAmount -= res.debts[y].amount
+
+                                balance.push({ actualUser, balanceAmount, debtUser })
+                                return { actualUser, balanceAmount, debtUser }
+                            }
+                        })
 
                         debugger
-                        return debts
 
-                        // TODO calculate balances before returning...
+                        // return result.forEach(sim => {
+
+                        //     for (let n = 0; n < debts.length; n++) {
+                        //         if (sim.userId !== debts[n].userId)
+                        //             for (let z = 0; z < debts.debts.length; z++) {
+                        //                 if (sim.userId === debts[z].userId)
+                        //                     sim.total - debts[z].amount
+                        //                 debugger
+                        //             }
+                        //     }
+
+                        // })
+
+                        return { debts, balance }
                     })
 
-                })
-        }
+            })
     }
-
-// listProductsFromCart() {
-//     return clientApi.listProductsByIds(this.cart())
-//         .then(products => {
-//             const quantities = this.cart().reduce((accum, productId) => {
-//                 if (accum[productId]) accum[productId]++
-//                 else accum[productId] = 1
-
-//                 return accum
-//             }, {})
-
-//             products.forEach(product => product.quantity = quantities[product.id])
-
-//             return products
-//         })
-// },
-
-// return Promise.all([
-//     User.findById(userId),
-//     User.findById(payerId)
-// ]).then(res => {
-//     const [{ _doc: userSaver }, { _doc: payerInfo }] = res
-// })
-//     .then(() => {
-//         return Promise.all(usersFractions)
-//             .then(ids => {
-//                 const userFraction = ids.map(idx => ids = fraction)
-//                 const payerFraction = payerInfo.fraction
-
-//                 if (amount === payerFraction) {
-//                     for (let i; i < users.length; i++) {
-//                         (user[i].fraction - payerFraction) = res
-//                         user[i] = debt = fraction
-//                         userAmount[i] = res - amount
-//                     }
-//                     return res
-//                 } else {
-//                     amount - payerFraction - otherPayer.fraction
-//                     for (let n; n < users.length; n++) {
-//                         (user[n].fraction - payerFraction - otherPayer.fraction) = res
-//                         user[i] = debt = fraction
-//                         userAmount[i] = res - amount
-//                     }
-//                     return res
-//                 }
-//                 if (userAmount)
-//                     for (let y; y < users.length; y++) {
-//                         if (userAmount[i] > userAmount[n])
-//                             userDebts[i] = userDebts[n]
-//                         usersDebts.push(userDebts[i])
-//                         return usersDebts
-//                     }
-//             }
-// let user, payer, amount, fractions: user, fraction;
-
-// user is the one who registers the payment
-// the sum of the all fractions must be the amount
-
-// user1 payes 75, user2 25, amount is 100, user1 to be the most payer is set up as 0 - 25 (user 2), then user2 debts 25 to user1. 
-// the same if there are more ppl, first is set up as 0, we take the 2nd and always will be negative account, and some debt users.
-// chain of operations to do this, or a for.
-
-// return { id, amount, payerId: payer.toString(), fractions: _fractions }
-// })
-// })
-// })
-//     }
-// }
+}
 
 module.exports = logic
