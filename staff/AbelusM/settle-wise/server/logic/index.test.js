@@ -916,9 +916,9 @@ describe('logic (settle-wise)', () => {
     })
 
     /*
-    DEMOS:
+    * DEMO:
 
-    [  
+    debts => [  
         {  
             "userId":"5b2a1401a3b67354110d4954",
             "debts":[  
@@ -960,7 +960,7 @@ describe('logic (settle-wise)', () => {
         }
     ]
 
-    [  
+    balance => [  
         {  
             "creditorId":"5b2a1401a3b67354110d4953",
             "debtorId":"5b2a1401a3b67354110d4954",
@@ -979,7 +979,7 @@ describe('logic (settle-wise)', () => {
     ]
     */
     describe('split the spends between the users of the groups', () => {
-        it('should succeed on correct data', () => {
+        it('should succeed on correct data', () =>
             Promise.all([
                 User.create(userData),
                 User.create(userData2),
@@ -1125,7 +1125,7 @@ describe('logic (settle-wise)', () => {
                             expect(spend3Fraction3.user.toString()).to.equal(user3._id.toString())
                             expect(spend3Fraction3.amount).to.equal(30)
 
-                            logic.splitSpends(user1._id.toString(), group._id.toString())
+                            return logic.splitSpends(user1._id.toString(), group._id.toString())
                                 .then(balance => {
                                     expect(balance).to.exist
 
@@ -1138,17 +1138,17 @@ describe('logic (settle-wise)', () => {
                                     expect(debt1.debtorId).to.equal(user2._id.toString())
                                     expect(debt1.amount).to.equal(5)
 
-                                    expect(debt2.creditorId).to.equal(user1._id.toString())
+                                    expect(debt2.creditorId).to.equal(user3._id.toString())
                                     expect(debt2.debtorId).to.equal(user2._id.toString())
-                                    expect(debt2.amount).not.to.equal(10)
+                                    expect(debt2.amount).to.equal(10)
 
-                                    expect(debt3.creditorId).to.equal(user1._id.toString())
-                                    expect(debt3.debtorId).to.equal(user2._id.toString())
+                                    expect(debt3.creditorId).to.equal(user3._id.toString())
+                                    expect(debt3.debtorId).to.equal(user1._id.toString())
                                     expect(debt3.amount).to.equal(10)
                                 })
                         })
                 })
-        })
+        )
     })
 
     after(done => mongoose.connection.db.dropDatabase(() => mongoose.connection.close(done)))

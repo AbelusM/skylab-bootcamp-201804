@@ -39,14 +39,18 @@ class Group extends Component {
             .then(() => console.log('added a spend to the group'))
     }
 
+    componentDidMount() {
+        this.listUsers()
+        this.listSpends()
+    }
+
     listUsers = () => {
         const group = this.state.groupId
-        console.log( group)
+        console.log(group)
 
-         logic.listUsers(group)
-            .then((users) => {
-                return users.users.map(user => <p>{user.name}</p>
-                )
+        logic.listUsers(group)
+            .then(res => {
+                this.setState({ users: res.users })
             })
     }
 
@@ -54,14 +58,10 @@ class Group extends Component {
         const group = this.state.groupId.toString()
 
         logic.listSpends(group)
-            .then(spend => {
+            .then(spends => {
                 this.setState({
-                    spends: spend
+                    spends
                 })
-            }).then(() => {
-                return this.state.spends.map(res => <div>
-                    <label>{res}</label>
-                </div>)
             })
     }
 
@@ -73,7 +73,7 @@ class Group extends Component {
     }
 
     goBack = e => {
-        e.preventDefault() 
+        e.preventDefault()
         this.props.history.push('/home')
     }
 
@@ -97,6 +97,7 @@ class Group extends Component {
                     result: balance
                 })
             }).then(() => {
+                // TODO move this to render
                 return this.state.result.map(res => <div>
                     <label>{res}</label>
                 </div>)
@@ -112,12 +113,14 @@ class Group extends Component {
                         <h2>User's group</h2>
                     </header>
                     <section>
-                        {this.listUsers}
+                        {this.state.users.map(user => <p>{user.name}</p>)}
                     </section>
                     <form>
                         <h2>Group Spends</h2>
-                        {this.listSpends}
-                        <h2>Add a Spend</h2>                        
+                        {this.state.spends.map(res => <div>
+                            <label>{res}</label>
+                        </div>)}
+                        <h2>Add a Spend</h2>
                         <input className="inner flex flex-3" type="text" onChange={this.state.amount} placeholder="new payment" />
                         <input className="inner flex flex-3" type="text" onChange={this.state.payerId} placeholder="payer" />
                         <button value={this.state.email} onChange={this.addSpend}>Add a Spend</button>
