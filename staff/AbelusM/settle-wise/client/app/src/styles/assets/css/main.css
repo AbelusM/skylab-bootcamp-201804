@@ -2696,4 +2696,45 @@ body.is-loading #banner .content {
 		padding: 2em 0;
 	}
 
+
+}
+
+/* Landing Banner */
+
+#landingbanner {
+	padding: 14em 0 12em 0;
+	background-image: url(../../images/happygroup.jpg);
+	background-size: cover;
+	background-position: center top;
+	background-repeat: no-repeat;
+	text-align: center;
+}
+
+#landingbanner .content {
+	-moz-transition: opacity 1s ease-in-out, -moz-transform 0.75s ease-in-out;
+	-webkit-transition: opacity 1s ease-in-out, -webkit-transform 0.75s ease-in-out;
+	-ms-transition: opacity 1s ease-in-out, -ms-transform 0.75s ease-in-out;
+	transition: opacity 1s ease-in-out, transform 0.75s ease-in-out;
+	opacity: 1;
+}
+
+#landingbanner h1 {
+	font-size: 3em;
+	color: #25a2c3;
+	line-height: 1em;
+	margin: 0 0 0.5em 0;
+	padding: 0;
+}
+
+#landingbanner p {
+	font-size: 1.25em;
+	margin-bottom: 1.75em;
+}
+.landingbanner {
+	padding: 14em 0 12em 0;
+	/* background-image: url(../../images/happygroup.jpg); */
+	background-size: cover;
+	background-position: center top;
+	background-repeat: no-repeat;
+	text-align: center;
 }

@@ -57,13 +57,13 @@ class Home extends Component {
 				<div className="inner">
 					<header className="align-center">
 						<h1>Groups Page</h1>
-						<h2>These are your Groups</h2>
+						<h2>Add a new Group</h2>
 					</header>
 					<form>
 						<input className="inner flex flex-3" type="text" onChange={this.catchGroupName} placeholder="group name" autoComplete="off" />
 						<button value={this.groupName} onClick={this.createGroup}>Create Group</button>
 					</form>
-					{/* {this.state.groups.length > 0 && this.showList} */}
+						<h2>These are your Groups</h2>
 					<GroupsList groups={this.state.groups} />
 				</div>
 			</section>

@@ -4,8 +4,8 @@ import pic01 from '../styles/images/pic01.jpg'
 
 function Landing (props) {
     return <main>
-       <div id="banner">
-            <section className="banner">
+       <div id="landingbanner">
+            <section className="landingbanner">
                 <div className="content">
                     <h1>SettleWise</h1>
                     <p><strong>Is an application that allows you to create groups and divide your group spendings just to control all the payments your group does</strong></p>

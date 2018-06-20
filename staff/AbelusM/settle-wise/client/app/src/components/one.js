@@ -8,7 +8,7 @@ function One(props) {
 
     return (
         <div className="one">
-            <section id="one" className="wrapper">
+            <section className="wrapper">
                 <div className="inner flex flex-3">
                     <div className="flex-item left">
                         <div>

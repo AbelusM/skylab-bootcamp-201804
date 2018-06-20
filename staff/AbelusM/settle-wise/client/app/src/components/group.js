@@ -17,10 +17,6 @@ class Group extends Component {
         fractions: []
     }
 
-    componentDidMount() {
-        this.listUsers()
-    }
-
     addUserToGroup = e => {
         e.preventDefault()
         this.setState({
@@ -83,6 +79,11 @@ class Group extends Component {
         })
     }
 
+    goBack = e => {
+        e.preventDefault() 
+        this.props.history.push('/home')
+    }
+
     catchGroupId = e => {
         e.preventDefault()
         this.setState({
@@ -99,26 +100,29 @@ class Group extends Component {
             <section id="main" className="wrapper">
                 <div className="inner">
                     <header className="align-center">
-                        <h3>User's group</h3>
+                        <h2>User's group</h2>
                     </header>
                     <section>
                         {this.listUsers}
                     </section>
                     <form>
-                        <h3>Group Spends</h3>
+                        <h2>Group Spends</h2>
                         {this.listSpends}
+                        <h2>Add a Spend</h2>                        
                         <input className="inner flex flex-3" type="text" onChange={this.state.amount} placeholder="new payment" />
                         <input className="inner flex flex-3" type="text" onChange={this.state.payerId} placeholder="payer" />
-                        <input className="inner flex flex-3" type="text" onChange={this.state.fractions} placeholder="fractions" />
                         <button value={this.state.email} onChange={this.addSpend}>Add a Spend</button>
                     </form>
                     <form>
-                        <h3>Add User</h3>
+                        <h2>Add a User</h2>
                         <input className="inner flex flex-3" type="text" onChange={this.catchUserName} placeholder="user email" />
-                        <button value={this.state.email} onClick={this.addUserToGroup}>Add User to Group</button>
+                        <button onClick={this.addUserToGroup}>Add User to Group</button>
                     </form>
                     <section>
                         <button onClick={this.splitSpends}>Split Spends</button>
+                    </section>
+                    <section>
+                        <button onClick={this.goBack}>Go to Groups</button>
                     </section>
                 </div>
             </section>

@@ -11,9 +11,9 @@ import Footer from './components/footer.js'
 class App extends Component {
   state = { registered: false }
 
-  componentDidMount() {
-    if (logic.loggedIn) this.props.history.push('/home')
-  }
+  // componentDidMount() {
+  //   if (logic.loggedIn) this.props.history.push('/home')
+  // }
 
   onRegister = () => {
     console.log('register')
@@ -45,7 +45,7 @@ class App extends Component {
         <Menu />
         <Header />
         <Route exact path="/" render={() => <Landing />} />
-        <Route path="/groups/:groupId" render={routeProps => <Group {...routeProps}/>} />
+        <Route exact path="/groups/:groupId" render={routeProps => <Group {...routeProps}/>} />
         <Route path="/one" render={() => <One />} />
         {
           <Route exact path="/register" render={() => {

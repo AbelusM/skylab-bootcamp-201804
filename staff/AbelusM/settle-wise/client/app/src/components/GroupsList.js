@@ -7,7 +7,7 @@ import Home from './home'
 
 class GroupsList extends Component {
     render() {
-        return this.props.groups.map(group => <div>
+        return this.props.groups.map(group => <div className='link'>
             <Link to={`/groups/${group._id}`}>
                 {group.name}
             </Link>
