@@ -14,12 +14,10 @@ class Group extends Component {
         groupId: this.props.match.params.groupId,
         amount: 0,
         payerId: '',
-        checkPayer: false,
-        fractions: [],
+        participants: {},
+        amounts: {},
         balance: [],
-        newUser: '',
-        checkUser: false,
-        userId: ''
+        newUser: ''
     }
 
     addUserToGroup = e => {
@@ -27,29 +25,23 @@ class Group extends Component {
         this.setState({
             email: e.target.value
         })
-        const groupId = this.state.groupId.toString()
+        const { groupId, email } = this.state
 
-        logic.addUserToGroup(groupId, this.state.email)
+        logic.addUserToGroup(groupId, email)
             .then(() => console.log('user added to group'))
             .then(newUser => this.setState({ newUser }))
     }
 
     addSpend = e => {
         e.preventDefault()
-        let payerId
-        if (this.state.checkPayer)
-             payerId = this.state.payerId
 
-        const amount = this.state.amount
+        const { groupId, payerId, amount, participants, amounts } = this.state
 
-        let userId
-        if (this.state.checkUser)
-             userId = this.state.userId
+        const fractions = [] // TODO calculate from selected participants and inputed amounts
 
-        e = this.setState({ userId, fractions: e })
-
-        logic.addSpend(amount, payerId, this.state.fractions)
+        logic.addSpend(groupId, amount, payerId, fractions)
             .then(() => console.log('added a spend to the group'))
+            .catch(console.error)
     }
 
     catchAmount = e => {
@@ -58,9 +50,38 @@ class Group extends Component {
         this.setState({ amount })
     }
 
-    catchPayer = e => {
-        e.preventDefault()
-        this.setState({ payerId: e.target.value })
+    selectPayer = payerId => {
+        this.setState({ payerId })
+    }
+
+    selectParticipant = userId => {
+        this.setState(prevState => {
+            const { participants } = prevState
+
+            participants[userId] = true
+
+            return { participants }
+        })
+    }
+
+    unselectParticipant = userId => {
+        this.setState(prevState => {
+            const { participants } = prevState
+
+            participants[userId] = false
+
+            return { participants }
+        })
+    }
+
+    setParticipantAmount = (userId, amount) => {
+        this.setState(prevState => {
+            const { amounts } = prevState
+
+            amounts[userId] = parseFloat(amount)
+
+            return { amounts }
+        })
     }
 
     componentDidMount() {
@@ -82,33 +103,15 @@ class Group extends Component {
 
         logic.listSpends(group)
             .then(spends => {
-                this.setState({
-                    spends
-                })
+                // this.setState({
+                //     spends
+                // })
             })
-    }
-
-    catchUserName = e => {
-        e.preventDefault()
-        this.setState({
-            email: e.target.value
-        })
     }
 
     goBack = e => {
         e.preventDefault()
         this.props.history.push('/home')
-    }
-
-    catchGroupId = e => {
-        e.preventDefault()
-        this.setState({
-            groupId: e.target.value
-        })
-    }
-
-    submit = (e) => {
-        e.preventDefault()
     }
 
     splitSpends() {
@@ -120,8 +123,9 @@ class Group extends Component {
             })
     }
 
-    render() {
 
+
+    render() {
         return <main id="banner">
             <section id="main" className="wrapper">
                 <div className="inner">
@@ -133,18 +137,19 @@ class Group extends Component {
                     </form>
                     <section>
                         <h2>User's group</h2>
+                        <input className="groupInput" type="text" onChange={this.catchAmount} placeholder="new payment amount" />
                         {this.state.users.map(user => <div className='banner'>
                             <label className='groupInput'>{user.name}</label>
-                            <input value={user._id.toString()} onClick={userId => this.setState({ checkUser: true, userId })} className='groupInput' type="checkbox" />
-                            <input value={user._id.toString()} onClick={userId => this.setState({ checkPayer: true, payerId: userId })} className='groupInput' type="checkbox" />
+                            <input onClick={e => { e.target.checked ? this.selectParticipant(user._id) : this.unselectParticipan(user._id) }} className='my-checkbox' type="checkbox" />
+                            <input onClick={e => { this.selectPayer(user._id) }} className='my-checkbox' type="radio" name="payer" />
+                            <input type="number" onChange={ e => this.setParticipantAmount(user._id, e.target.value)} />
                         </div>
                         )}
-                        <input className="groupInput" type="text" onChange={this.catchAmount} placeholder="new payment amount" />
                         <button onClick={this.addSpend}>Add a Spend</button>
                     </section>
                     <form>
                         <h2>Add a User</h2>
-                        <input className="inner flex flex-3" type="text" onChange={this.catchUserName} placeholder="user email" />
+                        <input className="inner flex flex-3" type="text" onChange={this.addUserToGroup} placeholder="user email" />
                         <button onClick={this.addUserToGroup}>Add User to Group</button>
                     </form>
                     <section>

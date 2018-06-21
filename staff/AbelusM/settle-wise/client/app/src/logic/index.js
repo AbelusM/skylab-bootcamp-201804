@@ -4,7 +4,6 @@ api.url = 'http://localhost:5000/api'
 
 const logic = {
     userId: 'NO-ID',
-    groupId: 'NO-ID',
 
     registerUser(name, surname, email, password) {
         return api.registerUser(name, surname, email, password)
@@ -40,8 +39,8 @@ const logic = {
             })
     },
 
-    addSpend(amount, payerId, fractions) {
-        return api.addSpend(this.userId, this.groupId, amount, payerId, fractions)
+    addSpend(groupId, amount, payerId, fractions) {
+        return api.addSpend(this.userId, groupId, amount, payerId, fractions)
             .then(spend => {
                 console.log(spend)
                 return spend

@@ -345,14 +345,9 @@ const logic = {
 
                 if (typeof amount !== 'number') throw Error('amount is not a number')
 
-                // TODO validate amount vs fractions coherence
+                const fractionsTotal = fractions.reduce((accum, fraction) => accum + fraction.amount, 0)
 
-                // for (let i = 0; i < fractions.length; i++) {
-                //     for (let n = 0; n < fractions[i].fraction.length; i++) {
-                //         let res = + fractions[i].fraction[n]
-                //         if (amount !== res) throw Error('amount is not equal to the sum of fractions')
-                //     }
-                // }
+                if (amount !== fractionsTotal) throw Error('amount is not equal to the sum of fractions')
 
                 const userIds = [payerId]
 
