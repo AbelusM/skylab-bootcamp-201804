@@ -380,7 +380,7 @@ const api = {
 
                 if (!(fractions instanceof Array)) throw Error('fractions is not an array')
 
-                if (typeof amount !== 'number') throw Error('group id is not a number')
+                if (typeof amount !== 'number') throw Error('amount is not a number')
 
                 // TODO check fractions users and amounts are strings and number, respectively
 

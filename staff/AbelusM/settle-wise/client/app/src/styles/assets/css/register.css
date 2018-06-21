@@ -1575,7 +1575,7 @@ input[type="checkbox"], input[type="radio"] {
 	display: block;
 	float: left;
 	margin-right: -2em;
-	opacity: 0;
+	/* opacity: 0; */
 	width: 1em;
 	z-index: -1;
 }
@@ -2508,7 +2508,7 @@ body {
 }
 
 body.is-loading #banner .content {
-	opacity: 0;
+	/* opacity: 0; */
 	-moz-transform: translateY(1em);
 	-webkit-transform: translateY(1em);
 	-ms-transform: translateY(1em);

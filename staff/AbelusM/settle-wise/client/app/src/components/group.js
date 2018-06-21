@@ -4,7 +4,7 @@ import logic from '../logic'
 import '../styles/assets/css/main.css'
 import surfgroup from '../styles/images/surfgroup.jpg'
 import GroupsList from './GroupsList'
-// import Spend from './Spend'
+import { ParseOptions } from 'querystring';
 
 class Group extends Component {
     state = {
@@ -14,8 +14,12 @@ class Group extends Component {
         groupId: this.props.match.params.groupId,
         amount: 0,
         payerId: '',
+        checkPayer: false,
         fractions: [],
-        result: []
+        balance: [],
+        newUser: '',
+        checkUser: false,
+        userId: ''
     }
 
     addUserToGroup = e => {
@@ -27,16 +31,36 @@ class Group extends Component {
 
         logic.addUserToGroup(groupId, this.state.email)
             .then(() => console.log('user added to group'))
+            .then(newUser => this.setState({ newUser }))
     }
 
     addSpend = e => {
         e.preventDefault()
-        const amount = this.state.amount
-        const payerId = this.state.payerId
-        const fraction = this.state.fractions
+        let payerId
+        if (this.state.checkPayer)
+             payerId = this.state.payerId
 
-        logic.addSpend(amount, payerId, fraction)
+        const amount = this.state.amount
+
+        let userId
+        if (this.state.checkUser)
+             userId = this.state.userId
+
+        e = this.setState({ userId, fractions: e })
+
+        logic.addSpend(amount, payerId, this.state.fractions)
             .then(() => console.log('added a spend to the group'))
+    }
+
+    catchAmount = e => {
+        e.preventDefault()
+        const amount = parseInt(e.target.value)
+        this.setState({ amount })
+    }
+
+    catchPayer = e => {
+        e.preventDefault()
+        this.setState({ payerId: e.target.value })
     }
 
     componentDidMount() {
@@ -46,7 +70,6 @@ class Group extends Component {
 
     listUsers = () => {
         const group = this.state.groupId
-        console.log(group)
 
         logic.listUsers(group)
             .then(res => {
@@ -93,14 +116,7 @@ class Group extends Component {
 
         logic.splitSpends(group)
             .then(balance => {
-                this.setState({
-                    result: balance
-                })
-            }).then(() => {
-                // TODO move this to render
-                return this.state.result.map(res => <div>
-                    <label>{res}</label>
-                </div>)
+                this.setState({ balance })
             })
     }
 
@@ -109,29 +125,32 @@ class Group extends Component {
         return <main id="banner">
             <section id="main" className="wrapper">
                 <div className="inner">
-                    <header className="align-center">
-                        <h2>User's group</h2>
-                    </header>
-                    <section>
-                        {this.state.users.map(user => <p>{user.name}</p>)}
-                    </section>
                     <form>
                         <h2>Group Spends</h2>
                         {this.state.spends.map(res => <div>
                             <label>{res}</label>
                         </div>)}
-                        <h2>Add a Spend</h2>
-                        <input className="inner flex flex-3" type="text" onChange={this.state.amount} placeholder="new payment" />
-                        <input className="inner flex flex-3" type="text" onChange={this.state.payerId} placeholder="payer" />
-                        <button value={this.state.email} onChange={this.addSpend}>Add a Spend</button>
                     </form>
+                    <section>
+                        <h2>User's group</h2>
+                        {this.state.users.map(user => <div className='banner'>
+                            <label className='groupInput'>{user.name}</label>
+                            <input value={user._id.toString()} onClick={userId => this.setState({ checkUser: true, userId })} className='groupInput' type="checkbox" />
+                            <input value={user._id.toString()} onClick={userId => this.setState({ checkPayer: true, payerId: userId })} className='groupInput' type="checkbox" />
+                        </div>
+                        )}
+                        <input className="groupInput" type="text" onChange={this.catchAmount} placeholder="new payment amount" />
+                        <button onClick={this.addSpend}>Add a Spend</button>
+                    </section>
                     <form>
                         <h2>Add a User</h2>
                         <input className="inner flex flex-3" type="text" onChange={this.catchUserName} placeholder="user email" />
                         <button onClick={this.addUserToGroup}>Add User to Group</button>
                     </form>
                     <section>
-                        <button onClick={this.splitSpends}>Split Spends</button>
+                        <button onClick={this.state.balance.map(res => <div>
+                            <label>{res}</label>
+                        </div>)}>Split Spends</button>
                     </section>
                     <section>
                         <button onClick={this.goBack}>Go to Groups</button>

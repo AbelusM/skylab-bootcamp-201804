@@ -1575,14 +1575,13 @@ textarea {
 }
 
 input[type="checkbox"], input[type="radio"] {
-	-moz-appearance: none;
+	/* -moz-appearance: none;
 	-webkit-appearance: none;
 	-ms-appearance: none;
-	appearance: none;
+	appearance: none; */
 	display: block;
 	float: left;
 	margin-right: -2em;
-	opacity: 0;
 	width: 1em;
 	z-index: -1;
 }
@@ -1609,10 +1608,10 @@ input[type="checkbox"]+label:before, input[type="radio"]+label:before {
 }
 
 input[type="checkbox"]+label:before, input[type="radio"]+label:before {
-	background: rgba(144, 144, 144, 0.075);
+	background: rgba(221, 13, 13, 0.973);
 	border-radius: 4px;
-	border: solid 1px #dee1e3;
-	content: '';
+	border: solid 1px #007bce;
+	/* content: ''; */
 	display: inline-block;
 	height: 1.65em;
 	left: 0;
@@ -1626,7 +1625,7 @@ input[type="checkbox"]+label:before, input[type="radio"]+label:before {
 input[type="checkbox"]:checked+label:before, input[type="radio"]:checked+label:before {
 	background: #5e0166;
 	border-color: #5e0166;
-	color: #ffffff;
+	color: #e70505;
 	content: '\f00c';
 }
 
@@ -2515,7 +2514,6 @@ body {
 }
 
 body.is-loading #banner .content {
-	opacity: 0;
 	-moz-transform: translateY(1em);
 	-webkit-transform: translateY(1em);
 	-ms-transform: translateY(1em);
@@ -2695,8 +2693,6 @@ body.is-loading #banner .content {
 	#footer .copyright {
 		padding: 2em 0;
 	}
-
-
 }
 
 /* Landing Banner */
@@ -2730,6 +2726,7 @@ body.is-loading #banner .content {
 	font-size: 1.25em;
 	margin-bottom: 1.75em;
 }
+
 .landingbanner {
 	padding: 14em 0 12em 0;
 	/* background-image: url(../../images/happygroup.jpg); */
@@ -2737,4 +2734,46 @@ body.is-loading #banner .content {
 	background-position: center top;
 	background-repeat: no-repeat;
 	text-align: center;
+}
+
+.groupInput {
+	text-decoration: none;
+	display: inline-block;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	-ms-appearance: none;
+	appearance: none;
+	-moz-transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+	-webkit-transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+	-ms-transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+	transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+	background-color: #5e0166;
+	border-radius: 4px;
+	border: 0;
+	color: #ffffff;
+	cursor: pointer;
+	font-family: "Montserrat", sans-serif;
+	height: 3.5em;
+	line-height: 3.5em;
+	padding: 0 3.5em;
+	text-align: center;
+	text-decoration: none;
+	white-space: nowrap;
+	text-transform: uppercase;
+	margin-top: 3%;
+	margin-left: 7%;
+	margin-right: 7%;
+}
+
+.inner h2 {
+	margin-top: 5%
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
 }
