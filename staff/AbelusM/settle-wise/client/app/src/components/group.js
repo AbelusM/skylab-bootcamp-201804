@@ -135,8 +135,8 @@ class Group extends Component {
                         <h2>User's group</h2>
                         {this.state.users.map(user => <div className='banner'>
                             <label className='groupInput'>{user.name}</label>
-                            <input value={user._id.toString()} onClick={userId => this.setState({ checkUser: true, userId })} className='groupInput' type="checkbox" />
-                            <input value={user._id.toString()} onClick={userId => this.setState({ checkPayer: true, payerId: userId })} className='groupInput' type="checkbox" />
+                            <input value={user._id.toString()} onClick={userId => this.setState({ checkUser: true, userId })} className='' type="checkbox" />
+                            <input value={user._id.toString()} onClick={userId => this.setState({ checkPayer: true, payerId: userId })} className='' type="checkbox" />
                         </div>
                         )}
                         <input className="groupInput" type="text" onChange={this.catchAmount} placeholder="new payment amount" />
