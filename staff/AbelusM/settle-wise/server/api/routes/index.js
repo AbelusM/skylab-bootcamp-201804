@@ -170,7 +170,7 @@ router.get('/users/:userId/groups/:groupId/spends', [jwtValidator, jsonBodyParse
 })
 
 
-router.get('/users/:userId/groups/:groupId/balance', [jwtValidator, jsonBodyParser], (req, res) => {
+router.get('/users/:userId/groups/:groupId/balance', jwtValidator, (req, res) => {
     const { params: { userId, groupId } } = req
 
     logic.splitSpends(userId, groupId)

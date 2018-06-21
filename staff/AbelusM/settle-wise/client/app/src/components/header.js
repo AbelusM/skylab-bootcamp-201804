@@ -12,12 +12,10 @@ function Header(props) {
                 <nav className="left">
                     <a href="#menu"><span>Menu</span></a>
                 </nav>
-                <a href="index.html" className="logo">SettleWise</a>
+                <a href="#/home" className="logo">SettleWise</a>
                 <nav className="right">
                 <Link to="/login" className="button alt">Log in</Link>
                 <Link to="/register" className="button alt">Register</Link>
-                {/* <a href="#login" >Log in</a>
-                    <a href="#register" className="button alt">Register</a> */}
                 </nav>
             </header>
         </div>

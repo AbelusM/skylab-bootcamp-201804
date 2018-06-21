@@ -38,15 +38,15 @@ class Register extends Component {
         return <main id="banner" className="content">
             <div>
                 <h1>TELL US EVERYTHING!</h1>
-                <form onSubmit={this.register}>
+                <form className='register-form' onSubmit={this.register}>
                     <label for="name">Name:</label>
-                    <input type="text" placeholder="name" onChange={this.updateName} />
+                    <input className='register-inputs' type="text" placeholder="name" onChange={this.updateName} />
                     <label for="name">Surname:</label>
-                    <input type="text" placeholder="surname" onChange={this.updateSurname} />
+                    <input className='register-inputs' type="text" placeholder="surname" onChange={this.updateSurname} />
                     <label for="email">Email:</label>
-                    <input type="text" placeholder="email" onChange={this.updateEmail} />
+                    <input className='register-inputs' type="text" placeholder="email" onChange={this.updateEmail} />
                     <label for="password">Password:</label>
-                    <input type="password" placeholder="password" onChange={this.updatePassword} />
+                    <input className='register-inputs' type="password" placeholder="password" onChange={this.updatePassword} />
                     <button className="register-button" type="submit">Register</button>
                 </form>
             </div>

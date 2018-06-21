@@ -268,7 +268,7 @@ const logic = {
 
                 if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
 
-                return Group.findById({ _id:groupId }).populate('users')
+                return Group.findById({ _id: groupId }).populate('users')
                     .then(users => {
                         if (!users) throw Error(`no group found with id ${groupId}`)
 
@@ -345,14 +345,9 @@ const logic = {
 
                 if (typeof amount !== 'number') throw Error('amount is not a number')
 
-                // TODO validate amount vs fractions coherence
+                const fractionsTotal = fractions.reduce((accum, fraction) => accum + fraction.amount, 0)
 
-                // for (let i = 0; i < fractions.length; i++) {
-                //     for (let n = 0; n < fractions[i].fraction.length; i++) {
-                //         let res = + fractions[i].fraction[n]
-                //         if (amount !== res) throw Error('amount is not equal to the sum of fractions')
-                //     }
-                // }
+                if (amount !== fractionsTotal) throw Error('amount is not equal to the sum of fractions')
 
                 const userIds = [payerId]
 
@@ -370,11 +365,11 @@ const logic = {
                             if (!user) throw Error(`no user found with id ${userIds[index]}`)
                         })
 
-                        return Group.findById(groupId)
+                        return Group.findById(groupId).populate('users')
                             .then(group => {
                                 if (!group) throw Error(`no group found with id ${group}`)
 
-                                if (!group.users.some(_userId => _userId.toString() === userId)) throw Error(`user with id ${userId} does not belong to group with id ${groupId}`)
+                                if (!group.users.some(_userId => _userId._id.toString() === userId)) throw Error(`user with id ${userId} does not belong to group with id ${groupId}`)
 
                                 group.spends.push(new Spend({
                                     user: userId,
@@ -406,14 +401,16 @@ const logic = {
 
                 if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
 
-                return Group.findById(groupId)
+                return Group.findById(groupId).populate({
+                    path: 'spends.fractions.user'
+                })
                     .then(group => {
                         if (!group) throw Error(`no group found with id ${groupId}`)
 
-                        if (!group.users.some(_userId => _userId.toString() === userId)) throw Error(`user with id ${userId} does not belong to group with id ${groupId}`)
+                        if (!group.users.some(_userId => _userId._id.toString() === userId)) throw Error(`user with id ${userId} does not belong to group with id ${groupId}`)
 
                         return group.spends.map(({ id, amount, payer, fractions }) => {
-                            const _fractions = fractions.map(({ user, fraction }) => ({ userId: user.toString(), fraction }))
+                            const _fractions = fractions.map(({ user, amount }) => ({ userId: user, amount }))
 
                             return { id, amount, payerId: payer.toString(), fractions: _fractions }
                         })

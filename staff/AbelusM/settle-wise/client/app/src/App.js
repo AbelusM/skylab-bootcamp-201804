@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Register, Login, Landing, Home, Group } from './components'
-import { Link, Route, withRouter } from 'react-router-dom'
+import { Link, Route, withRouter, Redirect } from 'react-router-dom'
 import './styles/assets/css/main.css';
 import logic from './logic'
 import Menu from './components/menu.js'
@@ -47,6 +47,7 @@ class App extends Component {
         <Route exact path="/" render={() => <Landing />} />
         <Route exact path="/groups/:groupId" render={routeProps => <Group {...routeProps}/>} />
         <Route path="/one" render={() => <One />} />
+        <Route exact path="/menu" render={() => <Home onLogout={this.onLogout} />}/>
         {
           <Route exact path="/register" render={() => {
             return this.state.registered ?
@@ -55,7 +56,10 @@ class App extends Component {
               <Register onRegister={this.onRegister} onRegisterError={this.onRegisterError} />
           }} />
         }
-        <Route exact path="/login" render={() => !logic.loggedIn && <Login onLogin={this.onLogin} onLoginError={this.onLoginError} />} />
+        <Route exact path="/login" render={() => 
+          
+          !logic.loggedIn ? 
+          <Login onLogin={this.onLogin} onLoginError={this.onLoginError} /> : <Redirect to='/home'/>} />
         {logic.loggedIn && <Route exact path="/home" render={() => <Home onLogout={this.onLogout} />} />}
         <Footer />
       </div>
