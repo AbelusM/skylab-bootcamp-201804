@@ -492,22 +492,10 @@ const logic = {
                             const userDebtTo = debts.find(debt => debt.userId === debtTo.userId)
 
                             const debtToMe = userDebtTo.debts.find(debt => debt.userId === userDebt.userId)
-debugger
+
                             if (debtToMe)
                                 if (debtTo.amount > debtToMe.amount)
                                     balance.push({ creditorId: debtTo.userId, debtorId: userDebt.userId, amount: debtTo.amount - debtToMe.amount })
-                                    // Promise.resolve()
-                                    //     .then(() => {
-
-                                    //         var creditorId = User.findById(debtTo.userId)
-                                    //             var debtorId = User.findById(userDebt.userId)
-                                    //     })
-
-                                    //     .then(() => {
-                                    //         var finalAmount = debtTo.amount - debtToMe.amount
-
-                                    //         balance.push({ creditorId, debtorId, finalAmount })
-                                    //     })
                                 }
                     })
                     
