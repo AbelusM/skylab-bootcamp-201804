@@ -17,7 +17,8 @@ class Group extends Component {
         participants: {},
         amounts: {},
         balance: [],
-        newUser: ''
+        newUser: '',
+        spendName: ''
     }
 
     addUserToGroup = e => {
@@ -41,7 +42,7 @@ class Group extends Component {
     addSpend = e => {
         e.preventDefault()
 
-        const { groupId, payerId, amount, participants, amounts } = this.state
+        const { spendName, groupId, payerId, amount, participants, amounts } = this.state
 
         const fractions = []
 
@@ -51,7 +52,7 @@ class Group extends Component {
             fractions.push({ "user": userId, "amount": amounts[userId] })
         })
 
-        logic.addSpend(groupId, amount, payerId, fractions)
+        logic.addSpend(groupId, amount, spendName, payerId, fractions)
             .then(() => console.log('added a spend to the group'))
             .catch(console.error)
     }
@@ -60,6 +61,12 @@ class Group extends Component {
         e.preventDefault()
         const amount = parseInt(e.target.value)
         this.setState({ amount })
+    }
+
+    catchSpendName = e => {
+        e.preventDefault()
+        const spendName = e.target.value
+        this.setState({ spendName })
     }
 
     selectPayer = payerId => {
@@ -112,8 +119,11 @@ class Group extends Component {
 
     listSpends() {
         const group = this.state.groupId.toString()
+
         logic.listSpends(group)
             .then(spends => {
+                console.log(spends)
+
                 this.setState({
                     spends
                 })
@@ -127,7 +137,7 @@ class Group extends Component {
 
     splitSpends = () => {
         const group = this.state.groupId
-        debugger
+
         logic.splitSpends(group)
             .then(balance => {
                 this.setState({ balance })
@@ -140,20 +150,24 @@ class Group extends Component {
                 <div className="inner">
                     <form>
                         {this.state.spends.length ? <h2>Group Spends By User</h2> : null}
-                        {this.state.spends.map(spend =>
-                            spend.fractions.map(fraction =>
-                                fraction.amount > 0 && <div>
-                                    <label className='groupInput'>{fraction.userId.name}</label>
-                                    <label className='groupInput'>{fraction.amount}</label>
+                        <section><h4>{this.state.spendName}</h4> {this.state.spends.map(spend =>
+                            <div className='random'><h4>Total Spend: {spend.amount}</h4> {spend.fractions.map(fraction =>
+                                fraction.amount > 0 && <div className="">
+                                    <h5 >Participant:</h5>
+                                    <label >{fraction.userId.name}</label>
+                                    <h5 >Amount: </h5>
+                                    <label >{fraction.amount}</label>
                                 </div>
-                            )
+                            )}</div>
                         )
                         }
+                        </section>
 
                     </form>
-                    <section>
+                    <section className='section-group'>
                         <h2>User's group</h2>
-                        <input className="groupInput" type="text" onChange={this.catchAmount} placeholder="new payment amount" />
+                        <input className="groupInput" type="number" onChange={this.catchAmount} placeholder="new payment amount" />
+                        <input className="groupInput" type="text" onChange={this.catchSpendName} placeholder="new payment name" />
                         {this.state.users.map(user => <div className='banner'>
                             <label className='groupInput'>{user.name}</label>
                             <input onClick={e => { e.target.checked ? this.selectParticipant(user._id) : this.unselectParticipan(user._id) }} className='my-checkbox' type="checkbox" />
@@ -169,8 +183,14 @@ class Group extends Component {
                         <button type='submit'>Add User to Group</button>
                     </form>
                     <section>
-                        {this.state.balance.map(res => <div>
-                            <label className='groupInput'>{res}</label>
+                    {this.state.balance.length ? <h2>Operation Balance - Creditor to Debtor</h2> : null}
+                        {this.state.balance.map(res => <div className='random'> 
+                            <h4 className=''>User:</h4>
+                            <label className=''>{res.debtorId}</label>
+                            <h4 className=''>Debts To:</h4>
+                            <label className=''>{res.creditorId}</label>
+                            <h4 className=''>Amount:</h4>
+                            <h3 className=''>{res.amount}</h3>
                         </div>)}
                         <button onClick={this.splitSpends}>Split Spends</button>
                     </section>

@@ -11,14 +11,16 @@ import Footer from './components/footer.js'
 class App extends Component {
   state = { registered: false }
 
-  // componentDidMount() {
-  //   if (logic.loggedIn) this.props.history.push('/home')
-  // }
+    // componentDidMount() {
+    //   if (logic.loggedIn) this.props.history.push('/home')
+    // }
 
   onRegister = () => {
     console.log('register')
 
     this.setState({ registered: true })
+    this.props.history.push('/login')
+    
   }
 
   onRegisterError(message) {
@@ -36,6 +38,9 @@ class App extends Component {
   }
 
   onLogout = () => {
+    this.setState({
+      registered: false
+    })
     this.props.history.push('/')
   }
 
@@ -45,9 +50,9 @@ class App extends Component {
         <Menu />
         <Header />
         <Route exact path="/" render={() => <Landing />} />
-        <Route exact path="/groups/:groupId" render={routeProps => <Group {...routeProps}/>} />
+        <Route exact path="/groups/:groupId" render={routeProps => <Group {...routeProps} />} />
         <Route path="/one" render={() => <One />} />
-        <Route exact path="/menu" render={() => <Home onLogout={this.onLogout} />}/>
+        <Route exact path="/menu" render={() => <Home onLogout={this.onLogout} />} />
         {
           <Route exact path="/register" render={() => {
             return this.state.registered ?
@@ -56,10 +61,10 @@ class App extends Component {
               <Register onRegister={this.onRegister} onRegisterError={this.onRegisterError} />
           }} />
         }
-        <Route exact path="/login" render={() => 
-          
-          !logic.loggedIn ? 
-          <Login onLogin={this.onLogin} onLoginError={this.onLoginError} /> : <Redirect to='/home'/>} />
+        <Route exact path="/login" render={() =>
+
+          !logic.loggedIn ?
+            <Login onLogin={this.onLogin} onLoginError={this.onLoginError} /> : <Redirect to='/home' />} />
         {logic.loggedIn && <Route exact path="/home" render={() => <Home onLogout={this.onLogout} />} />}
         <Footer />
       </div>

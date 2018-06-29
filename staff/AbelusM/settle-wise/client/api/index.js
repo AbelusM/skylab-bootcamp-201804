@@ -324,7 +324,7 @@ const api = {
                     })
             })
     },
-    
+
     /**
     * Add a existing User to the current Group
     * 
@@ -362,12 +362,13 @@ const api = {
        * 
        * @param {string} groupId
        * @param {Number} amount
+       * @param {String} name The name of the spend 
        * @param {string} payerId of the user who pays
        * @param {[{user: string, fraction: Number}]} fractions 
        * 
        * @returns {Promise<string>}
        */
-    addSpend(userId, groupId, amount, payerId, fractions) {
+    addSpend(userId, groupId, amount, name, payerId, fractions) {
         return Promise.resolve()
             .then(() => {
                 if (typeof groupId !== 'string') throw Error('group id is not a string')
@@ -378,13 +379,17 @@ const api = {
 
                 if (!(payerId = payerId.trim()).length) throw Error('payer id is empty or blank')
 
+                if (typeof name !== 'string') throw Error('spend name is not a string')
+
+                if (!(name = name.trim()).length) throw Error('spend name is empty or blank')
+
                 if (!(fractions instanceof Array)) throw Error('fractions is not an array')
 
                 if (typeof amount !== 'number') throw Error('amount is not a number')
 
                 // TODO check fractions users and amounts are strings and number, respectively
 
-                return axios.post(`${this.url}/users/${userId}/groups/${groupId}/spends`, { amount, payerId, fractions }, { headers: { authorization: `Bearer ${this.token}` } })
+                return axios.post(`${this.url}/users/${userId}/groups/${groupId}/spends`, { amount, name, payerId, fractions }, { headers: { authorization: `Bearer ${this.token}` } })
                     .then(({ status, data }) => {
                         if (status !== 201 || data.status !== 'OK') throw Error(`unexpected response status ${status} (${data.status})`)
 
@@ -401,7 +406,7 @@ const api = {
                     })
             })
     },
-    
+
     /**
        * List groups by user
        * 
@@ -450,7 +455,7 @@ const api = {
       * 
       * @returns {Promise<[group]>} The complete group balance of the debts
       */
-     splitSpends(userId, groupId) {
+    splitSpends(userId, groupId) {
         return Promise.resolve()
             .then(() => {
                 if (typeof userId !== 'string') throw Error('user id is not a string')

@@ -2,9 +2,27 @@ import React, { Component } from 'react'
 import logic from '../logic'
 import '../styles/assets/css/main.css'
 import '../styles/assets/css/register.css'
+import swal from 'sweetalert2'
+
 
 class Register extends Component {
     state = { name: '', surname: '', email: '', password: '' }
+
+    componentDidMount() {
+        if (sessionStorage.getItem('userId')) {
+            logic.listGroups()
+                .catch(() => {
+                    swal({
+                        type: 'error',
+                        title: 'Hey!',
+                        html: '<p>You are already registered!</p>',
+                        animation: true,
+                        customClass: 'animated flipInX'
+                    })
+                })
+                .then(this.props.history.push(`/login`))
+        }
+    }
 
     updateName = e => {
         this.setState({ name: e.target.value })
@@ -27,11 +45,27 @@ class Register extends Component {
 
         const { name, surname, email, password } = this.state
 
-        this.setState({ name: '', surname: '', email: '', password: '' })
-
         logic.registerUser(name, surname, email, password)
             .then(() => this.props.onRegister())
-            .catch(({ message }) => this.props.onRegisterError(message))
+            .then(() => swal({
+                type: 'success',
+                title: 'Congrats!',
+                html: '<p>Registered Successful!</p>',
+                animation: true,
+                customClass: 'animated flipInX'
+            }))
+            .catch(({ message }) => {
+                swal({
+                    type: 'error',
+                    title: 'Oops... ',
+                    html: '<p>Something went wrong!</p>',
+                    animation: true,
+                    customClass: 'animated flipInX'
+                })
+                this.props.onRegisterError(message)
+            })
+
+        this.setState({ name: '', surname: '', email: '', password: '' })
     }
 
     render() {

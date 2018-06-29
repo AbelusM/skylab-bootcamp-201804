@@ -326,7 +326,7 @@ const logic = {
         * 
         * @returns {Promise<string>}
         */
-    addSpend(userId, groupId, amount, payerId, fractions) {
+    addSpend(userId, groupId, amount, name, payerId, fractions) {
         return Promise.resolve()
             .then(() => {
                 if (typeof userId !== 'string') throw Error('user id is not a string')
@@ -334,6 +334,10 @@ const logic = {
                 if (!(userId = userId.trim()).length) throw Error('user id is empty or blank')
 
                 if (typeof groupId !== 'string') throw Error('group id is not a string')
+
+                if (typeof name !== 'string') throw Error('spend name is not a string')
+
+                if (!(name = name.trim()).length) throw Error('spend name is empty or blank')
 
                 if (!(groupId = groupId.trim()).length) throw Error('group id is empty or blank')
 
@@ -374,6 +378,7 @@ const logic = {
                                 group.spends.push(new Spend({
                                     user: userId,
                                     amount,
+                                    name,
                                     payer: payerId,
                                     fractions
                                 }))
@@ -487,13 +492,25 @@ const logic = {
                             const userDebtTo = debts.find(debt => debt.userId === debtTo.userId)
 
                             const debtToMe = userDebtTo.debts.find(debt => debt.userId === userDebt.userId)
-
+debugger
                             if (debtToMe)
                                 if (debtTo.amount > debtToMe.amount)
                                     balance.push({ creditorId: debtTo.userId, debtorId: userDebt.userId, amount: debtTo.amount - debtToMe.amount })
-                        }
-                    })
+                                    // Promise.resolve()
+                                    //     .then(() => {
 
+                                    //         var creditorId = User.findById(debtTo.userId)
+                                    //             var debtorId = User.findById(userDebt.userId)
+                                    //     })
+
+                                    //     .then(() => {
+                                    //         var finalAmount = debtTo.amount - debtToMe.amount
+
+                                    //         balance.push({ creditorId, debtorId, finalAmount })
+                                    //     })
+                                }
+                    })
+                    
                     return balance
                 }, [])
 

@@ -511,7 +511,7 @@ describe('logic (settle-wise)', () => {
                             expect(group._id).to.exist
                             expect(group.name).to.equal(groupData.name)
 
-                            return logic.addSpend(user1._id.toString(), group._id.toString(), 100, user1._id.toString(), [
+                            return logic.addSpend(user1._id.toString(), group._id.toString(), 100, 'california meal', user1._id.toString(), [
                                 { user: user1._id.toString(), amount: 75 },
                                 { user: user2._id.toString(), amount: 25 }
                             ])
@@ -530,6 +530,7 @@ describe('logic (settle-wise)', () => {
 
                                     expect(spend._id).to.exist
                                     expect(spend.amount).to.equal(100)
+                                    expect(spend.name).to.equal('california meal')
                                     expect(spend.payer).to.exist
                                     expect(spend.payer.toString()).to.equal(user1._id.toString())
                                     expect(spend.fractions).to.exist
@@ -573,7 +574,7 @@ describe('logic (settle-wise)', () => {
                             expect(group._id).to.exist
                             expect(group.name).to.equal(groupData.name)
 
-                            return logic.addSpend(user1._id.toString(), group._id.toString(), 100, user1._id.toString(), [
+                            return logic.addSpend(user1._id.toString(), group._id.toString(), 100, 'california meal', user1._id.toString(), [
                                 { user: user1._id.toString(), amount: 75 },
                                 { user: user2._id.toString(), amount: 25 }
                             ])
@@ -1006,6 +1007,7 @@ describe('logic (settle-wise)', () => {
                     const spend = new Spend({
                         user: user1._id,
                         amount: 100,
+                        name: 'california meal',
                         payer: user1._id,
                         fractions: [
                             { user: user1._id, amount: 40 },
@@ -1017,6 +1019,7 @@ describe('logic (settle-wise)', () => {
                     const spend2 = new Spend({
                         user: user2._id,
                         amount: 120,
+                        name: 'california meal',                        
                         payer: user3._id,
                         fractions: [
                             { user: user1._id, amount: 40 },
@@ -1028,6 +1031,7 @@ describe('logic (settle-wise)', () => {
                     const spend3 = new Spend({
                         user: user3._id,
                         amount: 80,
+                        name: 'california meal',                        
                         payer: user2._id,
                         fractions: [
                             { user: user1._id, amount: 25 },
@@ -1060,6 +1064,7 @@ describe('logic (settle-wise)', () => {
                             expect(spend1.amount).to.equal(100)
                             expect(spend1.user).to.exist
                             expect(spend1.user.toString()).to.equal(user1._id.toString())
+                            expect(spend1.name).to.equal('california meal')
                             expect(spend1.payer).to.exist
                             expect(spend1.payer.toString()).to.equal(user1._id.toString())
                             expect(spend1.fractions).to.exist
@@ -1083,6 +1088,8 @@ describe('logic (settle-wise)', () => {
                             expect(spend2.amount).to.equal(120)
                             expect(spend2.user).to.exist
                             expect(spend2.user.toString()).to.equal(user2._id.toString())
+                            expect(spend1.name).to.equal('california meal')
+                           
                             expect(spend2.payer).to.exist
                             expect(spend2.payer.toString()).to.equal(user3._id.toString())
                             expect(spend2.fractions).to.exist
@@ -1106,6 +1113,7 @@ describe('logic (settle-wise)', () => {
                             expect(spend3.amount).to.equal(80)
                             expect(spend3.user).to.exist
                             expect(spend3.user.toString()).to.equal(user3._id.toString())
+                            expect(spend1.name).to.equal('california meal')                            
                             expect(spend3.payer).to.exist
                             expect(spend3.payer.toString()).to.equal(user2._id.toString())
                             expect(spend3.fractions).to.exist

@@ -10,6 +10,10 @@ module.exports = new Schema({
         type: Number,
         required: true
     },
+    name: {
+        type: String,
+        required: false
+    },
     payer: {
         type: ObjectId,
         ref: 'User',
