@@ -255,7 +255,8 @@ const logic = {
     /**
         * List users by group
         * 
-       * @param {string} groupId The user id
+       * @param {string} userId The user id
+       * @param {string} groupId The group id
        * 
        * @throws {Error} If the user does not belong to any group
        * 
@@ -318,11 +319,12 @@ const logic = {
     },
 
     /**
+        * Add a Spend to the group, you must select the payer and the fractions of every user that participates
         * 
-        * @param {string} groupId
-        * @param {Number} amount
-        * @param {string} payerId of the user who pays
-        * @param {[{user: string, fraction: Number}]} fractions 
+        * @param {string} groupId the id of the group you want to add the spend
+        * @param {Number} amount the total amount of the spend
+        * @param {string} payerId of the user who pays the most quantity
+        * @param {[{user: string, fraction: Number}]} fractions this has user as the participate and fraction if he made any apportation at the total value
         * 
         * @returns {Promise<string>}
         */
@@ -391,9 +393,11 @@ const logic = {
     },
 
     /**
-    * @param {string} groupId
+     * List all the spends that are assigned to a group
+     * 
+    * @param {string} groupId the id of the group 
     * 
-    * @returns {Promise<[Spend]>}
+    * @returns {Promise<[Spend]>} all the information of the spend
     */
     listSpends(userId, groupId) {
         return Promise.resolve()
@@ -425,9 +429,13 @@ const logic = {
 
 
     /**
+     * Calculate the creditor and the debtor of the group, takes all the spends and asign for each one a fraction with the users that owes to other users
      * 
-     * @param {string} userId 
-     * @param {string} groupId 
+     * @param {string} userId the user id, to be assure is a real member
+     * @param {string} groupId the group id that has the spends on it
+     * 
+     * @return {Array} an array of objects with the creditor and the debtor and all the spends
+     *
      */
     calculateDebts(userId, groupId) {
         return Promise.resolve()
@@ -478,9 +486,12 @@ const logic = {
     },
 
     /**
+     * Uses calculateSpends to give all the information and treat it, just take the amount and returns how much do every member of the spends of the group, owes to the other members
      * 
      * @param {string} userId 
      * @param {string} groupId 
+     * 
+     * @returns {Array} returns balance as the final information of who debts to whom
      */
     splitSpends(userId, groupId) {
         return this.calculateDebts(userId, groupId)

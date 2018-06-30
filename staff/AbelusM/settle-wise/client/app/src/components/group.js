@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import logic from '../logic'
-import '../styles/assets/css/main.css'
+// import '../styles/assets/css/main.css'
 import surfgroup from '../styles/images/surfgroup.jpg'
-import GroupsList from './GroupsList'
+import GroupsList from './groupslist'
 import { ParseOptions } from 'querystring';
+import { Card, CardImg, CardText, CardBody, CardLink,
+    CardTitle, CardSubtitle, Button, Popover, PopoverHeader, PopoverBody  } from 'reactstrap';
 
 class Group extends Component {
     state = {
@@ -148,7 +150,21 @@ class Group extends Component {
         return <main id="banner">
             <section id="main" className="wrapper">
                 <div className="inner">
-                    <form>
+                {this.state.spends.length ? <h2>Group Spends By User</h2> : null} <div>
+                        <Card className='random'>
+                            <CardBody>
+                                <CardTitle>GroupName</CardTitle>
+                                <CardSubtitle>Card subtitle</CardSubtitle>
+                            </CardBody>
+                            <CardBody>
+                                <CardText>Some quick example text to build on the card title and make up the bulk of the card's content.</CardText>
+                                <CardLink href="#">Card Link
+                                </CardLink>
+                                <CardLink href="#">Another Link</CardLink>
+                            </CardBody>
+                        </Card>
+                    </div>  
+                    {/* <form>
                         {this.state.spends.length ? <h2>Group Spends By User</h2> : null}
                         <section><h4>{this.state.spendName}</h4> {this.state.spends.map(spend =>
                             <div className='random'><h4>Total Spend: {spend.amount}</h4> {spend.fractions.map(fraction =>
@@ -163,7 +179,7 @@ class Group extends Component {
                         }
                         </section>
 
-                    </form>
+                    </form> */}
                     <section className='section-group'>
                         <h2>User's group</h2>
                         <input className="groupInput" type="number" onChange={this.catchAmount} placeholder="new payment amount" />
@@ -183,8 +199,8 @@ class Group extends Component {
                         <button type='submit'>Add User to Group</button>
                     </form>
                     <section>
-                    {this.state.balance.length ? <h2>Operation Balance - Creditor to Debtor</h2> : null}
-                        {this.state.balance.map(res => <div className='random'> 
+                        {this.state.balance.length ? <h2>Operation Balance - Creditor to Debtor</h2> : null}
+                        {this.state.balance.map(res => <div className='random'>
                             <h4 className=''>User:</h4>
                             <label className=''>{res.debtorId}</label>
                             <h4 className=''>Debts To:</h4>

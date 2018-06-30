@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
-import logic from '../logic'
-import '../styles/assets/css/main.css'
-import surfgroup from '../styles/images/surfgroup.jpg'
+import logic from '../../logic'
 import GroupsList from './groupslist'
 import Group from './group'
 

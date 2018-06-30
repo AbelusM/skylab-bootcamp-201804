@@ -1,12 +1,17 @@
 import React, { Component } from 'react'
 import { Register, Login, Landing, Home, Group } from './components'
 import { Link, Route, withRouter, Redirect } from 'react-router-dom'
-import './styles/assets/css/main.css';
+// import './styles/assets/css/main.css';
 import logic from './logic'
-import Menu from './components/menu.js'
-import Header from './components/header.js'
-import One from './components/one.js'
-import Footer from './components/footer.js'
+import MyNavbar from './components/Header/navbar'
+import Footer from './components/Footer/footer'
+import One from './components/Landing/one.js'
+
+// import Menu from './components/menu.js'
+// import Header from './components/header.js'
+// import MyNavbar from './components/navbar.js'
+// import One from './components/one.js'
+// import Footer from './components/footer.js'
 
 class App extends Component {
   state = { registered: false }
@@ -47,8 +52,9 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Menu />
-        <Header />
+        {/* <Menu /> */}
+        {/* <Header /> */}
+        <MyNavbar />
         <Route exact path="/" render={() => <Landing />} />
         <Route exact path="/groups/:groupId" render={routeProps => <Group {...routeProps} />} />
         <Route path="/one" render={() => <One />} />

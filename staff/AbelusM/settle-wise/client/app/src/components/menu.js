@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom'
-import '../styles/assets/css/main.css';
+// import '../styles/assets/css/main.css';
 
 
 function Menu(props) {

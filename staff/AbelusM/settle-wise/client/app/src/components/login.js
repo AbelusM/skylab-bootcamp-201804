@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import logic from '../logic'
 import api from 'api'
-import '../styles/assets/css/main.css'
-import '../styles/assets/css/login.css'
+// import '../styles/assets/css/main.css'
+// import '../styles/assets/css/login.css'
 import swal from 'sweetalert2'
 
 
