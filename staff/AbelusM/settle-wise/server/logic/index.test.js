@@ -484,6 +484,32 @@ describe('logic (settle-wise)', () => {
                         })
                 })
         })
+        it('should throw an error on already beloging user', () => {
+            return Promise.all([
+                new User(userData).save(),
+                new User(userData2).save()
+            ])
+                .then(users => {
+                    expect(users).to.exist
+                    expect(users.length).to.equal(2)
+
+                    const [user1, user2] = users
+
+                    return Promise.all([
+                        new Group({ name: 'Cali', users: [user1._id] }).save()
+                    ])
+                        .then(groups => {
+                            expect(groups.length).to.equal(1)
+
+                            const [group] = groups
+
+                            return logic.addUserToGroup(user1._id.toString(), group.id, user1.email)
+                                .then(res => {
+                                    expect(res).to.equal(`user with id ${user1._id} does already belong to group with id ${group.id}`);
+                                })
+                        })
+                })
+        })
     })
 
     describe('add a spend', () => {

@@ -310,7 +310,9 @@ const logic = {
                                         if (!group) throw Error(`no group found with id ${groupId}`)
 
                                         if (!group.users.some(_userId => _userId.toString() === userId)) throw Error(`user with id ${userId} does not belong to group with id ${groupId}`)
-
+                                        
+                                        if (group.users.some(_userId => _userId.toString() === user._id.toString())) throw Error(`user with id ${userId} does already belong to group with id ${groupId}`)
+                                       
                                         return true
                                     })
                             })

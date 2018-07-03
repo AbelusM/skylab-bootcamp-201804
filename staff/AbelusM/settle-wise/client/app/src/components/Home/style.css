@@ -28,6 +28,7 @@ position: relative
 .container-form-user {
     display: flex;
     align-items: center;
+    text-align: center;
     height: 100%;
     position: absolute;
     width: 100%;
