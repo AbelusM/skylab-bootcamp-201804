@@ -1,7 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom'
-// import '../styles/assets/css/main.css';
-// import pic01 from '../styles/images/pic01.jpg'
+import pic01 from '../../styles/images/pic01.jpg'
 
 
 function One(props) {
@@ -21,7 +20,7 @@ function One(props) {
                         </div>
                     </div>
                     <div className="flex-item image fit round">
-                        {/* <img src={pic01} alt="" /> */}
+                        <img src={pic01} alt="" />
                     </div>
                     <div className="flex-item right">
                         <div>

@@ -1,11 +1,10 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom'
-
+import './style.css'
 
 function Footer(props) {
 
     return (
-        <div className="footer">
             <footer id="footer">
                 <div className="inner">
                     <h2>Get In Touch</h2>
@@ -19,8 +18,6 @@ function Footer(props) {
                     &copy; Copyright 2018 Abel Hernando Fortis | All Rights Reserved.
 				</div>
             </footer>
-
-        </div>
     )
 }
 

@@ -1,17 +1,13 @@
 import React, { Component } from 'react'
-import { Register, Login, Landing, Home, Group } from './components'
 import { Link, Route, withRouter, Redirect } from 'react-router-dom'
-// import './styles/assets/css/main.css';
 import logic from './logic'
-import MyNavbar from './components/Header/navbar'
-import Footer from './components/Footer/footer'
-import One from './components/Landing/one.js'
-
-// import Menu from './components/menu.js'
-// import Header from './components/header.js'
-// import MyNavbar from './components/navbar.js'
-// import One from './components/one.js'
-// import Footer from './components/footer.js'
+import Home from './components/Home/home'
+import Group from './components/Group/group'
+import Landing from './components/Landing/landing'
+import One from './components/Landing/one'
+import Login from './components/Login/login'
+import Register from './components/Register/register'
+import Navbar from './components/Header/navbar'
 
 class App extends Component {
   state = { registered: false }
@@ -52,27 +48,22 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        {/* <Menu /> */}
-        {/* <Header /> */}
-        <MyNavbar />
-        <Route exact path="/" render={() => <Landing />} />
+      <Navbar/>
+        <Route exact path="/" render={() => (!logic.loggedIn) ? <Landing /> : <Home/>} />
         <Route exact path="/groups/:groupId" render={routeProps => <Group {...routeProps} />} />
         <Route path="/one" render={() => <One />} />
-        <Route exact path="/menu" render={() => <Home onLogout={this.onLogout} />} />
-        {
+        
           <Route exact path="/register" render={() => {
             return this.state.registered ?
               <Link to="/login"><Login /></Link>
               :
               <Register onRegister={this.onRegister} onRegisterError={this.onRegisterError} />
           }} />
-        }
         <Route exact path="/login" render={() =>
 
           !logic.loggedIn ?
             <Login onLogin={this.onLogin} onLoginError={this.onLoginError} /> : <Redirect to='/home' />} />
         {logic.loggedIn && <Route exact path="/home" render={() => <Home onLogout={this.onLogout} />} />}
-        <Footer />
       </div>
     );
   }

@@ -1,4 +1,8 @@
 import React from 'react'
+import '../../styles/assets/css/mainB.css'
+import pic01 from '../../styles/images/pic01.jpg'
+import { Button } from 'reactstrap';
+import Footer from '../Footer/footer'
 
 function Landing (props) {
     return <main>
@@ -7,9 +11,7 @@ function Landing (props) {
                 <div className="content">
                     <h1>SettleWise</h1>
                     <p><strong>Is an application that allows you to create groups and divide your group spendings just to control all the payments your group does</strong></p>
-                    <ul className="actions">
-                        <li><a href="#one" className="button scrolly">Get Started</a></li>
-                    </ul>
+                    <Button href='#one'>Get Started</Button>
                 </div>
             </section>
         </div>
@@ -52,13 +54,14 @@ function Landing (props) {
                             "I never fight with roommates over bills because of this genius expense-splitting app"
 					    </blockquote>
                         <footer>
-                            <cite className="author">Amalia Rabinson</cite>
+                            <cite className="author">Amalia Rabinson - </cite>
                             <cite className="company">Bussiness Outsider</cite>
                         </footer>
                     </figure>
                 </div>
             </section>
         </div>
+                <Footer />
     </main>
 }
 

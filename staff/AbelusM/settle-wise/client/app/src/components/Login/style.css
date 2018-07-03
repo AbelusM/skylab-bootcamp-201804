@@ -1,0 +1,22 @@
+img{
+width: 100%;
+position: absolute;
+top:0;
+z-index: 0;
+}
+
+.form-user {
+    background: #ffffffbd;
+    padding: 50px;
+    border-radius: 5px;
+position: relative
+;    z-index: 2;
+}
+.container-form-user {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    position: absolute;
+    width: 100%;
+}
+
