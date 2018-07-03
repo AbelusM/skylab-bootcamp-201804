@@ -5,8 +5,9 @@ top:0;
 z-index: 0;
 height: 100%;
 }
-h1 {
+h1, h2,h3,h4{
 padding-bottom: 15px;
+color: rgb(165, 20, 201) !important; 
 }
 .group-card{
     background: #ffffffbd;
@@ -34,3 +35,23 @@ position: relative
     width: 100%;
 }
 
+.std-button {
+    background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    margin-top: 15px;
+}
+
+.std-button:hover {
+    background-image: linear-gradient(to right, #b8cbb8 0%, #b8cbb8 0%, #b465da 0%, #cf6cc9 33%, #ee609c 66%, #ee609c 100%);
+}
+.spc-button {
+    background-image: linear-gradient(-225deg, #3D4E81 0%, #5753C9 48%, #6E7FF3 100%);
+    margin-top: 15px;
+}
+
+.spc-button:hover {
+    background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.std-box{
+margin-bottom: 15px;
+}

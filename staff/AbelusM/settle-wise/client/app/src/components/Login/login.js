@@ -75,7 +75,7 @@ class Login extends Component {
                         <FormGroup>
                             <Input type="password" onChange={this.updatePassword} placeholder="password" />
                         </FormGroup>
-                        <Button className='container'>Log me in! </Button>
+                        <Button className='std-button'>Log me in! </Button>
                     </Form>
                 </Col>
             </Container>

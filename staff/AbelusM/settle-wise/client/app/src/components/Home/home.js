@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import logic from '../../logic'
 import GroupsList from '../Group/groupslist'
-import img from '../../styles/images/banner.jpg'
+import img from '../../styles/images/group1.jpg'
 import './style.css'
 import { Collapse, Button, CardBody, Card, Input, Form, FormGroup } from 'reactstrap';
 
@@ -40,7 +40,6 @@ class Home extends Component {
 	}
 
 	catchGroupName = e => {
-		// e.preventDefault()
 		this.setState({
 			groupName: e.target.value
 		})
@@ -63,26 +62,26 @@ class Home extends Component {
 			<section id="main" className="container-form-user">
 				<div className="inner">
 					{(this.state.groups.length > 0) ? <h1>These are your Groups</h1> : <h1>You don't belong to any group</h1>}
-					<Button color="primary" onClick={this.toggle} style={{ marginBottom: '1rem' }}>Click to Create a Group</Button>
-					<Collapse isOpen={this.state.collapse}>
-						<h5>Create a new Group</h5>
+					<Button color="primary" className='std-button' onClick={this.toggle} style={{ marginBottom: '1rem' }}>Click to Create a Group</Button>
+					<Collapse className='std-box' isOpen={this.state.collapse}>
+						<h4>Create a new Group</h4>
 						<Card className='group-card'>
 							<CardBody>
 								<Form value={this.groupName} onSubmit={this.createGroup} >
 									<FormGroup>
 										<Input className="inner flex flex-3" type="text" onChange={this.catchGroupName} placeholder="group name" autoComplete="off" />
 									</FormGroup>
-									<Button >Create Group  </Button>
+									<Button className='spc-button'>Create Group  </Button>
 								</Form>
 							</CardBody>
 						</Card>
 					</Collapse>
 					<GroupsList groups={this.state.groups} />
-			<Button className='button-form' onClick={() => {
-				logic.logout()
-				this.props.onLogout()
-			}}>Logout</Button>
-			</div>
+					<Button className='std-button' onClick={() => {
+						logic.logout()
+						this.props.onLogout()
+					}}>Logout</Button>
+				</div>
 			</section>
 		</div>
 	}

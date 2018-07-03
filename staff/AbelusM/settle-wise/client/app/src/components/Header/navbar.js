@@ -25,7 +25,7 @@ export default class navbar extends React.Component {
 
     render() {
       return (
-        <div>
+        <div className='navb'>
           <Navbar color="light" light expand="md">
             <NavbarBrand className='logo-name' href="/">Settle Wise</NavbarBrand>
             <NavbarToggler onClick={this.toggle} />

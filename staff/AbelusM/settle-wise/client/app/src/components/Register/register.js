@@ -90,7 +90,7 @@ class Register extends Component {
                         <FormGroup>
                             <Input type="password" onChange={this.updatePassword} placeholder="password" />
                         </FormGroup>
-                        <Button className='container' >Go on Register! </Button>
+                        <Button className='std-button'>Go on Register! </Button>
                     </Form>
                 </Col>
             </Container>

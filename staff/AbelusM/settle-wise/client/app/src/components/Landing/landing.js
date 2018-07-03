@@ -1,5 +1,5 @@
 import React from 'react'
-import '../../styles/assets/css/mainB.css'
+import '../../styles/assets/css/main.css'
 import pic01 from '../../styles/images/pic01.jpg'
 import { Button } from 'reactstrap';
 import Footer from '../Footer/footer'
@@ -11,7 +11,7 @@ function Landing (props) {
                 <div className="content">
                     <h1>SettleWise</h1>
                     <p><strong>Is an application that allows you to create groups and divide your group spendings just to control all the payments your group does</strong></p>
-                    <Button href='#one'>Get Started</Button>
+                    <Button className='std-button' href='#one'>Get Started</Button>
                 </div>
             </section>
         </div>

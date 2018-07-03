@@ -1,0 +1,81 @@
+img {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    z-index: 0;
+}
+
+a {
+    text-decoration: none;
+    background-color: transparent;
+    font-weight: bold;
+}
+
+.groups-card a {
+    background: #ffffffbd;
+    color: rgba(255, 255, 255, 0.247) !important;
+}
+
+.groups-card {
+    background-color: rgba(255, 255, 255, 0) !important;
+    border: none;
+    text-align: center;
+    margin: 20px;
+}
+
+.form-user2 {
+    background: #ffffffbd;
+    padding: 50px;
+    border-radius: 5px;
+    position: relative;
+    z-index: 2;
+}
+
+.container-form-user {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    position: absolute;
+    width: 100%;
+}
+
+.form-button {
+    background-image: linear-gradient(-225deg, #3D4E81 0%, #5753C9 48%, #6E7FF3 100%);
+    margin: 15px;
+}
+
+.form-button:hover {
+    background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.form-user2 {
+    background: #ffffff25;
+    padding: 50px;
+    border-radius: 5px;
+    position: relative;
+    z-index: 2;
+}
+
+.container-form-user2 {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    position: absolute;
+    width: 100%;
+}
+.center{
+    text-align: center;
+    background-color: #ded7e67e !important;
+    width: 50%;
+    align-content: center;  
+    display: inline-block;
+}
+.users{
+    text-align: center;
+    margin:5px;
+}
+
+.special-button {
+    margin: 15px;
+}

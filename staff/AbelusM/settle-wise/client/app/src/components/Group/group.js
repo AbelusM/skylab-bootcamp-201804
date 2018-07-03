@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import logic from '../../logic'
 import swal from 'sweetalert2'
-import img from '../../styles/images/banner.jpg'
+import img from '../../styles/images/back.jpg'
 import { Collapse, Button, CardBody, Card, Input, Form, FormGroup, Label, Alert, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import './style.css'
+import './group-style.css'
 
 class Group extends Component {
     state = {
@@ -188,78 +188,78 @@ class Group extends Component {
 
     render() {
         return <main id="banner">
-            {/* <img src={img} alt='background' /> */}
-            <Card className='group-card'>
-                <CardBody>
-                    <Alert>
-                        {this.state.users.length ? <h2>User Members</h2> : null}
-                        {this.state.users.map((user, key) => <Button key={key} color={this.changeColor(key)}><option style={{ marginBottom: '1rem' }} >{user.name}</option></Button>)}
-                    </Alert>
-                    <section id="main" className="">
-                        <div className="form-user">
-                            {this.state.spends.length ? <h2>Group Spends By User</h2> : null}
-                            <div>
-                                <Button color="primary" onClick={() => { this.toggle(1) }} style={{ marginBottom: '1rem' }}>Add a User</Button>
-                                <Button color="primary" onClick={() => { this.toggle(2) }} style={{ marginBottom: '1rem' }}>Add a Spend</Button>
-                                <Collapse isOpen={this.state.collapse1}>
-                                    <h5>Add a user to Group</h5>
-                                    <Card className='group-card'>
-                                        <CardBody>
-                                            <Form onSubmit={this.addUserToGroup} >
-                                                <FormGroup>
-                                                    <Input className="inner flex flex-3" type="text" onChange={this.handlerAddUser} placeholder="user email" />
-                                                </FormGroup>
-                                                <Button>Confirm User </Button>
-                                            </Form>
-                                        </CardBody>
-                                    </Card>
-                                </Collapse>
-                                <Collapse isOpen={this.state.collapse2}>
-                                    <h5>Add a spend to the Group</h5>
-                                    <Card className='group-card'>
-                                        <CardBody>
-                                            <Form onSubmit={this.addSpend}>
-                                                <FormGroup>
-                                                    <Input className="" type="text" onChange={this.catchSpendName} placeholder="new payment name" />
-                                                    <Input className="" type="number" onChange={this.catchAmount} placeholder="new payment total amount" />
-                                                    <Label for="exampleSelect">Select the Payer</Label>
-                                                    <Input type="select" name="payer">
-                                                        {this.state.users.map((user, key) => <option key={key} onChange={e => { this.selectPayer(user._id) }} value={user._id}>{user.name}</option>)}
-                                                    </Input>
-                                                    {this.state.users.map((user, key) => <div key={key} className='banner'>
-                                                        <label className=''>{user.name}</label>
-                                                        <Input onClick={e => { e.target.checked ? this.selectParticipant(user._id) : this.unselectParticipant(user._id) }} className='my-checkbox' type="checkbox" />
-                                                        <Input type="number" onChange={e => this.setParticipantAmount(user._id, e.target.value)} placeholder='amount payed by the user' />
-                                                    </div>
-                                                    )}
-                                                </FormGroup>
-                                                <Button>Confirm Spend </Button>
-                                            </Form>
-                                        </CardBody>
-                                    </Card>
-                                </Collapse>
-                            </div>
-
-                            {/*LIST SPENDS TO A GROUP*/}
-                            <form>
+            <div>
+                <img src={img} alt='background' />
+                <Card className='groups-card'>
+                    <CardBody>
+                        <Alert className='center'>
+                            {this.state.users.length ? <h2>User Members</h2> : null}
+                            {this.state.users.map((user, key) => <Button className='users' key={key} color={this.changeColor(key)}><option>{user.name}</option></Button>)}
+                        </Alert>
+                        <section id="main" className="">
+                            <div className="">
                                 {this.state.spends.length ? <h2>Group Spends By User</h2> : null}
-                                <section>{this.state.spends.map((spend, key) =>
-                                    <div key={key} className='random'><h4>{spend.name}</h4><h4>
-                                        Total Spend: {spend.amount}</h4> {spend.fractions.map((fraction, key) =>
-                                            fraction.amount > 0 && <div key={key} className="">
-                                                <h5 >Participant:</h5>
-                                                <label >{fraction.userId.name}</label>
-                                                <h5 >Amount: </h5>
-                                                <label >{fraction.amount}</label>
-                                            </div>
-                                        )}</div>
-                                )
-                                }
-                                </section>
-                            </form>
+                                <div>
+                                    <Button className='form-button' onClick={() => { this.toggle(1) }} style={{ marginBottom: '1rem' }}>Add a User</Button>
+                                    <Button className='form-button' onClick={() => { this.toggle(2) }} style={{ marginBottom: '1rem' }}>Add a Spend</Button>
+                                    <Collapse isOpen={this.state.collapse1}>
+                                        <h4>Add a user to Group</h4>
+                                        <Card className=''>
+                                            <CardBody className='mb-5 form-user2'>
+                                                <Form onSubmit={this.addUserToGroup} >
+                                                    <FormGroup>
+                                                        <Input className="inner flex flex-3" type="text" onChange={this.handlerAddUser} placeholder="user email" />
+                                                    </FormGroup>
+                                                    <Button className='form-button'>Confirm User </Button>
+                                                </Form>
+                                            </CardBody>
+                                        </Card>
+                                    </Collapse>
+                                    <Collapse isOpen={this.state.collapse2}>
+                                        <h4>Add a spend to the Group</h4>
+                                        <Card className=''>
+                                            <CardBody className='mb-5 form-user2'>
+                                                <Form onSubmit={this.addSpend}>
+                                                    <FormGroup>
+                                                        <Input className="" type="text" onChange={this.catchSpendName} placeholder="new payment name" />
+                                                        <Input className="" type="number" onChange={this.catchAmount} placeholder="new payment total amount" />
+                                                        <Label for="exampleSelect">Select the Payer</Label>
+                                                        <Input type="select" name="payer">
+                                                            {this.state.users.map((user, key) => <option key={key} onChange={e => { this.selectPayer(user._id) }} value={user._id}>{user.name}</option>)}
+                                                        </Input>
+                                                        {this.state.users.map((user, key) => <div key={key} className='banner'>
+                                                            <Label className=''>{user.name}</Label>
+                                                            <Input onClick={e => { e.target.checked ? this.selectParticipant(user._id) : this.unselectParticipant(user._id) }} className='my-checkbox' type="checkbox" />
+                                                            <Input type="number" onChange={e => this.setParticipantAmount(user._id, e.target.value)} placeholder='amount payed by the user' />
+                                                        </div>
+                                                        )}
+                                                    </FormGroup>
+                                                    <Button className='form-button'>Confirm Spend </Button>
+                                                </Form>
+                                            </CardBody>
+                                        </Card>
+                                    </Collapse>
+                                </div>
 
-                            {/*ADD SPENDS TO A GROUP*/}
-                            {/* <section className='section-group'>
+                                {/*LIST SPENDS TO A GROUP*/}
+                                <form>
+                                    {this.state.spends.length ? <h2>Group Spends By User</h2> : null}
+                                    <section>{this.state.spends.map((spend, key) =>
+                                        <div key={key} className='random'><h4>{spend.name}</h4><h4>
+                                            Total Spend: {spend.amount}</h4> {spend.fractions.map((fraction, key) =>
+                                                fraction.amount > 0 && <div key={key} className="">
+                                                    <h5 >Participant:</h5>
+                                                    <label >{fraction.userId.name}</label>
+                                                    <h5 >Amount: </h5>
+                                                    <label >{fraction.amount}</label>
+                                                </div>
+                                            )}</div>
+                                    )
+                                    }
+                                    </section>
+                                </form>
+                                {/*ADD SPENDS TO A GROUP*/}
+                                {/* <section className='section-group'>
                                 <h2>User's group</h2>
                                 <input className="groupInput" type="number" onChange={this.catchAmount} placeholder="new payment amount" />
                                 <input className="groupInput" type="text" onChange={this.catchSpendName} placeholder="new payment name" />
@@ -272,39 +272,40 @@ class Group extends Component {
                                 )}
                                 <button onClick={this.addSpend}>Add a Spend</button>
                             </section> */}
-                        </div>
-                    </section>
-
-                </CardBody>
-            </Card>
+                            </div>
+                        </section>
 
 
-            {/*SPLIT SPENDS OF THE GROUP*/}
-            <Button color="danger" onClick={this.toggleModal}>Split Spends</Button>
-            <Modal isOpen={this.state.modal} toggleModal={this.toggleModal} className={this.props.className}>
-                <ModalHeader toggleModal={this.toggleModal}>Settle Wise</ModalHeader>
-                <ModalBody>
-                    {this.state.balance.length ? <h2>Operation Balance - Creditor to Debtor</h2> : <h3>There are no Spends to Split</h3>}
-                    {this.state.balance.map(res => <div className='random'>
-                        <Card className='group-card'>
-                            <CardBody>
-                                <h4 className=''>User:</h4>
-                                <label className=''>{res.debtorId}</label>
-                                <h4 className=''>Debts To:</h4>
-                                <label className=''>{res.creditorId}</label>
-                                <h4 className=''>Amount:</h4>
-                                <h3 className=''>{res.amount}</h3>
-                            </CardBody>
-                        </Card>
-                    </div>)}
-                </ModalBody>
-                <ModalFooter>
-                    <Button color="primary" onClick={this.toggleModal}>Great!</Button>{' '}
-                </ModalFooter>
-            </Modal>
-
-            {/*SPLIT SPENDS OF THE GROUP*/}
-            {/* <section>
+                        {/*SPLIT SPENDS OF THE GROUP*/}
+                        <Button color="danger" className='special-button' onClick={this.toggleModal}>Split Spends</Button>
+                        <Modal isOpen={this.state.modal} toggleModal={this.toggleModal} className={this.props.className}>
+                            <ModalHeader toggleModal={this.toggleModal}>Settle Wise</ModalHeader>
+                            <ModalBody>
+                                {this.state.balance.length ? <h2>Operation Balance - Creditor to Debtor</h2> : <h3>There are no Spends to Split</h3>}
+                                {this.state.balance.map(res => <div className='random'>
+                                    <Card className='group-card'>
+                                        <CardBody>
+                                            <h4 className=''>User:</h4>
+                                            <label className=''>{res.debtorId}</label>
+                                            <h4 className=''>Debts To:</h4>
+                                            <label className=''>{res.creditorId}</label>
+                                            <h4 className=''>Amount:</h4>
+                                            <h3 className=''>{res.amount}</h3>
+                                        </CardBody>
+                                    </Card>
+                                </div>)}
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color="primary" onClick={this.toggleModal}>Great!</Button>{' '}
+                            </ModalFooter>
+                        </Modal>
+                        <section>
+                            <Button color='warning' className='special-button'onClick={this.goBack}>Go to Groups</Button>
+                        </section>
+                    </CardBody>
+                </Card>
+                {/*SPLIT SPENDS OF THE GROUP*/}
+                {/* <section>
                 {this.state.balance.length ? <h2>Operation Balance - Creditor to Debtor</h2> : null}
                 {this.state.balance.map(res => <div className='random'>
                     <h4 className=''>User:</h4>
@@ -316,10 +317,7 @@ class Group extends Component {
                 </div>)}
                 <Button color='info' onClick={this.splitSpends}>Split Spends</Button>
             </section> */}
-
-            <section>
-                <Button color='warning' onClick={this.goBack}>Go to Groups</Button>
-            </section>
+            </div>
         </main>
     }
 
