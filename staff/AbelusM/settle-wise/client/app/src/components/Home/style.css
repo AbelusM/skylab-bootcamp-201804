@@ -6,11 +6,16 @@ z-index: 0;
 height: 100%;
 }
 h1 {
-
+padding-bottom: 15px;
 }
 .group-card{
     background: #ffffffbd;
-    
+}
+
+.button-form{
+    margin: 10%;
+    align-content: center;
+    display: grid !important;
 }
 
 .form-user {

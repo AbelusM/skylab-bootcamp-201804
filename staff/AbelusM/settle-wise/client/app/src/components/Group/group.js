@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import logic from '../../logic'
 import GroupsList from './groupslist'
 import { ParseOptions } from 'querystring';
+import img from '../../styles/images/banner.jpg'
 import { Collapse, Button, CardBody, Card, Input, Form, FormGroup, Label, Alert } from 'reactstrap';
 import './style.css'
 
@@ -45,11 +46,18 @@ class Group extends Component {
     addUserToGroup = e => {
         e.preventDefault()
 
-        const { groupId, email } = this.state
+        const { groupId, email, users } = this.state
 
         logic.addUserToGroup(groupId, email)
             .then(() => console.log('user added to group'))
-            .then(newUser => this.setState({ newUser }))
+            .then(addUser => {
+                for (let n = 0; n < users.length; n++) {
+                    if (addUser._id === users[n]._id) throw Error('user already on group')
+                }
+            }).catch(err => console.error)
+            .then(newUser => {
+                this.setState({ newUser })
+            })
     }
 
     handlerAddUser = e => {
@@ -63,7 +71,7 @@ class Group extends Component {
     addSpend = e => {
         e.preventDefault()
 
-        const { spendName, groupId, payerId, amount, participants, amounts } = this.state
+        const { groupId, payerId, spendName, amount, participants, amounts } = this.state
 
         const fractions = []
 
@@ -166,20 +174,22 @@ class Group extends Component {
     }
 
     changeColor = (i) => {
-        let colors = ['primary', 'secondary', 'success', 'info', 'warning', 'danger',]
+        const colors = ['primary', 'secondary', 'success', 'info', 'warning', 'danger',]
 
         if (i > 5 || typeof i === undefined) i = 0;
 
-        return colors[i]
+        return colors[i].toString()
     }
 
     render() {
         return <main id="banner">
-            <Card>
+            {/* <img src={img} alt='background' /> */}
+            <Card className='group-card'>
                 <CardBody>
-                    <Button>
-                        {this.state.users.map((user, key) => <option color={this.changeColor(key)} key={key}>{user.name}</option>)}
-                    </Button>
+                    <Alert>
+                        {this.state.users.length ? <h2>User Members</h2> : null}
+                        {this.state.users.map((user, key) => <Button key={key} color={this.changeColor(key)}><option style={{ marginBottom: '1rem' }} >{user.name}</option></Button>)}
+                    </Alert>
                     <section id="main" className="">
                         <div className="form-user">
                             {this.state.spends.length ? <h2>Group Spends By User</h2> : null}
@@ -188,7 +198,7 @@ class Group extends Component {
                                 <Button color="primary" onClick={() => { this.toggle(2) }} style={{ marginBottom: '1rem' }}>Add a Spend</Button>
                                 <Collapse isOpen={this.state.collapse1}>
                                     <h5>Add a user to Group</h5>
-                                    <Card>
+                                    <Card className='group-card'>
                                         <CardBody>
                                             <Form onSubmit={this.addUserToGroup} >
                                                 <FormGroup>
@@ -201,7 +211,7 @@ class Group extends Component {
                                 </Collapse>
                                 <Collapse isOpen={this.state.collapse2}>
                                     <h5>Add a spend to the Group</h5>
-                                    <Card>
+                                    <Card className='group-card'>
                                         <CardBody>
                                             <Form >
                                                 <FormGroup>
@@ -209,7 +219,7 @@ class Group extends Component {
                                                     <Input className="" type="number" onChange={this.catchAmount} placeholder="new payment total amount" />
                                                     <Label for="exampleSelect">Select the Payer</Label>
                                                     <Input type="select" name="payer">
-                                                        {this.state.users.map((user, key) => <option key={key} onSelect={e => { this.selectPayer(user._id) }}>{user.name}</option>)}
+                                                        {this.state.users.map((user, key) => <option key={key} onSelectCapture={e => { this.selectPayer(user._id) }}>{user.name}</option>)}
                                                     </Input>
                                                     {this.state.users.map((user, key) => <div key={key} className='banner'>
                                                         <label className=''>{user.name}</label>

@@ -4,6 +4,19 @@ position: absolute;
 top:0;
 z-index: 0;
 }
+a {
+    text-decoration: none;
+    background-color: transparent;
+    font-weight: bold;  
+}
+.group-card{
+    background: #ffffffbd;
+}
+
+.group-card{
+    background-color: rgba(162, 165, 165, 0.363) !important;
+    text-align: center;
+}
 
 .form-user {
     background: #ffffffbd;

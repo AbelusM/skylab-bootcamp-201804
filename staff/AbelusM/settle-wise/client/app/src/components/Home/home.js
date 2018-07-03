@@ -78,12 +78,12 @@ class Home extends Component {
 						</Card>
 					</Collapse>
 					<GroupsList groups={this.state.groups} />
-				</div>
-			</section>
-			<Button onClick={() => {
+			<Button className='button-form' onClick={() => {
 				logic.logout()
 				this.props.onLogout()
 			}}>Logout</Button>
+			</div>
+			</section>
 		</div>
 	}
 }
