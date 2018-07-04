@@ -504,8 +504,8 @@ describe('logic (settle-wise)', () => {
                             const [group] = groups
 
                             return logic.addUserToGroup(user1._id.toString(), group.id, user1.email)
-                                .then(res => {
-                                    expect(res).to.equal(`user with id ${user1._id} does already belong to group with id ${group.id}`);
+                                .catch(({ message }) => {
+                                    expect(message).to.equal(`user with id ${user1._id} does already belong to group with id ${group.id}`)
                                 })
                         })
                 })

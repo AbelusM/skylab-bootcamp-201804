@@ -305,15 +305,21 @@ const logic = {
 
                         return User.findOne({ email })
                             .then(user => {
-                                return Group.findByIdAndUpdate(groupId, { $push: { users: user._id } })
+                                return Group.findById(groupId)
                                     .then(group => {
                                         if (!group) throw Error(`no group found with id ${groupId}`)
 
                                         if (!group.users.some(_userId => _userId.toString() === userId)) throw Error(`user with id ${userId} does not belong to group with id ${groupId}`)
-                                        
+
                                         if (group.users.some(_userId => _userId.toString() === user._id.toString())) throw Error(`user with id ${userId} does already belong to group with id ${groupId}`)
-                                       
+
                                         return true
+                                    })
+                                    .then(_group => {
+                                        return Group.findByIdAndUpdate(groupId, { $push: { users: user._id } })
+                                            .then(_group => {
+                                                return true
+                                            })
                                     })
                             })
                     })
@@ -501,7 +507,7 @@ const logic = {
                 const balance = debts.reduce((balance, userDebt) => {
                     userDebt.debts.forEach(debtTo => {
                         if (!balance.some(item => item.userId === debtTo.userId && item.debtorId === userDebt.userId)) {
-
+debugger
                             const userDebtTo = debts.find(debt => debt.userId === debtTo.userId)
 
                             const debtToMe = userDebtTo.debts.find(debt => debt.userId === userDebt.userId)
@@ -509,9 +515,9 @@ const logic = {
                             if (debtToMe)
                                 if (debtTo.amount > debtToMe.amount)
                                     balance.push({ creditorId: debtTo.userId, debtorId: userDebt.userId, amount: debtTo.amount - debtToMe.amount })
-                                }
+                        }
                     })
-                    
+
                     return balance
                 }, [])
 

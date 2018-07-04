@@ -95,12 +95,13 @@ const logic = {
             * 
             * @param {string} groupId the id of the group you want to add the spend
             * @param {Number} amount the total amount of the spend
+            * @param {string} spendName is the name of the spending
             * @param {string} payerId of the user who pays the most quantity
             * @param {[{user: string, fraction: Number}]} fractions this has user as the participate and fraction if he made any apportation at the total value
             * 
      */
-    addSpend(groupId, amount, payerId, fractions) {
-        return api.addSpend(this.userId, groupId, amount, payerId, fractions)
+    addSpend(groupId, amount, spendName, payerId, fractions) {
+        return api.addSpend(this.userId, groupId, amount, spendName, payerId, fractions)
             .then(spend => {
                 console.log(spend)
                 return spend

@@ -62,8 +62,8 @@ class Home extends Component {
 			<section id="main" className="container-form-user">
 				<div className="inner">
 					{(this.state.groups.length > 0) ? <h1>These are your Groups</h1> : <h1>You don't belong to any group</h1>}
-					<Button color="primary" className='std-button' onClick={this.toggle} style={{ marginBottom: '1rem' }}>Click to Create a Group</Button>
-					<Collapse className='std-box' isOpen={this.state.collapse}>
+					<Button color="primary" className='std-button' onClick={this.toggle}>Click to Create a Group</Button>
+					<Collapse className='' isOpen={this.state.collapse}>
 						<h4>Create a new Group</h4>
 						<Card className='group-card'>
 							<CardBody>
