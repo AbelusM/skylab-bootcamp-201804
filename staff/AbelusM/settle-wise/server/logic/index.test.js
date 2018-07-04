@@ -1170,14 +1170,18 @@ describe('logic (settle-wise)', () => {
 
                                     expect(debt1.creditorId).to.equal(user1._id.toString())
                                     expect(debt1.debtorId).to.equal(user2._id.toString())
+                                    expect(debt1.debtorName).to.equal(user2.name.toString())
+
                                     expect(debt1.amount).to.equal(5)
 
                                     expect(debt2.creditorId).to.equal(user3._id.toString())
                                     expect(debt2.debtorId).to.equal(user2._id.toString())
+                                    expect(debt2.debtorName).to.equal(user2.name.toString())
                                     expect(debt2.amount).to.equal(10)
 
                                     expect(debt3.creditorId).to.equal(user3._id.toString())
                                     expect(debt3.debtorId).to.equal(user1._id.toString())
+                                    expect(debt3.debtorName).to.equal(user1.name.toString())
                                     expect(debt3.amount).to.equal(10)
                                 })
                         })

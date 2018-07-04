@@ -42,7 +42,7 @@ class App extends Component {
     this.setState({
       registered: false
     })
-    this.props.history.push('/')
+    // this.props.history.push('/')
   }
 
   render() {

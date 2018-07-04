@@ -65,7 +65,7 @@ class Home extends Component {
 					<Button color="primary" className='std-button' onClick={this.toggle}>Click to Create a Group</Button>
 					<Collapse className='' isOpen={this.state.collapse}>
 						<h4>Create a new Group</h4>
-						<Card className='group-card'>
+						<Card className='group-create-card'>
 							<CardBody>
 								<Form value={this.groupName} onSubmit={this.createGroup} >
 									<FormGroup>
@@ -77,7 +77,7 @@ class Home extends Component {
 						</Card>
 					</Collapse>
 					<GroupsList groups={this.state.groups} />
-					<Button className='std-button' onClick={() => {
+					<Button className='std-button' href='/'onClick={() => {
 						logic.logout()
 						this.props.onLogout()
 					}}>Logout</Button>

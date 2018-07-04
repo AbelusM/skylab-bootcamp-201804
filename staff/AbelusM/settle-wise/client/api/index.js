@@ -469,7 +469,6 @@ const api = {
                 return axios.get(`${this.url}/users/${userId}/groups/${groupId}/balance`, { headers: { authorization: `Bearer ${this.token}` } })
                     .then(({ status, data }) => {
                         if (status !== 200 || data.status !== 'OK') throw Error(`unexpected response status ${status} (${data.status})`)
-
                         return data.data
                     })
                     .catch(err => {

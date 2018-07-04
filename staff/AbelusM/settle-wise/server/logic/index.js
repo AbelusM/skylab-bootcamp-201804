@@ -426,10 +426,10 @@ const logic = {
 
                         if (!group.users.some(_userId => _userId._id.toString() === userId)) throw Error(`user with id ${userId} does not belong to group with id ${groupId}`)
 
-                        return group.spends.map(({ id, amount, payer, fractions }) => {
+                        return group.spends.map(({ id, amount, name, payer, fractions }) => {
                             const _fractions = fractions.map(({ user, amount }) => ({ userId: user, amount }))
 
-                            return { id, amount, payerId: payer.toString(), fractions: _fractions }
+                            return { id, amount, name, payerId: payer.toString(), fractions: _fractions }
                         })
                     })
             })
@@ -459,24 +459,24 @@ const logic = {
                 return Group.findById(groupId)
                     .then(groupData => {
                         const debts = groupData.spends.reduce((debtors, spend) => {
-                            const payerId = spend.payer.toString()
+                            const payerId = spend.payer.toString();
 
                             spend.fractions.forEach(fraction => {
-                                const userId = fraction.user.toString()
+                                const userId = fraction.user.toString();
 
                                 if (userId !== payerId) {
                                     const debtor = debtors.find(debtor => debtor.userId === userId) || (userId => {
-                                        const debtor = { userId, debts: [] }
+                                        const debtor = { userId, debts: [] };
 
-                                        debtors.push(debtor)
+                                        debtors.push(debtor);
 
                                         return debtor
                                     })(userId)
 
                                     const creditor = debtor.debts.find(debt => debt.userId === payerId) || (userId => {
-                                        const creditor = { userId, amount: 0 }
+                                        const creditor = { userId, amount: 0 };
 
-                                        debtor.debts.push(creditor)
+                                        debtor.debts.push(creditor);
 
                                         return creditor
                                     })(payerId)
@@ -484,7 +484,6 @@ const logic = {
                                     creditor.amount += fraction.amount
                                 }
                             })
-
                             return debtors
                         }, [])
 
@@ -507,21 +506,43 @@ const logic = {
                 const balance = debts.reduce((balance, userDebt) => {
                     userDebt.debts.forEach(debtTo => {
                         if (!balance.some(item => item.userId === debtTo.userId && item.debtorId === userDebt.userId)) {
-debugger
-                            const userDebtTo = debts.find(debt => debt.userId === debtTo.userId)
+                            const userDebtTo = debts.find(debt => debt.userId === debtTo.userId);
 
-                            const debtToMe = userDebtTo.debts.find(debt => debt.userId === userDebt.userId)
+                            const debtToMe = userDebtTo.debts.find(debt => debt.userId === userDebt.userId);
 
                             if (debtToMe)
                                 if (debtTo.amount > debtToMe.amount)
-                                    balance.push({ creditorId: debtTo.userId, debtorId: userDebt.userId, amount: debtTo.amount - debtToMe.amount })
+                                    balance.push({ creditorId: debtTo.userId, creditorName: '', debtorId: userDebt.userId, debtorName: '', amount: debtTo.amount - debtToMe.amount })
                         }
                     })
-
                     return balance
                 }, [])
 
                 return balance
+            })
+            .then(balance => {
+                return Promise.all(balance.map(async (users, index) => {
+                    const res = await User.findById(users.creditorId)
+                        .then(user => {
+                            balance[index].creditorName = user.name
+
+                            return balance[index]
+                        })
+
+                    return res
+                }))
+            })
+            .then(balance => {
+                return Promise.all(balance.map(async (users, index) => {
+                    const res = await User.findById(users.debtorId)
+                        .then(user => {
+                            balance[index].debtorName = user.name
+
+                            return balance[index]
+                        })
+
+                    return res
+                }))
             })
     }
 }

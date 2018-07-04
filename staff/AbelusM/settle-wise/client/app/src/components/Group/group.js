@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import logic from '../../logic'
 import swal from 'sweetalert2'
 import img from '../../styles/images/back.jpg'
-import { Collapse, Button, CardBody, Card, Input, Form, FormGroup, Label, Alert, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Collapse, Button, CardBody, Card, Input, Form, FormGroup, Label, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import './group-style.css'
 
 class Group extends Component {
@@ -24,7 +24,7 @@ class Group extends Component {
         userPayer: []
     }
 
-    componentWillReceiveProps() {
+    componentDidMount() {
         this.listUsers()
         this.listSpends()
     }
@@ -48,7 +48,7 @@ class Group extends Component {
     }
 
     addUserToGroup = e => {
-        const { groupId, email, users } = this.state
+        const { groupId, email } = this.state
 
         logic.addUserToGroup(groupId, email)
             .catch(() => {
@@ -71,8 +71,6 @@ class Group extends Component {
     }
 
     addSpend = e => {
-        e.preventDefault()
-
         const { groupId, payerId, spendName, amount, participants, amounts } = this.state
 
         const fractions = []
@@ -85,12 +83,14 @@ class Group extends Component {
 
         logic.addSpend(groupId, amount, spendName, payerId, fractions)
             .then(() => console.log('added a spend to the group'))
+            .then(() => this.listSpends())
+            .then(() => this.setState({ groupId: '', payerId: '', spendName: '', amount: 0, participants: {}, amounts: {} }))
             .catch(console.error)
     }
 
     catchAmount = e => {
         e.preventDefault()
-        const amount = parseInt(e.target.value)
+        const amount = parseInt(e.target.value, 10)
         this.setState({ amount })
     }
 
@@ -135,11 +135,6 @@ class Group extends Component {
         })
     }
 
-    componentDidMount() {
-        this.listUsers()
-        this.listSpends()
-    }
-
     listUsers = () => {
         const group = this.state.groupId
 
@@ -172,7 +167,7 @@ class Group extends Component {
 
         logic.splitSpends(group)
             .then(balance => {
-                this.setState({ balance })
+                this.setState({ balance, modal: !this.state.modal })
             })
     }
 
@@ -190,13 +185,12 @@ class Group extends Component {
                 <img src={img} alt='background' />
                 <Card className='groups-card'>
                     <CardBody>
-                        <Alert className='center'>
+                        <Label className=''>
                             {this.state.users.length ? <h2>User Members</h2> : null}
                             {this.state.users.map((user, key) => <Button className='users' key={key} color={this.changeColor(key)}><option>{user.name}</option></Button>)}
-                        </Alert>
+                        </Label>
                         <section id="main" className="">
                             <div className="">
-                                {this.state.spends.length ? <h2>Group Spends By User</h2> : null}
                                 <div>
                                     <Button className='form-button' onClick={() => { this.toggle(1) }} style={{ marginBottom: '1rem' }}>Add a User</Button>
                                     <Button className='form-button' onClick={() => { this.toggle(2) }} style={{ marginBottom: '1rem' }}>Add a Spend</Button>
@@ -225,10 +219,14 @@ class Group extends Component {
                                                         <Input type="select" name="payer" onChange={e => { this.selectPayer(e) }} >
                                                             {this.state.users.map((user, key) => <option key={key} value={user._id}>{user.name}</option>)}
                                                         </Input>
-                                                        {this.state.users.map((user, key) => <div key={key} className='banner'>
+                                                        {this.state.users.map((user, key) => <div key={key} className='form-check'>
                                                             <Label className=''>{user.name}</Label>
+                                                            <FormGroup check className=''>
+                                                            <Label check>
                                                             <Input onClick={e => { e.target.checked ? this.selectParticipant(user._id) : this.unselectParticipant(user._id) }} className='my-checkbox' type="checkbox" />
                                                             <Input type="number" onChange={e => this.setParticipantAmount(user._id, e.target.value)} placeholder='amount payed by the user' />
+                                                            </Label>
+                                                            </FormGroup >
                                                         </div>
                                                         )}
                                                     </FormGroup>
@@ -242,8 +240,9 @@ class Group extends Component {
                                 <form>
                                     {this.state.spends.length ? <h2>Group Spends By User</h2> : null}
                                     <section>{this.state.spends.map((spend, key) =>
-                                        <div key={key} className='random'><h4>{spend.name}</h4><h4>
-                                            Total Spend: {spend.amount}</h4> {spend.fractions.map((fraction, key) =>
+                                        <div key={key} className='random'><h4>{spend.name}</h4>
+                                            <h4>Total Spend: {spend.amount}</h4>
+                                            {spend.fractions.map((fraction, key) =>
                                                 fraction.amount > 0 && <div key={key} className="">
                                                     <h5 >Participant:</h5>
                                                     <label >{fraction.userId.name}</label>
@@ -259,20 +258,19 @@ class Group extends Component {
                         </section>
                         {/*SPLIT SPENDS OF THE GROUP*/}
                         <Button color="danger" className='special-button' onClick={() => {
-                            this.toggleModal()
                             this.splitSpends()
                         }}>Split Spends</Button>
-                        <Modal isOpen={this.state.modal} toggleModal={this.toggleModal} className={this.props.className}>
-                            <ModalHeader toggleModal={this.toggleModal}>Settle Wise</ModalHeader>
+                        <Modal isOpen={this.state.modal} toggle={this.toggleModal} className={this.props.className}>
+                            <ModalHeader toggle={this.toggleModal}>Settle Wise</ModalHeader>
                             <ModalBody >
                                 {this.state.balance.length ? <h2>Operation Balance - Creditor to Debtor</h2> : <h3>There are no Spends to Split</h3>}
-                                {this.state.balance.map(res => <div className='random'>
+                                {this.state.balance.map((res, key) => <div key={key} className='random'>
                                     <Card className='group-card'>
                                         <CardBody>
                                             <h4 className=''>User:</h4>
-                                            <label className=''>{res.debtorId}</label>
+                                            <label className=''>{res.debtorName}</label>
                                             <h4 className=''>Debts To:</h4>
-                                            <label className=''>{res.creditorId}</label>
+                                            <label className=''>{res.creditorName}</label>
                                             <h4 className=''>Amount:</h4>
                                             <h3 className=''>{res.amount}</h3>
                                         </CardBody>
@@ -288,23 +286,9 @@ class Group extends Component {
                         </section>
                     </CardBody>
                 </Card>
-                {/*SPLIT SPENDS OF THE GROUP*/}
-                {/* <section>
-                {this.state.balance.length ? <h2>Operation Balance - Creditor to Debtor</h2> : null}
-                {this.state.balance.map(res => <div className='random'>
-                    <h4 className=''>User:</h4>
-                    <label className=''>{res.debtorId}</label>
-                    <h4 className=''>Debts To:</h4>
-                    <label className=''>{res.creditorId}</label>
-                    <h4 className=''>Amount:</h4>
-                    <h3 className=''>{res.amount}</h3>
-                </div>)}
-                <Button color='info' onClick={this.splitSpends}>Split Spends</Button>
-            </section> */}
             </div>
         </main>
     }
-
 }
 
 export default Group

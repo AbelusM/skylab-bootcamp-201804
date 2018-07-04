@@ -42,6 +42,23 @@ const logic = {
     },
 
     /**
+   * retrieve user information
+   * 
+   * @param {string} userId user id
+   * 
+   * @throws {Error} if the user does not exist
+   * 
+   * @returns {Promise<string>} the user data
+   * 
+   */
+    retrieveUser(userId) {
+        return api.retrieveUser(userId)
+            .then(user => {
+                return user
+            })
+    },
+
+    /**
  * Creates a group and includes the creator user as a admin 
  * 
  * @param {string} userId The userID that creates the group
@@ -140,7 +157,7 @@ const logic = {
     splitSpends(group) {
         return api.splitSpends(this.userId, group)
             .then(balance => {
-                console.log(balance)
+                console.log("BALANCE LOGIC", balance)
                 return balance
             })
     },
