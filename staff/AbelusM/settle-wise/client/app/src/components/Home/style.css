@@ -39,6 +39,7 @@ position: relative
 .std-button {
     background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     margin-top: 15px;
+    margin: 15px;
 }
 
 .std-button:hover {
@@ -52,7 +53,12 @@ position: relative
 .spc-button:hover {
     background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
-
+.loggout-btn{
+    background-image: linear-gradient(to right, #b8cbb8 0%, #b8cbb8 0%, #b465da 0%, #cf6cc9 33%, #ee609c 66%, #ee609c 100%);    
+}
+.loggout-btn:hover{
+    background-image: linear-gradient(-225deg, #3D4E81 0%, #5753C9 48%, #6E7FF3 100%);
+}
 .std-box{
 margin-bottom: 15px;
 }

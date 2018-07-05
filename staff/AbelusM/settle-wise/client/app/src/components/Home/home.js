@@ -36,7 +36,6 @@ class Home extends Component {
 				})
 				console.log('created group')
 			})
-
 	}
 
 	catchGroupName = e => {
@@ -61,8 +60,7 @@ class Home extends Component {
 			<img src={img} alt='background' />
 			<section id="main" className="container-form-user">
 				<div className="inner">
-					{(this.state.groups.length > 0) ? <h1>These are your Groups</h1> : <h1>You don't belong to any group</h1>}
-					<Button color="primary" className='std-button' onClick={this.toggle}>Click to Create a Group</Button>
+					<Button color="primary" className='std-button' onClick={this.toggle}>Create a Group!</Button>
 					<Collapse className='' isOpen={this.state.collapse}>
 						<h4>Create a new Group</h4>
 						<Card className='group-create-card'>
@@ -76,6 +74,7 @@ class Home extends Component {
 							</CardBody>
 						</Card>
 					</Collapse>
+					{(this.state.groups.length > 0) ? <h1>These are your Groups</h1> : <h1>You don't belong to any group</h1>}
 					<GroupsList groups={this.state.groups} />
 					<Button className='std-button' href='/'onClick={() => {
 						logic.logout()

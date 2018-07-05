@@ -429,7 +429,15 @@ const logic = {
                         return group.spends.map(({ id, amount, name, payer, fractions }) => {
                             const _fractions = fractions.map(({ user, amount }) => ({ userId: user, amount }))
 
-                            return { id, amount, name, payerId: payer.toString(), fractions: _fractions }
+                            let payerName;
+
+                            _fractions.forEach(({ userId }, i) => {
+                                if (userId._id.toString() === payer.toString()) {
+                                    payerName = userId.name
+                                }
+                            })
+
+                            return { id, amount, name, payerId: payer.toString(), payerName, fractions: _fractions }
                         })
                     })
             })
@@ -540,7 +548,6 @@ const logic = {
 
                             return balance[index]
                         })
-
                     return res
                 }))
             })

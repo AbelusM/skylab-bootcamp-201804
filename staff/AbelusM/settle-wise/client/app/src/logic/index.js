@@ -157,7 +157,6 @@ const logic = {
     splitSpends(group) {
         return api.splitSpends(this.userId, group)
             .then(balance => {
-                console.log("BALANCE LOGIC", balance)
                 return balance
             })
     },

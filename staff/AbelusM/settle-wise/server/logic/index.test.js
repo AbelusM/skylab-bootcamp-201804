@@ -732,13 +732,15 @@ describe('logic (settle-wise)', () => {
 
                                     expect(_spend1.id).to.exist
                                     expect(_spend1.id).to.be.a('string')
-
+                                    
                                     expect(_spend1.amount).to.equal(spend1.amount)
+                                    expect(_spend1.payerName).to.equal(user1.name)
 
                                     expect(_spend2.id).to.exist
                                     expect(_spend2.id).to.be.a('string')
 
                                     expect(_spend2.amount).to.equal(spend2.amount)
+                                    expect(_spend2.payerName).to.equal(user1.name)
                                 })
                         })
                 })
