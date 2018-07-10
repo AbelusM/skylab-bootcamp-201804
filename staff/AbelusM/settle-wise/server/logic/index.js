@@ -336,7 +336,7 @@ const logic = {
         * 
         * @returns {Promise<string>}
         */
-    addSpend(userId, groupId, amount, name, payerId, fractions) {
+    addSpend(userId, groupId, amount, name, date, payerId, fractions) {
         return Promise.resolve()
             .then(() => {
                 if (typeof userId !== 'string') throw Error('user id is not a string')
@@ -354,6 +354,8 @@ const logic = {
                 if (typeof payerId !== 'string') throw Error('user id is not a string')
 
                 if (!(payerId = payerId.trim()).length) throw Error('user id is empty or blank')
+
+                if (typeof date !== 'number') throw Error('date is not a number')
 
                 if (!(fractions instanceof Array)) throw Error('fractions is not an array')
 
@@ -389,6 +391,7 @@ const logic = {
                                     user: userId,
                                     amount,
                                     name,
+                                    date,
                                     payer: payerId,
                                     fractions
                                 }))
@@ -426,7 +429,7 @@ const logic = {
 
                         if (!group.users.some(_userId => _userId._id.toString() === userId)) throw Error(`user with id ${userId} does not belong to group with id ${groupId}`)
 
-                        return group.spends.map(({ id, amount, name, payer, fractions }) => {
+                        return group.spends.map(({ id, amount, name, date, payer, fractions }) => {
                             const _fractions = fractions.map(({ user, amount }) => ({ userId: user, amount }))
 
                             let payerName;
@@ -437,7 +440,7 @@ const logic = {
                                 }
                             })
 
-                            return { id, amount, name, payerId: payer.toString(), payerName, fractions: _fractions }
+                            return { id, amount, name, date, payerId: payer.toString(), payerName, fractions: _fractions }
                         })
                     })
             })

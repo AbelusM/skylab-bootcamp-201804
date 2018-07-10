@@ -12,7 +12,12 @@ module.exports = new Schema({
     },
     name: {
         type: String,
-        required: false
+        required: false 
+    },
+    date: {
+        type: Date,
+        required: false,
+        default: Date.now 
     },
     payer: {
         type: ObjectId,

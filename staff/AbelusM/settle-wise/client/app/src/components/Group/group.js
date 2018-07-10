@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import logic from '../../logic'
 import swal from 'sweetalert2'
 import img from '../../styles/images/back.jpg'
-import { Collapse, Button, CardBody, Card, Input, Form, FormGroup, Label, Modal, ModalHeader, ModalBody, ModalFooter, Col } from 'reactstrap';
+import { Collapse, Button, CardBody, Card, Input, Form, FormGroup, Label, Modal, ModalHeader, ModalBody, ModalFooter, Col, Alert, Table } from 'reactstrap';
 import './group-style.css'
 
 class Group extends Component {
@@ -20,6 +20,7 @@ class Group extends Component {
         spendName: '',
         collapse1: false,
         collapse2: false,
+        collapseSpends: false,
         modal: false,
         userPayer: []
     }
@@ -39,6 +40,13 @@ class Group extends Component {
         }
         else
             this.setState({ collapse2: !this.state.collapse2, collapse1: false });
+    }
+
+    toggleSpends = () => {
+        this.setState({
+            collapseSpends: !this.state.collapseSpends,
+        });
+
     }
 
     toggleModal = () => {
@@ -181,19 +189,19 @@ class Group extends Component {
 
     render() {
         return <main id="banner">
+            <img id='background-group' src={img} alt='background' />
             <div>
-                <img id='background-group' src={img} alt='background' />
                 <Card className='groups-card'>
                     <CardBody className=''>
                         <Label className=''>
                             {this.state.users.length ? <h2>User Members</h2> : null}
-                            {this.state.users.map((user, key) => <Button className='users' key={key} color={this.changeColor(key)}><option>{user.name}</option></Button>)}
+                            {this.state.users.map((user, key) => <Alert className='users' key={key} color={this.changeColor(key)}><option> {user.name} {user.surname}</option></Alert>)}
                         </Label>
                         <section id="main" className="">
                             <div className="">
                                 <div>
-                                    <Button className='form-button' onClick={() => { this.toggle(1) }} style={{ marginBottom: '1rem' }}>Add a User</Button>
-                                    <Button className='form-button' onClick={() => { this.toggle(2) }} style={{ marginBottom: '1rem' }}>Add a Spend</Button>
+                                    {(this.state.collapse1 === true) ? null : <Button className='form-button' onClick={() => { this.toggle(1) }} style={{ marginBottom: '1rem' }}>Add a User</Button>}
+                                    {(this.state.collapse2 === true) ? null : <Button className='form-button' onClick={() => { this.toggle(2) }} style={{ marginBottom: '1rem' }}>Add a Spend</Button>}
                                     <Collapse isOpen={this.state.collapse1}>
                                         <h4>Add a user to Group</h4>
                                         <Card className='' id='form-id'>
@@ -202,31 +210,32 @@ class Group extends Component {
                                                     <FormGroup>
                                                         <Input className="inner flex flex-3 input-form" type="text" onChange={this.handlerAddUser} placeholder="user email" value={this.state.email} />
                                                     </FormGroup>
-                                                    <Button className='form-button'>Confirm User </Button>
+                                                    <Button className='form-button'>Add User </Button>
                                                 </Form>
+                                                <Button className='spc-button' onClick={() => { this.toggle(1) }}>Cancel</Button>
                                             </CardBody>
                                         </Card>
                                     </Collapse>
                                     <Collapse isOpen={this.state.collapse2}>
                                         <h4>Add a spend to the Group</h4>
-                                        <Card className=''  id='form-id'>
+                                        <Card className='' id='form-id'>
                                             <CardBody className='' >
                                                 <Form onSubmit={this.addSpend}>
                                                     <FormGroup>
                                                         <Input className="input-form" type="text" onChange={this.catchSpendName} placeholder="new payment name" />
                                                         <Input className="input-form" type="number" onChange={this.catchAmount} placeholder="new payment total amount" />
                                                         <Input type="select" className="input-form" name="payer" onChange={e => { this.selectPayer(e) }} >
-                                                        <option >Select the user payer:</option>
+                                                            <option >Select the user payer:</option>
                                                             {this.state.users.map((user, key) => <option key={key} value={user._id}>{user.name}</option>)}
                                                         </Input>
                                                         {this.state.users.map((user, key) => <div key={key} className='form-check'>
                                                             <FormGroup check className='spend-form'>
-                                                            <Label check>
-                                                            <h5 className=''>{user.name}</h5>
+                                                                <Label check>
+                                                                    <h5 className=''>{user.name}</h5>
                                                                     <Input className="input-form" onClick={e => { e.target.checked ? this.selectParticipant(user._id) : this.unselectParticipant(user._id) }} className='my-checkbox' size='lg' type="checkbox" />
-                                                                <Label>
-                                                                    <Input  className="input-form" type="number" onChange={e => this.setParticipantAmount(user._id, e.target.value)} placeholder='amount payed by the user' />
-                                                                </Label>
+                                                                    <Label>
+                                                                        <Input className="input-form" type="number" onChange={e => this.setParticipantAmount(user._id, e.target.value)} placeholder='amount payed by the user' />
+                                                                    </Label>
                                                                 </Label>
                                                             </FormGroup >
                                                         </div>
@@ -234,32 +243,35 @@ class Group extends Component {
                                                     </FormGroup>
                                                     <Button className='form-button'>Confirm Spend </Button>
                                                 </Form>
+                                                <Button className='spc-button' onClick={() => { this.toggle(2) }}>Cancel</Button>
                                             </CardBody>
                                         </Card>
                                     </Collapse>
                                 </div>
                                 {/*LIST SPENDS TO A GROUP*/}
                                 <Col sm={{ size: 10, offset: 1 }} md={{ size: 6, offset: 3 }} >
-                                    <form>
-                                        {this.state.spends.length ? <h2>Group Spends By User</h2> : null}
-                                        <section>{this.state.spends.map((spend, key) =>
-                                            <div key={key} className='spend-card'><h3>{spend.name}</h3>
-                                                <h4>Total Spend: </h4>
-                                                <h5>{spend.amount}</h5>
-                                                <h4>User payer: </h4>
-                                                <h5>{spend.payerName}</h5>
-                                                {spend.fractions.map((fraction, key) =>
-                                                    fraction.amount > 0 && <div key={key} className="">
-                                                        <h4 >Participant:</h4>
-                                                        <h6 >{fraction.userId.name}</h6>
-                                                        <h4 >Participant Amount: </h4>
-                                                        <h6 >{fraction.amount}</h6>
-                                                    </div>
-                                                )}</div>
-                                        )
-                                        }
-                                        </section>
-                                    </form>
+                                    {this.state.spends.length ? <h2>This are your Group Spends</h2> : null}
+
+                                    {this.state.spends.map((spend, key) => <Table striped>
+                                        <thead color="primary" onClick={this.toggleSpends} style={{ marginBottom: '1rem' }}>
+                                            <tr>
+                                                {/* <th>#</th> */}
+                                                <th>{spend.name}</th>
+                                                <th>{spend.payerName}</th>
+                                                <th>{spend.amount}.-€</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>{spend.fractions.map((fraction, key) =>
+                                            fraction.amount > 0 && <tr>
+                                                {/* <Collapse isOpen={this.state.collapseSpends}> */}
+                                                <th scope="row">{key}</th>
+                                                <td>{fraction.userId.name}</td>
+                                                <td>{fraction.amount}.-€</td>
+                                                {/* </Collapse> */}
+                                            </tr>
+                                        )}
+                                        </tbody>
+                                    </Table>)}
                                 </Col>
                             </div>
                         </section>
@@ -267,21 +279,27 @@ class Group extends Component {
                         <Button color="danger" className='special-button' onClick={() => {
                             this.splitSpends()
                         }}>Split Spends</Button>
-                        <Modal isOpen={this.state.modal} toggle={this.toggleModal} className={this.props.className}>
+                        <Modal isOpen={this.state.modal} toggle={this.toggleModal} className={this.props.className} >
                             <ModalHeader toggle={this.toggleModal}>Settle Wise</ModalHeader>
-                            <ModalBody >
-                                {this.state.balance.length ? <h2>Operation Balance - Creditor to Debtor</h2> : <h3>There are no Spends to Split</h3>}
-                                {this.state.balance.map((res, key) => <div key={key} className='random'>
-                                    <Card className='group-card'>
-                                        <CardBody>
-                                            <h4 className=''>User:</h4>
-                                            <label className=''>{res.debtorName}</label>
-                                            <h4 className=''>Debts To:</h4>
-                                            <label className=''>{res.creditorName}</label>
-                                            <h4 className=''>Amount:</h4>
-                                            <h3 className=''>{res.amount}</h3>
-                                        </CardBody>
-                                    </Card>
+                            <ModalBody id=''>
+                                {this.state.balance.length ? <h2>Operation Balance</h2> : <h3>There are no Spends to Split</h3>}
+                                {this.state.balance.map((res, key) => <div key={key} className=''>
+                                    <Table dark>
+                                        <thead>
+                                            <tr>
+                                                <th>Must pay</th>
+                                                <th>Will recieve</th>
+                                                <th>Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th scope="row">{res.debtorName}</th>
+                                                <td>{res.creditorName}</td>
+                                                <td>{res.amount}.-€</td>
+                                            </tr>
+                                        </tbody>
+                                    </Table>
                                 </div>)}
                             </ModalBody>
                             <ModalFooter>

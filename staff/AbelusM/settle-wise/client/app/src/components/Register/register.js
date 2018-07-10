@@ -72,7 +72,7 @@ class Register extends Component {
     render() {
         return <main id="" >
             <div className="container-form-user">
-            <img src={img} alt='background' />            
+            <img id='background-group' src={img} alt='background' />            
             <Container >
                 <Col sm={{ size: 10, offset: 1 }} md={{ size: 6, offset: 3 }} >
                     <Form onSubmit={this.register} className='mb-5 form-user'>

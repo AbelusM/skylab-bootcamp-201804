@@ -62,7 +62,7 @@ class Login extends Component {
 
     render() {
         return    <div className='container-form-user'>
-                <img src={img} alt='background' />
+                <img id='background-group' src={img} alt='background' />
 
         <Container >
                 <Col sm={{ size: 10, offset: 1 }} md={{ size: 6, offset: 3 }} >

@@ -102,12 +102,14 @@ a {
 
 .spend-card {
     display: inline-block;
-    text-align: justify;
     margin: 25px;
+    background-color: rgba(92, 90, 92, 0.151);
+    border-radius: 15px;
+    text-align: center;
 }
 
 .spend-card h4 {
-    color: black !important;
+    color: rgba(0, 0, 0, 0.555) !important;
 }
 
 .spend-card h5 {
@@ -115,7 +117,8 @@ a {
 }
 
 .spend-card h6 {
-    color: red !important;
+    color: rgb(209, 83, 10) !important;
+    font-weight: bold;
 }
 
 .users-card {
@@ -135,5 +138,30 @@ a {
 }
 
 #background-group {
-    
+    min-height: 100%;
+    min-width: 1024px;
+    width: 100%;
+    height: auto;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.spending-card {
+    width: 150%;
+    display: inline-flex !important;
+    display: grid;
+}
+
+#modal-form {
+    background-color: rgba(77, 76, 76, 0.158);
+    width: 100%;
+    /* display: inline-flex !important; */
+    /* margin: 5px; */
+}
+#modal-form h5{
+    color: rgba(216, 20, 216, 0.658);
+    width: 100%;
+    /* display: inline-flex !important; */
+    /* margin: 5px; */
 }

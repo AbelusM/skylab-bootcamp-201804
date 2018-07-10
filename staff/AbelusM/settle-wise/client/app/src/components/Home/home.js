@@ -57,10 +57,12 @@ class Home extends Component {
 
 	render() {
 		return <div id="banner">
-			<img src={img} alt='background' />
+			<img id='background-group' src={img} alt='background' />
 			<section id="main" className="container-form-user">
 				<div className="inner">
-					<Button color="primary" className='std-button' onClick={this.toggle}>Create a Group!</Button>
+					{(this.state.groups.length > 0) ? <h1>These are your Groups</h1> : <h1>You don't belong to any group</h1>}
+					<GroupsList groups={this.state.groups} />
+					{(this.state.collapse === true) ? null : <Button color="primary" className='std-button' onClick={this.toggle}>Create a Group!</Button>}
 					<Collapse className='' isOpen={this.state.collapse}>
 						<h4>Create a new Group</h4>
 						<Card className='group-create-card'>
@@ -71,11 +73,10 @@ class Home extends Component {
 									</FormGroup>
 									<Button className='spc-button'>Create Group  </Button>
 								</Form>
+									<Button className='spc-button' onClick={this.toggle}>Cancel</Button>
 							</CardBody>
 						</Card>
 					</Collapse>
-					{(this.state.groups.length > 0) ? <h1>These are your Groups</h1> : <h1>You don't belong to any group</h1>}
-					<GroupsList groups={this.state.groups} />
 					<Button className='std-button' href='/'onClick={() => {
 						logic.logout()
 						this.props.onLogout()
