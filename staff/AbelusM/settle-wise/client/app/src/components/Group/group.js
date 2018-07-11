@@ -21,10 +21,7 @@ class Group extends Component {
         collapse1: false,
         collapse2: false,
         collapseSpends: false,
-        popoverOpen0: false,
-        popoverOpen1: false,
-        popoverOpen2: false,
-        popoverOpen3: false,
+        popoverOpen: false,
         modal: false,
         userPayer: [],
         check: true
@@ -116,7 +113,7 @@ class Group extends Component {
         logic.addSpend(groupId, amount, spendName, payerId, fractions)
             .then(() => console.log('added a spend to the group'))
             .then(() => this.listSpends())
-            .then(() => this.setState({ groupId: '', payerId: '', spendName: '', amount: 0, participants: {}, amounts: {}, collapse2: false }))
+            .then(() => this.setState({ payerId: '', spendName: '', amount: 0, participants: {}, amounts: {}, collapse2: false }))
             .catch(console.error)
     }
 
@@ -233,8 +230,9 @@ class Group extends Component {
                     <CardBody className=''>
                         <Label className=''>
                             {this.state.users.length ? <h2>User Members</h2> : null}
-                            {this.state.users.map((user, key) => <div> <Button id={'popover'+key.toString()} onClick={this.toggleUser} className='users' key={key} color={this.changeColor(key)}><option>{user.name}</option></Button>
-                                <Popover placement="bottom" isOpen={this.state.popoverOpen} target={'popover'+key.toString()} toggle={this.toggleUser}>
+                            {this.state.users.map((user, i) => <div>
+                                <Button id={'Popover-' + i} onClick={this.toggleUser} className='users' key={i} color={this.changeColor(i)}><option>{user.name}</option></Button>
+                                <Popover placement="bottom" isOpen={this.state.popoverOpen} target={'Popover-' + i} toggle={this.toggleUser}>
                                     <PopoverHeader>User Info</PopoverHeader>
                                     <PopoverBody>
                                         Name: {user.name}
@@ -271,8 +269,8 @@ class Group extends Component {
                                             <CardBody className='' >
                                                 <Form onSubmit={this.addSpend}>
                                                     <FormGroup>
-                                                        <Input className="input-form" type="text" onChange={this.catchSpendName} placeholder="new payment name" />
-                                                        <Input className="input-form" type="number" onChange={this.catchAmount} placeholder="new payment total amount" />
+                                                        <Input className="input-form" type="text" onChange={this.catchSpendName} placeholder="new payment name" value={this.state.spendName} />
+                                                        <Input className="input-form" type="number" onChange={this.catchAmount} placeholder="new payment total amount" value={this.state.amount} />
                                                         <Input type="select" className="input-form" name="payer" onChange={e => { this.selectPayer(e) }} >
                                                             <option >Select the user payer:</option>
                                                             {this.state.users.map((user, key) => <option key={key} value={user._id}>{user.name}</option>)}
@@ -281,9 +279,9 @@ class Group extends Component {
                                                             <FormGroup check className='spend-form'>
                                                                 <Label check>
                                                                     <h5 className=''>{user.name}</h5>
-                                                                    <Input className="input-form" onClick={e => { e.target.checked ? this.selectParticipant(user._id) : this.unselectParticipant(user._id) }} className='my-checkbox' size='lg' type="checkbox"  />
+                                                                    <Input className="input-form" onClick={e => { e.target.checked ? this.selectParticipant(user._id) : this.unselectParticipant(user._id) }} className='my-checkbox' size='lg' type="checkbox" />
                                                                     <Label>
-                                                                        <Input className="input-form" type="number" onChange={e => this.setParticipantAmount(user._id, e.target.value)} placeholder='amount payed by the user' />
+                                                                        <Input className="input-form" type="number" onChange={e => this.setParticipantAmount(user._id, e.target.value)} placeholder='amount payed by the user' value />
                                                                     </Label>
                                                                 </Label>
                                                             </FormGroup >
@@ -298,7 +296,7 @@ class Group extends Component {
                                     </Collapse>
                                 </div>
                                 {/*LIST SPENDS TO A GROUP*/}
-                                    {this.state.spends.length ? <h2>This are your Group Spends</h2> : null}
+                                {this.state.spends.length ? <h2>This are your Group Spends</h2> : null}
 
                                 <Col sm={{ size: 8, offset: 2 }} md={{ size: 6, offset: 3 }} >
                                     {this.state.spends.map((spend, key) => <Table striped className='tableList'>
@@ -312,9 +310,9 @@ class Group extends Component {
                                         <tbody className='collapseList'>{spend.fractions.map((fraction, key) =>
                                             fraction.amount > 0 && <tr>
                                                 {/* <Collapse isOpen={this.state.collapseSpends}> */}
-                                                    <th scope="row">{key}</th>
-                                                    <td>{fraction.userId.name}</td>
-                                                    <td>{fraction.amount.toFixed(2)} €</td>
+                                                <th scope="row"></th>
+                                                <td>{fraction.userId.name}</td>
+                                                <td>{fraction.amount.toFixed(2)} €</td>
                                                 {/* </Collapse> */}
                                             </tr>
                                         )}
