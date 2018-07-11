@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import logic from '../../logic'
 import swal from 'sweetalert2'
 import img from '../../styles/images/back.jpg'
-import { Collapse, Button, CardBody, Card, Input, Form, FormGroup, Label, Modal, ModalHeader, ModalBody, ModalFooter, Col, Alert, Table } from 'reactstrap';
+import { Collapse, Button, CardBody, Card, Input, Form, FormGroup, Label, Modal, ModalHeader, ModalBody, ModalFooter, Col, Alert, Table, Popover, PopoverHeader, PopoverBody } from 'reactstrap';
 import './group-style.css'
 
 class Group extends Component {
@@ -21,8 +21,13 @@ class Group extends Component {
         collapse1: false,
         collapse2: false,
         collapseSpends: false,
+        popoverOpen0: false,
+        popoverOpen1: false,
+        popoverOpen2: false,
+        popoverOpen3: false,
         modal: false,
-        userPayer: []
+        userPayer: [],
+        check: true
     }
 
     componentDidMount() {
@@ -45,9 +50,16 @@ class Group extends Component {
     toggleSpends = () => {
         this.setState({
             collapseSpends: !this.state.collapseSpends,
-        });
+        })
 
     }
+
+    toggleUser = () => {
+        this.setState({
+            popoverOpen: !this.state.popoverOpen,
+        })
+    }
+
 
     toggleModal = () => {
         this.setState({
@@ -79,9 +91,21 @@ class Group extends Component {
     }
 
     addSpend = e => {
-        const { groupId, payerId, spendName, amount, participants, amounts } = this.state
+        e.preventDefault()
+
+        let { groupId, payerId, spendName, amount, participants, amounts } = this.state
 
         const fractions = []
+
+        let calculate = true;
+
+        for (var i in amounts) {
+            if (amounts[i] !== 0) calculate = false
+        }
+
+        if (calculate) {
+            amounts = this.setDefaultAmount()
+        }
 
         var userIds = Object.keys(participants)
 
@@ -131,6 +155,20 @@ class Group extends Component {
 
             return { participants }
         })
+    }
+
+    setDefaultAmount = () => {
+        var userIds = Object.keys(this.state.participants)
+
+        let res = (this.state.amount / userIds.length)
+
+        const amounts = {}
+
+        userIds.forEach(userId => {
+            amounts[userId] = parseFloat(res)
+        })
+
+        return amounts
     }
 
     setParticipantAmount = (userId, amount) => {
@@ -195,7 +233,18 @@ class Group extends Component {
                     <CardBody className=''>
                         <Label className=''>
                             {this.state.users.length ? <h2>User Members</h2> : null}
-                            {this.state.users.map((user, key) => <Alert className='users' key={key} color={this.changeColor(key)}><option> {user.name} {user.surname}</option></Alert>)}
+                            {this.state.users.map((user, key) => <div> <Button id={'popover'+key.toString()} onClick={this.toggleUser} className='users' key={key} color={this.changeColor(key)}><option>{user.name}</option></Button>
+                                <Popover placement="bottom" isOpen={this.state.popoverOpen} target={'popover'+key.toString()} toggle={this.toggleUser}>
+                                    <PopoverHeader>User Info</PopoverHeader>
+                                    <PopoverBody>
+                                        Name: {user.name}
+                                        Surname: {user.surname}
+                                        Email: {user.email}
+                                    </PopoverBody>
+                                </Popover>
+                            </div>
+                            )}
+
                         </Label>
                         <section id="main" className="">
                             <div className="">
@@ -232,7 +281,7 @@ class Group extends Component {
                                                             <FormGroup check className='spend-form'>
                                                                 <Label check>
                                                                     <h5 className=''>{user.name}</h5>
-                                                                    <Input className="input-form" onClick={e => { e.target.checked ? this.selectParticipant(user._id) : this.unselectParticipant(user._id) }} className='my-checkbox' size='lg' type="checkbox" />
+                                                                    <Input className="input-form" onClick={e => { e.target.checked ? this.selectParticipant(user._id) : this.unselectParticipant(user._id) }} className='my-checkbox' size='lg' type="checkbox"  />
                                                                     <Label>
                                                                         <Input className="input-form" type="number" onChange={e => this.setParticipantAmount(user._id, e.target.value)} placeholder='amount payed by the user' />
                                                                     </Label>
@@ -241,7 +290,7 @@ class Group extends Component {
                                                         </div>
                                                         )}
                                                     </FormGroup>
-                                                    <Button className='form-button'>Confirm Spend </Button>
+                                                    <Button type="submit" className='form-button'>Confirm Spend </Button>
                                                 </Form>
                                                 <Button className='spc-button' onClick={() => { this.toggle(2) }}>Cancel</Button>
                                             </CardBody>
@@ -249,24 +298,23 @@ class Group extends Component {
                                     </Collapse>
                                 </div>
                                 {/*LIST SPENDS TO A GROUP*/}
-                                <Col sm={{ size: 10, offset: 1 }} md={{ size: 6, offset: 3 }} >
                                     {this.state.spends.length ? <h2>This are your Group Spends</h2> : null}
 
-                                    {this.state.spends.map((spend, key) => <Table striped>
+                                <Col sm={{ size: 8, offset: 2 }} md={{ size: 6, offset: 3 }} >
+                                    {this.state.spends.map((spend, key) => <Table striped className='tableList'>
                                         <thead color="primary" onClick={this.toggleSpends} style={{ marginBottom: '1rem' }}>
-                                            <tr>
-                                                {/* <th>#</th> */}
+                                            <tr >
                                                 <th>{spend.name}</th>
                                                 <th>{spend.payerName}</th>
-                                                <th>{spend.amount}.-€</th>
+                                                <th>{spend.amount.toFixed(2)} €</th>
                                             </tr>
                                         </thead>
-                                        <tbody>{spend.fractions.map((fraction, key) =>
+                                        <tbody className='collapseList'>{spend.fractions.map((fraction, key) =>
                                             fraction.amount > 0 && <tr>
                                                 {/* <Collapse isOpen={this.state.collapseSpends}> */}
-                                                <th scope="row">{key}</th>
-                                                <td>{fraction.userId.name}</td>
-                                                <td>{fraction.amount}.-€</td>
+                                                    <th scope="row">{key}</th>
+                                                    <td>{fraction.userId.name}</td>
+                                                    <td>{fraction.amount.toFixed(2)} €</td>
                                                 {/* </Collapse> */}
                                             </tr>
                                         )}
@@ -296,7 +344,7 @@ class Group extends Component {
                                             <tr>
                                                 <th scope="row">{res.debtorName}</th>
                                                 <td>{res.creditorName}</td>
-                                                <td>{res.amount}.-€</td>
+                                                <td>{res.amount.toFixed(2)} €</td>
                                             </tr>
                                         </tbody>
                                     </Table>

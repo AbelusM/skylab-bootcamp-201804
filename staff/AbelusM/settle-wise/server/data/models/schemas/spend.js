@@ -14,11 +14,6 @@ module.exports = new Schema({
         type: String,
         required: false 
     },
-    date: {
-        type: Date,
-        required: false,
-        default: Date.now 
-    },
     payer: {
         type: ObjectId,
         ref: 'User',

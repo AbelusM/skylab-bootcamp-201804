@@ -336,7 +336,7 @@ const logic = {
         * 
         * @returns {Promise<string>}
         */
-    addSpend(userId, groupId, amount, name, date, payerId, fractions) {
+    addSpend(userId, groupId, amount, name, payerId, fractions) {
         return Promise.resolve()
             .then(() => {
                 if (typeof userId !== 'string') throw Error('user id is not a string')
@@ -354,8 +354,6 @@ const logic = {
                 if (typeof payerId !== 'string') throw Error('user id is not a string')
 
                 if (!(payerId = payerId.trim()).length) throw Error('user id is empty or blank')
-
-                if (typeof date !== 'number') throw Error('date is not a number')
 
                 if (!(fractions instanceof Array)) throw Error('fractions is not an array')
 
@@ -391,7 +389,6 @@ const logic = {
                                     user: userId,
                                     amount,
                                     name,
-                                    date,
                                     payer: payerId,
                                     fractions
                                 }))

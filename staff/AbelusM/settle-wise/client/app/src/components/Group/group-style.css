@@ -18,20 +18,11 @@ a {
 }
 
 .groups-card {
-    background-color: rgba(255, 255, 255, 0.658) !important;
+    background-color: rgba(255, 255, 255, 0.884) !important;
     border: none;
     text-align: center;
     margin: 20px;
 }
-
-/* 
-.form-user2 {
-    background: #ffffffbd;
-    padding: 50px;
-    border-radius: 5px;
-    position: relative;
-    z-index: 2;
-} */
 
 .container-form-user {
     display: flex;
@@ -96,14 +87,13 @@ a {
 }
 
 .form-check {
-    /* display: inline-block; */
     display: inline-flex;
 }
 
 .spend-card {
     display: inline-block;
     margin: 25px;
-    background-color: rgba(92, 90, 92, 0.151);
+    background-color: rgba(92, 90, 92, 0.664);
     border-radius: 15px;
     text-align: center;
 }
@@ -159,9 +149,31 @@ a {
     /* display: inline-flex !important; */
     /* margin: 5px; */
 }
-#modal-form h5{
+
+#modal-form h5 {
     color: rgba(216, 20, 216, 0.658);
     width: 100%;
     /* display: inline-flex !important; */
     /* margin: 5px; */
+}
+
+.tableList {
+    text-align: center;
+    display: inline-table;
+    table-layout: fixed;
+}
+
+.tableList th {
+    width: 25px !important;
+}
+
+.collapseList {
+    border-collapse: separate !important;
+    width: 25000px !important;
+}
+#colSpace {
+border-collapse: collapse !important;
+table-layout: fixed !important;
+width: 100% !important;
+background-color: red;
 }

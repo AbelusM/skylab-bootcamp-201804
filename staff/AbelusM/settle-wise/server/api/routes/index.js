@@ -144,7 +144,7 @@ router.patch('/users/:userId/groups/:groupId', [jwtValidator, jsonBodyParser], (
 router.post('/users/:userId/groups/:groupId/spends', [jwtValidator, jsonBodyParser], (req, res) => {
     const { params: { userId, groupId }, body: { amount, name, payerId, fractions } } = req
 
-    logic.addSpend(userId, groupId, amount, name, date, payerId, fractions)
+    logic.addSpend(userId, groupId, amount, name, payerId, fractions)
         .then(id => {
             res.status(201)
             res.json({ status: 'OK', data: id })
