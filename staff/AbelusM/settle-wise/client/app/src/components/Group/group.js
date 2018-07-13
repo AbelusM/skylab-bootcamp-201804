@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import logic from '../../logic'
 import swal from 'sweetalert2'
 import img from '../../styles/images/back.jpg'
-import { Collapse, Button, CardBody, Card, Input, Form, FormGroup, Label, Modal, ModalHeader, ModalBody, ModalFooter, Col, Alert, Table, Popover, PopoverHeader, PopoverBody } from 'reactstrap';
+import { Collapse, Button, CardBody, Card, Input, Form, FormGroup, Label, Modal, ModalHeader, ModalBody, ModalFooter, Col, Alert, Table, Popover } from 'reactstrap';
 import './group-style.css'
 
 class Group extends Component {
@@ -231,14 +231,9 @@ class Group extends Component {
                         <Label className=''>
                             {this.state.users.length ? <h2>User Members</h2> : null}
                             {this.state.users.map((user, i) => <div>
-                                <Button id={'Popover-' + i} onClick={this.toggleUser} className='users' key={i} color={this.changeColor(i)}><option>{user.name}</option></Button>
-                                <Popover placement="bottom" isOpen={this.state.popoverOpen} target={'Popover-' + i} toggle={this.toggleUser}>
-                                    <PopoverHeader>User Info</PopoverHeader>
-                                    <PopoverBody>
-                                        Name: {user.name}
-                                        Surname: {user.surname}
-                                        Email: {user.email}
-                                    </PopoverBody>
+                                <Button id={'Popover-' + user._id} onClick={this.toggleUser} className='users' key={i} color={this.changeColor(i)}><option>{user.name}</option></Button>
+                                <Popover placement="right" isOpen={this.state.popoverOpen} target={'Popover-' + user._id} toggle={this.toggleUser}>
+                                    Name: {user.name} Surname: {user.surname}  Email: {user.email}
                                 </Popover>
                             </div>
                             )}
