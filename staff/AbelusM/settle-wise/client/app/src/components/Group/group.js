@@ -231,13 +231,9 @@ class Group extends Component {
                         <Label className=''>
                             {this.state.users.length ? <h2>User Members</h2> : null}
                             {this.state.users.map((user, i) => <div>
-                                <Button id={'Popover-' + user._id} onClick={this.toggleUser} className='users' key={i} color={this.changeColor(i)}><option>{user.name}</option></Button>
-                                <Popover placement="right" isOpen={this.state.popoverOpen} target={'Popover-' + user._id} toggle={this.toggleUser}>
-                                    Name: {user.name} Surname: {user.surname}  Email: {user.email}
-                                </Popover>
+                                <Alert id={'Popover-' + i} onClick={this.toggleUser} className='users' key={'Popover-' + i} color={this.changeColor(i)}><option>{user.name} {user.surname}</option></Alert>
                             </div>
                             )}
-
                         </Label>
                         <section id="main" className="">
                             <div className="">

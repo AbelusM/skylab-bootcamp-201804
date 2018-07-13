@@ -836,7 +836,7 @@ describe('logic (settle-wise api)', () => {
                                     return api.listSpends(userId1.toString(), group.id)
                                         .then(res => {
                                             expect(res).to.exist
-                                            debugger
+                                            
                                         })
                                 })
                         })
